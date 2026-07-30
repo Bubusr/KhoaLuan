@@ -849,25 +849,41 @@ Chọn khi:
 
 ## Các đóng góp cụ thể
 
-### 2. Thiết kế cơ chế truy xuất phù hợp với dữ liệu y khoa
+2. Thiết kế cơ chế truy xuất lai, song ngữ phù hợp với dữ liệu y khoa
 
-Đề tài kết hợp:
+Đề tài kết hợp hai phương pháp truy xuất:
 
-- **Dense retrieval** để tìm theo ngữ nghĩa
-- **Sparse retrieval** để tìm chính xác tên bệnh, thuốc, xét nghiệm và thuật ngữ chuyên môn
+Dense retrieval để tìm kiếm theo ngữ nghĩa, kể cả khi câu hỏi và tài liệu sử dụng cách diễn đạt khác nhau.
+Sparse retrieval để nhận diện chính xác tên bệnh, thuốc, xét nghiệm, chỉ số và các thuật ngữ chuyên môn.
 
-Luồng truy xuất:
+Bên cạnh đó, hệ thống hỗ trợ truy xuất song ngữ Việt–Anh, cho phép xử lý các trường hợp:
 
-```
-Câu hỏi đã xử lý
-→ Query embedding
+Người dùng đặt câu hỏi bằng tiếng Việt nhưng tài liệu y khoa được viết bằng tiếng Anh.
+Câu hỏi chứa đồng thời thuật ngữ tiếng Việt, tiếng Anh hoặc từ viết tắt chuyên ngành.
+Một bệnh, thuốc hoặc xét nghiệm có nhiều cách gọi khác nhau giữa ngôn ngữ đời thường và ngôn ngữ chuyên môn.
+
+Luồng truy xuất được đề xuất:
+
+Câu hỏi tiếng Việt hoặc tiếng Anh
+→ Chuẩn hóa và nhận diện ngôn ngữ
+→ Chuẩn hóa thuật ngữ y khoa song ngữ
+→ Tạo query embedding
 → Hybrid retrieval
 → Lấy Top-K chunk
-→ Lọc hoặc xếp hạng bằng chứng
-```
+→ Lọc và xếp hạng bằng chứng
+→ Lựa chọn ngữ cảnh phù hợp
 
-Đóng góp mong muốn là nâng cao khả năng tìm đúng bằng chứng, đặc biệt khi câu hỏi của người dùng không sử dụng cùng cách diễn đạt với tài liệu chuyên môn.
+Trong đó, bước chuẩn hóa thuật ngữ có thể ánh xạ giữa các cách diễn đạt tương đương, chẳng hạn:
 
+“cao huyết áp” ↔ “tăng huyết áp” ↔ “hypertension”
+“đường huyết cao” ↔ “hyperglycemia”
+“nhồi máu cơ tim” ↔ “myocardial infarction”
+
+Đóng góp mong muốn là nâng cao khả năng tìm đúng bằng chứng, đặc biệt khi:
+
+Câu hỏi của người dùng không sử dụng cùng cách diễn đạt với tài liệu chuyên môn.
+Ngôn ngữ của câu hỏi khác với ngôn ngữ của nguồn tri thức.
+Người dùng sử dụng tên thông dụng, trong khi tài liệu sử dụng thuật ngữ y khoa chuẩn hóa.
 ---
 
 ### 4. Đề xuất cơ chế an toàn Answer–Abstain–Escalate
@@ -896,39 +912,6 @@ $$
 - **Escalate:** tình huống có nguy cơ cao hoặc cần bác sĩ đánh giá.
 
 Điểm đóng góp ở đây là biến hệ thống từ một chatbot “luôn cố trả lời” thành một hệ thống có khả năng tự nhận biết giới hạn.
-
----
-
-### 5. Đánh giá hệ thống theo nhiều tầng
-
-Đề tài không chỉ đánh giá câu trả lời cuối cùng mà đánh giá riêng từng thành phần.
-
-#### Đánh giá retrieval
-
-- Recall@K
-- Precision@K
-- MRR
-- nDCG
-- Tỷ lệ tìm thấy tài liệu chuẩn
-
-#### Đánh giá generation
-
-- Độ chính xác y khoa
-- Relevance
-- Faithfulness
-- Groundedness
-- Citation correctness
-- Hallucination rate
-
-#### Đánh giá end-to-end
-
-- Tỷ lệ trả lời đúng
-- Tỷ lệ abstain đúng
-- Tỷ lệ phát hiện trường hợp cần escalate
-- Tỷ lệ câu trả lời nguy hiểm
-- Độ ổn định trong hội thoại nhiều lượt
-
-Đóng góp này giúp xác định lỗi đến từ retriever, LLM hay quality filter, thay vì chỉ đo một chỉ số tổng quát.
 
 ---
 

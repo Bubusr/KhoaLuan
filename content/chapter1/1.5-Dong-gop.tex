@@ -1,11 +1,17 @@
 \section{Đóng góp của nghiên cứu}
 
-Nghiên cứu mang lại ba đóng góp cốt lõi cả về phương pháp luận khoa học và giá trị ứng dụng thực tiễn:
+Trên cơ sở kế thừa khung RAG chuẩn, nghiên cứu hướng đến các đóng góp về phương pháp luận và giá trị ứng dụng sau:
 
 \begin{enumerate}[label=(\arabic*)]
-    \item \textbf{Chuẩn hóa khung hệ thống RAG cho bài toán hỏi đáp y khoa:} Đề xuất, cài đặt và đánh giá toàn diện một quy trình RAG tiêu chuẩn kết hợp giữa mô hình nhúng văn bản và mô hình ngôn ngữ lớn, được tối ưu hóa cho dữ liệu chuyên sâu về các bệnh lý về xương. Quy trình này thiết lập mốc so sánh (baseline) được thực nghiệm bài bản, tạo nền tảng khoa học cho việc đánh giá các kỹ thuật RAG nâng cao trong tương lai.
+    \item \textbf{Chuẩn hóa khung hệ thống RAG đầu cuối cho bài toán hỏi--đáp y khoa:} Đề xuất, cài đặt và đánh giá một quy trình gồm hai pipeline huấn luyện và suy diễn, kết hợp kho tri thức đã kiểm chứng, bộ truy xuất, mô hình ngôn ngữ lớn và lớp bảo đảm chất lượng. Quy trình được chuyên biệt hóa cho dữ liệu về các bệnh lý về xương, đồng thời thiết lập mốc so sánh (baseline) để đánh giá các kỹ thuật RAG nâng cao trong tương lai.
     
     \item \textbf{Xây dựng bộ dữ liệu và bộ câu hỏi đánh giá chuyên ngành về các bệnh lý về xương:} Thu thập, tiền xử lý và chuẩn hóa bộ ngữ liệu y khoa chuyên sâu từ các nguồn tài liệu chính thống, đồng thời xây dựng tập câu hỏi thực nghiệm nhằm cung cấp tài nguyên dữ liệu phục vụ nghiên cứu hỏi đáp y tế.
-    
-    \item \textbf{Thực nghiệm và đánh giá hệ thống:} Thực hiện đánh giá thực nghiệm toàn diện trên kiến trúc RAG đề xuất nhằm đo lường khả năng giảm thiểu hiện tượng ảo giác, nâng cao độ trung thực và độ tin cậy của câu trả lời trong tư vấn thông tin y học.
+
+    \item \textbf{Thiết kế cơ chế truy xuất lai và song ngữ phù hợp với dữ liệu y khoa:} Kết hợp truy xuất đặc (dense retrieval) để tìm theo ngữ nghĩa với truy xuất thưa (sparse retrieval) để nhận diện chính xác tên bệnh, thuốc, xét nghiệm và thuật ngữ chuyên môn. Quy trình chuẩn hóa thuật ngữ Việt--Anh hỗ trợ trường hợp ngôn ngữ câu hỏi khác ngôn ngữ tài liệu, câu hỏi trộn hai ngôn ngữ hoặc sử dụng tên thông dụng thay cho thuật ngữ y khoa chuẩn; kết quả sau đó được lọc và xếp hạng lại dựa trên siêu dữ liệu và độ tin cậy của nguồn.
+
+    \item \textbf{Chuyên biệt hóa mô hình sinh bằng các mẫu huấn luyện có bằng chứng:} Xây dựng mẫu tinh chỉnh có giám sát từ câu hỏi, bối cảnh bệnh nhân, lịch sử hội thoại đã cô đọng, bằng chứng truy xuất và câu trả lời chuẩn. Mục tiêu là giúp mô hình ưu tiên tài liệu được cung cấp, trích dẫn nguồn, biểu đạt độ không chắc chắn và không bổ sung thông tin không có căn cứ.
+
+    \item \textbf{Đề xuất lớp bảo đảm chất lượng và cơ chế an toàn Answer--Abstain--Escalate:} Sau khi sinh câu trả lời nháp, hệ thống đánh giá độ liên quan, độ bám sát bằng chứng, tính đầy đủ, tính đúng đắn của trích dẫn, mức độ rủi ro và độ tin cậy. Từ đó hệ thống lựa chọn trả lời khi đủ căn cứ, từ chối khi bằng chứng thiếu hoặc mâu thuẫn, hoặc chuyển đến chuyên gia khi tình huống có nguy cơ cao, thay vì buộc LLM luôn phải trả lời.
+
+    \item \textbf{Thực nghiệm và đánh giá hệ thống theo nhiều tầng:} Đánh giá riêng chất lượng truy xuất, chất lượng sinh và hiệu quả hỏi--đáp đầu cuối, bao gồm khả năng trả lời đúng, từ chối đúng và phát hiện trường hợp cần chuyển chuyên gia. Cách đánh giá này nhằm đo lường khả năng giảm thiểu hiện tượng ảo giác, nâng cao độ trung thực và độ tin cậy, đồng thời xác định lỗi đến từ bộ truy xuất, mô hình sinh hay lớp kiểm tra chất lượng.
 \end{enumerate}

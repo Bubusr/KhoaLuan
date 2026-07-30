@@ -8,6 +8,8 @@ Trong bối cảnh y học hiện đại, khối lượng tri thức lâm sàng,
 
 Đối với người bệnh và cộng đồng, xu hướng tự tra cứu triệu chứng và phương pháp điều trị các bệnh lý về xương trên mạng Internet ngày càng trở nên phổ biến. Tuy nhiên, nguồn tin trên không gian mạng thường rơi vào tình trạng nhiễu loạn và thiếu sự kiểm chứng từ chuyên gia. Việc tiếp cận các dữ liệu sai lệch dễ dẫn đến hành vi tự chẩn đoán sai, tự ý sử dụng thuốc không theo chỉ định, gây ra những biến chứng nguy hiểm. Thực trạng này đặt ra đòi hỏi phải xây dựng các giải pháp công nghệ có khả năng tư vấn y học chính xác, minh bạch, đảm bảo độ an toàn lâm sàng, khả năng đọc hiểu và sự đồng cảm với người bệnh \cite{ortho_rag_13}.
 
+Song song với nhu cầu trên, các mô hình ngôn ngữ lớn (Large Language Model, LLM) đã đạt kết quả đáng chú ý trên nhiều bộ dữ liệu hỏi--đáp y khoa. Tuy nhiên, kết quả cao trên câu hỏi dạng thi hoặc trên một miền thử nghiệm hẹp chưa đồng nghĩa với khả năng sử dụng an toàn trong chăm sóc người bệnh. Khi câu hỏi dài, tình huống lâm sàng phức tạp hoặc thông tin bệnh nhân chưa đầy đủ, mô hình vẫn có thể tạo ra câu trả lời trôi chảy nhưng sai, thiếu cảnh báo hoặc không phù hợp với quy trình thực tế. Vì vậy, LLM trong nghiên cứu này được xem là công cụ hỗ trợ truy xuất và tổng hợp thông tin, không phải một hệ thống tự chủ thay thế bác sĩ.
+
 
 \subsection{Sự tiến hóa của các hệ thống hỏi đáp y tế và điểm nghẽn công nghệ}
 Để giải quyết bài toán tra cứu và tư vấn thông tin y tế, các hệ thống hỏi đáp tự động đã trải qua quá trình phát triển qua nhiều thế hệ công nghệ với những đặc trưng và giới hạn riêng biệt.
@@ -15,6 +17,8 @@ Trong bối cảnh y học hiện đại, khối lượng tri thức lâm sàng,
 Thế hệ đầu tiên và thứ hai của các hệ thống hỏi đáp y tế được xây dựng dựa trên các hệ trợ giúp ra quyết định lâm sàng bằng tập luật \cite{rule_based_1, rule_based_2} kết hợp với thuật toán truy xuất từ khóa truyền thống như BM25 hay TF-IDF. Mặc dù các mô hình này đảm bảo tính an toàn cao nhờ tuân thủ nghiêm ngặt quy tắc logic định trước, chúng bộc lộ hạn chế lớn về tính linh hoạt. Do phụ thuộc vào việc khớp từ khóa chính xác, hệ thống không thể hiểu được ngữ nghĩa sâu xa, ngữ cảnh phức tạp hoặc các cách diễn đạt đa dạng trong câu hỏi ngôn ngữ tự nhiên từ người bệnh.
 
 Sự xuất hiện của kiến trúc Transformer \cite{vaswani2017} đã đánh dấu bước chuyển mình sang thế hệ thứ ba với sự bùng nổ của các mô hình ngôn ngữ lớn (LLM). Nhờ được huấn luyện trên tập ngữ liệu khổng lồ, mô hình ngôn ngữ lớn sở hữu khả năng hiểu và sinh ngôn ngữ tự nhiên mượt mà, giải quyết rào cản giao tiếp giữa con người và máy tính. Tuy nhiên, khi áp dụng trực tiếp vào lĩnh vực y tế đòi hỏi sự chính xác tuyệt đối, mô hình ngôn ngữ lớn độc lập lại vấp phải rào cản chí mạng là hiện tượng ảo giác. Do bản chất của LLM là sinh văn bản bằng cách dự đoán xác suất từ ngữ tiếp theo hoàn toàn dựa vào tri thức tích lũy từ quá trình huấn luyện, mô hình có xu hướng tự tạo ra các thông tin sai lệch, sai liều lượng thuốc hoặc đưa ra phác đồ điều trị không có thực nhưng với văn phong hết sức tự tin. Trong ngành y tế, rủi ro ảo giác có thể gây ảnh hưởng trực tiếp đến an toàn tính mạng của người bệnh.
+
+Ngoài hiện tượng ảo giác, LLM độc lập còn gặp ba giới hạn thực tế: tri thức trong tham số có thể trở nên lỗi thời khi hướng dẫn lâm sàng thay đổi; người dùng khó xác định nguồn bằng chứng hỗ trợ câu trả lời; và mô hình có thể khiến người dùng quá tin vào kết quả tự động. Các câu hỏi liên quan đến thuốc, chống chỉ định, chẩn đoán hoặc xử trí nguy cơ cao vì thế không nên được giải quyết chỉ bằng tri thức ghi nhớ sẵn của mô hình.
 
 
 
@@ -31,6 +35,10 @@ Truy xuất Tăng cường Sinh nội dung (RAG) là một kỹ thuật AI và m
 
 
 Chính nhờ cơ chế phân tách và xác thực tri thức chuẩn mực nêu trên, các nghiên cứu gần đây chứng minh rằng một mô hình mã nguồn mở quy mô vừa phải khi tích hợp RAG có thể đạt hiệu suất vượt trội hơn cả các mô hình độc quyền quy mô khổng lồ (như GPT-4) khi vận hành đơn lẻ không có cơ chế truy xuất \cite{medrag2024, gao2023}.
+
+Tuy vậy, RAG không loại bỏ hoàn toàn hiện tượng ảo giác. Chất lượng câu trả lời vẫn phụ thuộc trực tiếp vào tài liệu được truy xuất: đoạn văn bản cũ, nhiễu, mâu thuẫn hoặc không đủ bằng chứng có thể khiến câu trả lời sai trở nên thuyết phục hơn vì có vẻ được hỗ trợ bởi nguồn tham khảo. Các kết quả trên MIRAGE cũng cho thấy hiệu quả thay đổi đáng kể theo kho tài liệu, bộ truy xuất và mô hình sinh được lựa chọn \cite{xiong2024mirage}. Trong hội thoại nhiều lượt, việc đưa toàn bộ lịch sử trao đổi vào câu lệnh còn có thể làm lệch ngữ cảnh. Do đó, lịch sử hội thoại phải được lọc, cô đọng và dùng để viết lại câu hỏi hiện tại thành một truy vấn độc lập trước khi truy xuất.
+
+Một vấn đề khác là tính không đồng nhất của dữ liệu y khoa. Tài liệu có thể tồn tại dưới nhiều định dạng, chứa bảng hoặc sơ đồ khó trích xuất, sử dụng thuật ngữ khác nhau, có nhiều phiên bản, khác biệt giữa hướng dẫn quốc tế và quy trình địa phương, hoặc đã hết hiệu lực. Vì vậy, việc chỉ phân đoạn tài liệu và lưu vào cơ sở dữ liệu vector là chưa đủ; mỗi đoạn cần kèm siêu dữ liệu về nguồn, chuyên khoa, ngày ban hành, phiên bản, phạm vi áp dụng và trạng thái hiệu lực để phục vụ lọc, xếp hạng và trích dẫn. Thực trạng này dẫn đến nhu cầu về một quy trình tích hợp truy xuất lai, mô hình hỏi--đáp y khoa, lớp bảo đảm chất lượng và cơ chế lựa chọn giữa trả lời, từ chối trả lời hoặc chuyển đến chuyên gia.
 
 
 
