@@ -1,0 +1,145 @@
+\section{Phát biểu bài toán và Khung kiến trúc RAG cơ bản}
+
+\subsection{Nguyên lý cốt lõi và Bài toán RAG tổng quát}
+
+Để thiết lập nền tảng lý thuyết vững chắc cho nghiên cứu, bài toán hỏi đáp y tế tin cậy dựa trên kiến trúc Truy xuất Tăng cường Sinh nội dung (RAG) được mô hình hóa dựa trên nguyên lý đề xuất bởi Lewis et al.\ \cite{lewis2020}. 
+
+\noindent\textbf{Nguyên lý cốt lõi:} Kiến trúc RAG tách biệt hoàn toàn khả năng tư duy ngôn ngữ của mô hình với tri thức nghiệp vụ y khoa về các bệnh lý về xương. Bằng cách kết hợp cơ sở tri thức bên ngoài được thẩm định với năng lực sinh văn bản của mô hình ngôn ngữ lớn, hệ thống buộc phải sinh ra các câu trả lời dựa trên bằng chứng thực tế thay vì phụ thuộc vào bộ nhớ tham số có sẵn.
+
+Cho cơ sở tri thức tài liệu y khoa đầu vào $D = \{d_1, d_2, \dots, d_N\} \in \mathcal{X}^N$ bao gồm $N$ tài liệu đã qua kiểm chứng và truy vấn ngôn ngữ tự nhiên từ người dùng $q \in \mathcal{Q} \subseteq \mathcal{X}$. Mục tiêu của hệ thống là tìm hàm ánh xạ tổng quát $F^\star: \mathcal{X}^N \times \mathcal{Q} \to \mathcal{A}$ sao cho cực đại hóa kỳ vọng chất lượng câu trả lời tối ưu $a^\star \in \mathcal{A} \subseteq \mathcal{X}$:
+\[
+    F^\star = \arg\max_{F} \mathbb{E}_{(D, q, a) \sim \mathcal{T}} \left[ \mathcal{U}(F(D, q), a) \right]
+\]
+trong đó $\mathcal{T}$ là tập dữ liệu đánh giá thực nghiệm và $\mathcal{U}$ là hàm đo lường hữu dụng của câu trả lời y học.
+
+Trong mô hình sinh tự hồi quy \cite{lewis2020}, xác suất sinh chuỗi câu trả lời $a = (y_1, y_2, \dots, y_T)$ được phân rã theo chuỗi lịch sử $y_{<t} = (y_1, \dots, y_{t-1})$:
+\[
+    P(a \mid D, q) = \prod_{t=1}^{T} P(y_t \mid y_{<t}, D, q)
+\]
+
+\subsection{Các ẩn số cần tìm của bài toán}
+
+Bài toán RAG được phân rã thành hai nhóm ẩn số chính tương ứng với hai giai đoạn vận hành:
+
+\begin{enumerate}[label=(\arabic*)]
+    \item \textbf{Tập tham số cần học trong giai đoạn huấn luyện ($\Theta_{\text{off}}$):}
+    \begin{itemize}
+        \item $\theta_{\text{e}}$: Tập tham số của mô hình nhúng $f_{\text{e}}$, quyết định không gian biểu diễn ngữ nghĩa của các khối văn bản y khoa.
+        \item $\theta_{\text{i}}$: Tập tham số cấu trúc của chỉ mục tri thức, xác định cơ chế phân hoạch không gian để tối ưu tốc độ tra cứu.
+        \item $\theta_{\text{g}}$: Tập tham số của mô hình ngôn ngữ lớn, được tinh chỉnh để học cách ưu tiên sử dụng ngữ cảnh truy xuất hơn tri thức ghi nhớ nội tại.
+    \end{itemize}
+
+    \item \textbf{Tập biến trung gian cần suy ra trong giai đoạn suy diễn ($\Theta_{\text{on}}$):}
+    \begin{itemize}
+        \item $\mathbf{z}_q \in \mathbb{R}^d$: Vector biểu diễn ngữ nghĩa của truy vấn câu hỏi người dùng $q$.
+        \item $C^\star = \{c_{(1)}, c_{(2)}, \dots, c_{(k)}\} \subset C$: Tập hợp $k$ khối văn bản ngữ cảnh y khoa liên quan nhất được trích xuất từ chỉ mục $I$.
+        \item $p \in \mathcal{P}$: Chuỗi câu lệnh tăng cường ngữ cảnh được tổng hợp từ $q$ và $C^\star$.
+        \item $a^\star \in \mathcal{A}$: Chuỗi câu trả lời y khoa tối ưu cuối cùng được sinh ra.
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Giai đoạn xây dựng tri thức}
+
+Giai đoạn xây dựng tri thức xác định tiến trình biến đổi $\Phi_{\text{off}}: \mathcal{X}^N \to \mathcal{I}$ nhằm chuẩn bị cơ sở tri thức có thể tra cứu và tinh chỉnh mô hình sinh. Tiến trình này gồm bốn bước xử lý:
+
+\begin{enumerate}[label=(\arabic*)]
+    \item \textbf{Phân đoạn tài liệu:} Hàm $f_{\text{dp}}: \mathcal{X}^N \to \mathcal{C}^M$ phân chia $N$ tài liệu thô $D$ thành tập $M$ khối văn bản ngữ cảnh $C = \{c_1, c_2, \dots, c_M\} \subset \mathcal{C}^M$ theo chiến lược phân đoạn với kích thước khối $\ell$ và bước trượt $s$:
+    \[
+        C = f_{\text{dp}}(D;\, \theta_{\text{dp}}), \quad c_i = d_j[k \cdot s : k \cdot s + \ell]
+    \]
+
+    \item \textbf{Biểu diễn ngữ nghĩa:} Mô hình nhúng $f_{\text{e}}: \mathcal{C} \to \mathbb{R}^d$ mã hóa từng khối $c_i$ thành vector $\mathbf{z}_i \in \mathbb{R}^d$. Tham số $\theta_{\text{e}}$ được tối ưu hóa thông qua hàm mất mát tương phản in-batch softmax \cite{karpukhin2020}:
+    \[
+        \mathcal{L}_{\text{contrast}}(\theta_{\text{e}}) = -\mathbb{E}\left[\log \frac{\exp\!\left(\mathbf{z}_q^\top \mathbf{z}^+\right)}{\displaystyle\sum_{j=1}^{B} \exp\!\left(\mathbf{z}_q^\top \mathbf{z}_j\right)}\right]
+    \]
+
+    \item \textbf{Xây dựng chỉ mục tri thức:} Hàm $f_{\text{i}}$ cấu trúc hóa tập vector $Z$ thành chỉ mục không gian vector $I^\star$ nhằm tối ưu hóa bài toán cân bằng giữa tốc độ tìm kiếm và độ chính xác hồi tiếp:
+    \[
+        I^\star = \arg\min_{I \in \mathcal{I}}\; \mathbb{E}_{\mathbf{z}_q}\!\left[\text{QueryTime}(I, \mathbf{z}_q)\right] \quad \text{s.t.} \quad \text{Recall@}k(I) \ge \rho
+    \]
+
+    \item \textbf{Tinh chỉnh mô hình sinh:} Theo kiến trúc RAG gốc của Lewis et al.\ \cite{lewis2020}, các mẫu câu hỏi y khoa và câu trả lời chuẩn $(q_i, y_i^*)$ được kết hợp với tập ngữ cảnh truy xuất $C_i^\star$ từ chỉ mục $I$ để tạo tập dữ liệu tinh chỉnh $D_{\text{RAG}} = \{(q_i, C_i^\star, y_i^*)\}$. Tham số $\theta_{\text{g}}$ của mô hình ngôn ngữ sinh được học thông qua bài toán tối ưu hóa xác suất điều kiện \cite{lewis2020}:
+    \[
+        \theta_{\text{g}}^\star = \arg\min_{\theta_{\text{g}}} \sum_{i} \sum_{t=1}^{T} -\log P_{\theta_{\text{g}}} \left( y_{i,t}^* \mid y_{i,<t}^*, q_i, C_i^\star \right)
+    \]
+\end{enumerate}
+
+\subsection{Giai đoạn suy diễn và Tối ưu hóa toàn cục}
+
+Giai đoạn suy diễn xác định tiến trình sinh câu trả lời $\Phi_{\text{on}}: \mathcal{Q} \times \mathcal{I} \to \mathcal{A}$ thời gian thực khi nhận câu hỏi từ người dùng qua bốn bước xử lý:
+
+
+\begin{enumerate}[label=(\arabic*)]
+    \item \textbf{Mã hóa truy vấn:} Hàm mã hóa $f_{\text{q}}$ chuyển đổi câu hỏi $q$ thành vector ngữ nghĩa $\mathbf{z}_q = f_{\text{q}}(q; \theta_{\text{q}}) \in \mathbb{R}^d$ \cite{lewis2020}.
+
+    \item \textbf{Truy xuất ngữ cảnh tối ưu:} Trích xuất tập con $k$ khối văn bản ngữ cảnh $C^\star$ từ chỉ mục $I$ sao cho cực đại hóa điểm tích vô hướng giữa vector truy vấn $\mathbf{z}_q$ và vector biểu diễn của từng khối $f_{\text{e}}(c_i)$ \cite{lewis2020}:
+    \[
+        \boxed{C^\star = \arg\max_{C' \subset C, |C'|=k} \sum_{c_i \in C'} \mathbf{z}_q^\top f_{\text{e}}(c_i)}
+    \]
+    thỏa mãn ràng buộc cửa sổ ngữ cảnh: $\text{Length}(C^\star) \le L_{\text{max}}$.
+
+    \item \textbf{Xây dựng câu lệnh tăng cường:} Hàm $f_{\text{p}}$ điền câu hỏi $q$ và các đoạn ngữ cảnh $C^\star$ vào một mẫu câu lệnh định sẵn để tạo thành chuỗi chỉ dẫn $p = f_{\text{p}}(q, C^\star; \theta_{\text{p}}) \in \mathcal{P}$ \cite{lewis2020}.
+
+    \item \textbf{Sinh câu trả lời có điều kiện:} Mô hình ngôn ngữ lớn sau khi fine-tune ($\theta_{\text{g}}^\star$) tính toán câu trả lời $a^\star$ cực đại hóa xác suất điều kiện tự hồi quy dựa trên câu lệnh $p$ \cite{lewis2020}:
+    \[
+        a^\star = \arg\max_{a \in \mathcal{A}} \sum_{t=1}^{T} \log P_{\theta_{\text{g}}^\star} \left( y_t \mid y_{<t}, q, C^\star \right)
+    \]
+\end{enumerate}
+
+\vspace{0.5em}
+\noindent\textbf{Ràng buộc về Độ trung thực tri thức:}
+Câu trả lời $a^\star$ bị ràng buộc bởi hàm đo lường độ trung thực \cite{ragas2023} $\text{Faithfulness}(a^\star, C^\star) \in [0, 1]$, đòi hỏi tỷ lệ các luận điểm trong $a^\star$ được bảo chứng bởi $C^\star$ phải đạt ngưỡng tiệm cận tuyệt đối nhằm kiểm soát hiện tượng ảo giác:
+\[
+    \text{Faithfulness}(a^\star, C^\star) \ge 1 - \epsilon \quad (\text{với } \epsilon \to 0)
+\]
+
+\vspace{0.5em}
+\noindent\textbf{Tối ưu hóa Hệ thống Toàn cục:}
+Kết hợp hai giai đoạn, toàn bộ mô hình RAG được phát biểu dưới dạng bài toán tối ưu hóa hệ thống toàn cục \cite{lewis2020, gao2023}:
+\[
+    \boxed{(\Theta_{\text{off}}^\star, \Theta_{\text{on}}^\star) = \arg\max_{\Theta_{\text{off}}, \Theta_{\text{on}}} \mathbb{E}_{(q, a)} \left[ \mathcal{U} \left( \Phi_{\text{on}} \left( q, \Phi_{\text{off}}(D; \Theta_{\text{off}}); \Theta_{\text{on}} \right), a \right) \right]}
+\]
+dưới các ràng buộc thực thi về thời gian phản hồi ($\text{Latency} \le \delta$), dung lượng bộ nhớ ($\text{Memory} \le B$) và giới hạn độ dài token ($\text{Token Length} \le L_{\text{max}}$).
+
+\subsection{Các tiêu chí đánh giá bài toán}
+
+Chất lượng của giải pháp RAG được đánh giá đa chiều thông qua hàm hữu dụng tổng hợp $\mathcal{U}$, phân rã thành năm tầng tiêu chí đo lường chính được kế thừa từ các bộ chuẩn đánh giá uy tín trong cộng đồng nghiên cứu như RAGAS \cite{ragas2023}, MIRAGE \cite{xiong2024mirage}, MedTrust-RAG \cite{medtrustrag} và tổng quan hệ thống y tế của Collaco et al.\ \cite{collaco2026}:
+
+\begin{enumerate}[label=(\arabic*)]
+    \item \textbf{Tiêu chí đánh giá chất lượng giai đoạn truy xuất:}
+    \begin{itemize}
+        \item \textbf{Độ chính xác ngữ cảnh \cite{ragas2023}:} Đo lường tỷ lệ các đoạn văn bản ngữ cảnh được trích xuất thực sự có chứa thông tin liên quan đến câu hỏi y khoa $q$, đảm bảo tập $C^\star$ không bị lẫn các đoạn nhiễu.
+        \item \textbf{Độ phủ ngữ cảnh \cite{ragas2023}:} Đo lường khả năng trích xuất đầy đủ tất cả các đoạn tài liệu y khoa cần thiết từ cơ sở tri thức để bảo chứng cho câu trả lời chuẩn $y^*$.
+        \item \textbf{Chỉ số $\text{Recall}@k$ và $\text{MRR}$ \cite{xiong2024mirage}:} Đo tỷ lệ xuất hiện và vị trí thứ hạng của đoạn tài liệu phác đồ y học chuẩn trong danh sách Top-$k$ đoạn ngữ cảnh được trích xuất.
+    \end{itemize}
+
+    \item \textbf{Tiêu chí đánh giá chất lượng giai đoạn sinh:}
+    \begin{itemize}
+        \item \textbf{Độ trung thực \cite{ragas2023}:} Đo lường tỷ lệ các luận điểm trong câu trả lời $a^\star$ được suy ra trực tiếp và có căn cứ xác thực từ ngữ cảnh $C^\star$, nhằm phát hiện và loại bỏ các luận điểm bịa đặt.
+        \item \textbf{Độ tương quan câu trả lời \cite{ragas2023}:} Đo lường mức độ đáp ứng đúng trọng tâm và trực tiếp của câu trả lời $a^\star$ đối với yêu cầu tra cứu của câu hỏi $q$.
+    \end{itemize}
+
+    \item \textbf{Tiêu chí đánh giá tính xác thực của trích dẫn:}
+    \begin{itemize}
+        \item \textbf{Độ chính xác trích dẫn \cite{medtrustrag}:} Đánh giá xem nguồn tài liệu được đính kèm trong câu trả lời có thực sự chứa minh chứng hỗ trợ cho kết luận y khoa tương ứng hay không, tránh hiện tượng trích dẫn sai nguồn.
+    \end{itemize}
+
+    \item \textbf{Tiêu chí đánh giá an toàn y khoa và ứng dụng lâm sàng:}
+    \begin{itemize}
+        \item \textbf{Tỷ lệ ảo giác \cite{medtrustrag}:} Đo lường tần suất phát sinh các thông tin y khoa sai lệch hoặc việc gán sai nguồn trích dẫn tài liệu trong câu trả lời.
+        \item \textbf{Tính đầy đủ lâm sàng \cite{xiong2024mirage, ortho_rag_13}:} Đánh giá mức độ đảm bảo không bỏ sót các cảnh báo lâm sàng quan trọng, các chống chỉ định y khoa hoặc tác dụng phụ nghiêm trọng đối với các bệnh lý về xương.
+    \end{itemize}
+
+    \item \textbf{Tiêu chí đánh giá hành vi hệ thống và phản hồi an toàn:}
+    \begin{itemize}
+        \item \textbf{Tỷ lệ từ chối hợp lý \cite{medtrustrag}:} Đánh giá khả năng của hệ thống trong việc chủ động từ chối trả lời khi dữ liệu ngữ cảnh không đủ căn cứ hoặc chứa thông tin mâu thuẫn, thay vì cố gắng đưa ra phỏng đoán nguy hiểm.
+        \item \textbf{Tỷ lệ phát hiện tình huống cấp cứu \cite{ortho_rag_13}:} Đánh giá khả năng nhận biết các câu hỏi mang tính chấn thương xương gãy hoặc tình huống nguy cơ cao để đưa ra khuyến nghị chuyển người bệnh đến bác sĩ chuyên khoa kịp thời.
+    \end{itemize}
+\end{enumerate}
+
+
+
+
+
+
+

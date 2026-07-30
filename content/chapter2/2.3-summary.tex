@@ -1,0 +1,92 @@
+% \section{Tổng kết và So sánh}
+
+% Xu hướng phát triển của các phương pháp Saliency Detection từ năm 2007 đến nay thể hiện sự chuyển đổi rõ rệt từ traditional methods dựa trên hand-crafted features sang deep learning approaches với khả năng học end-to-end. Spectral Residual (2007) đại diện cho giai đoạn đầu với phương pháp dựa trên statistical analysis và frequency domain processing, không yêu cầu dữ liệu huấn luyện nhưng hạn chế trong việc hiểu semantic content. SalGAN (2017) đánh dấu bước chuyển mình sang deep learning với việc ứng dụng thành công Generative Adversarial Networks, tạo ra saliency maps realistic và detailed hơn đáng kể. PiCANet (2018) tiếp tục phát triển với contextual attention mechanism, cho phép modeling long-range dependencies mà previous methods không thể achieve được. Cuối cùng, U²-Net (2020) đại diện cho giai đoạn maturity của deep learning approaches với architecture optimization focused on efficiency và practical deployment, achieving state-of-the-art accuracy với computational complexity được kiểm soát.
+
+% Bảng \ref{tab:sota_comparison} cung cấp so sánh tổng hợp về các đặc điểm chính của bốn phương pháp đại diện này.
+
+% \begin{table}[h!]
+% \centering
+% \caption{So sánh tổng hợp các phương pháp State-of-the-Art}
+% \label{tab:sota_comparison}
+% \resizebox{\textwidth}{!}{
+% \begin{tabular}{|l|c|c|c|c|l|l|}
+% \hline
+% \textbf{Model} & \textbf{Year} & \textbf{Method Type} & \textbf{Dataset} & \textbf{Performance} & \textbf{Ưu điểm} & \textbf{Hạn chế} \\
+% \hline
+% Spectral & 2007 & Traditional, & Bruce-Tsotsos & NSS: ~0.8 & - Không cần training & - Limited semantic \\
+% Residual & & Frequency-based & (120 ảnh) & AUC: ~0.82 & - Rất nhanh (O(n log n)) & understanding \\
+% \cite{SR2007} & & & & & - Đơn giản, robust & - Kém với low-contrast \\
+% & & & & & - Không tham số & objects \\
+% \hline
+% SalGAN & 2017 & Deep Learning, & SALICON & NSS: 1.01 & - Saliency maps realistic & - Cần dữ liệu lớn \\
+% \cite{SalGAN2017} & & GAN-based & (10K training) & AUC: 0.87 & - End-to-end learning & - Training instability \\
+% & & & MIT300 (test) & CC: 0.57 & - Transfer learning hiệu quả & - Computational expensive \\
+% & & & & & - Generalization tốt & - GAN convergence issues \\
+% \hline
+% PiCANet & 2018 & Deep Learning, & SALICON & NSS: 2.04 & - Outstanding accuracy & - Quadratic complexity \\
+% \cite{PiCANet2018} & & Attention-based & MIT300 & AUC: 0.90 & - Long-range dependencies & - Memory intensive \\
+% & & & Multiple & CC: 0.86 & - Multi-scale contextual & - Training complexity \\
+% & & & cross-datasets & sAUC: 0.76 & modeling & - Limited real-time use \\
+% \hline
+% U²-Net & 2020 & Deep Learning, & DUTS-TR & MAE: 0.042 & - Excellent accuracy- & - Training protocol \\
+% \cite{U2Net2020} & & Multi-scale & (10K training) & F-max: 0.890 & efficiency trade-off & complexity \\
+% & & Nested U-Net & ECSSD, HKU-IS & E-measure: 0.910 & - Lightweight (4.7M params) & - Architectural sensitivity \\
+% & & & DUT-OMRON & Cross-dataset & - Strong boundary & - Limited semantic \\
+% & & & & consistency & preservation & understanding \\
+% \hline
+% \end{tabular}
+% }
+% \end{table}
+
+% Phân tích comparative từ bảng cho thấy trade-offs rõ rệt giữa các approaches:
+% \begin{itemize}
+%     \item \textbf{Computational Efficiency vs. Accuracy:} Spectral Residual offers unprecedented speed nhưng limited accuracy, trong khi PiCANet achieves highest accuracy with significant computational overhead. U²-Net represents best balance với competitive accuracy và reasonable efficiency.
+%     \item \textbf{Training Requirements:} Traditional methods như Spectral Residual không cần training data, making them highly practical cho quick deployment. Deep learning methods require substantial datasets nhưng achieve much better performance và adaptability.
+%     \item \textbf{Generalization Capability:} Cross-dataset performance varies significantly. SalGAN và U²-Net demonstrate robust generalization, trong khi PiCANet excels trên specific benchmarks nhưng may struggle với very different domains.
+%     \item \textbf{Practical Applicability:} U²-Net offers most practical solution cho deployment với good balance của accuracy, efficiency, và model size, trong khi PiCANet remains primarily research-focused due to computational constraints.
+% \end{itemize}
+% Nhìn chung, evolution của field shows clear progression toward more sophisticated contextual modeling và multi-scale processing, với increasing focus on practical deployability trong recent works.
+\section{Tổng kết và So sánh}
+
+Xu hướng phát triển của các phương pháp Saliency Detection từ năm 2007 đến nay thể hiện sự chuyển đổi rõ rệt từ các phương pháp truyền thống (Traditional methods) dựa trên đặc trưng thủ công sang các tiếp cận học sâu (Deep learning) với khả năng học kết thúc-đến-kết thúc (end-to-end). Spectral Residual (2007) đại diện cho giai đoạn đầu với việc phân tích thống kê trong miền tần số, không yêu cầu huấn luyện nhưng hạn chế trong việc hiểu nội dung ngữ nghĩa. SalGAN (2017) đánh dấu bước ngoặt sang Deep Learning bằng cách ứng dụng mạng GAN để tạo ra các bản đồ độ nổi bật có tính thực tế cao. PiCANet (2018) đưa vào cơ chế chú ý ngữ cảnh (contextual attention), cho phép mô hình hóa các mối quan hệ xa (long-range dependencies). Cuối cùng, $U^2$-Net (2020) tối ưu hóa kiến trúc đa quy mô với khối RSU, đạt được sự cân bằng tối ưu giữa độ chính xác và hiệu suất thực thi thực tế.
+
+Bảng \ref{tab:sota_comparison} cung cấp so sánh tổng hợp dựa trên các số liệu thực nghiệm đã được đối soát từ tài liệu gốc của các phương pháp.
+
+\begin{table}[h!]
+\centering
+\caption{So sánh tổng hợp các phương pháp State-of-the-Art}
+\label{tab:sota_comparison}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|l|c|c|c|c|l|l|}
+\hline
+\textbf{Model} & \textbf{Year} & \textbf{Method Type} & \textbf{Dataset/GT} & \textbf{Performance} & \textbf{Ưu điểm} & \textbf{Hạn chế} \\
+\hline
+\textbf{Spectral} & 2007 & Traditional, & 62 Natural Images & \textbf{HR: 0.402} & - Không cần training & - Thiếu hiểu biết ngữ nghĩa \\
+\textbf{Residual} & & Frequency-based & (Human Annotation) & \textbf{FAR: 0.354} & - Siêu nhanh (\textbf{1.5ms/ảnh}) & - Ranh giới vật thể bị mờ \\
+\cite{SR2007} & & & & \textbf{250-600 FPS} & - Không tham số, đơn giản & - Kém với vật thể tương phản thấp \\
+\hline
+\textbf{SalGAN} & 2017 & Deep Learning, & SALICON & \textbf{AUC: 0.858} & - Saliency maps chân thực & - Tốc độ trung bình (~2 FPS) \\
+\cite{SalGAN2017} & & GAN-based & (10K training) & \textbf{sAUC: 0.724} & - Hiểu ngữ nghĩa tốt & - Khó hội tụ khi huấn luyện \\
+& & & MIT300 (test) & \textbf{NSS: 1.646} & - Tận dụng đặc trưng VGG-16 & - Dung lượng mô hình lớn \\
+\hline
+\textbf{PiCANet-R} & 2018 & Deep Learning, & DUTS, ECSSD & \textbf{max F: 0.860} & - Chú ý pixel-wise chính xác & - Chi phí tính toán rất cao \\
+\cite{PiCANet2018} & & Attention-based & HKU-IS & \textbf{MAE: 0.040} & - Mô hình hóa ngữ cảnh xa & - Tốc độ thấp (6.2 FPS) \\
+& & & (ResNet-50) & \textbf{S-m: 0.869} & - Ranh giới vật thể sắc nét & - Yêu cầu bộ nhớ GPU lớn \\
+\hline
+\textbf{$U^2$-Net} & 2020 & Deep Learning, & DUTS-TR & \textbf{max F: 0.890} & - Đa quy mô sâu (Nested U) & - Huấn luyện hoàn toàn từ đầu \\
+\cite{U2Net2020} & & Multi-scale & ECSSD, HKU-IS & \textbf{MAE: 0.045} & - Bản nhẹ (\textbf{4.7MB}) cực nhanh & - Yêu cầu nhiều RAM khi ảnh lớn \\
+& & Nested U-Net & DUT-OMRON & \textbf{S-m: 0.882} & - Trường thụ cảm lớn (RSU) & - Phụ thuộc mạnh vào dữ liệu training \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+
+
+Phân tích so sánh từ bảng cho thấy các sự đánh đổi (trade-offs) rõ rệt:
+\begin{itemize}
+    \item \textbf{Hiệu quả tính toán và Độ chính xác:} Spectral Residual cung cấp tốc độ xử lý tức thời ($1.5ms$) nhưng độ chính xác thấp nhất. PiCANet đạt độ chính xác cao nhờ cơ chế Attention nhưng đánh đổi bằng tài nguyên tính toán lớn. $U^2$-Net hiện là giải pháp cân bằng nhất, đặc biệt là phiên bản $U^2$-Net$^\dagger$ lý tưởng cho các ứng dụng thực tế trên thiết bị di động.
+    \item \textbf{Yêu cầu huấn luyện:} Spectral Residual là phương pháp Unsupervised duy nhất, không phụ thuộc dữ liệu. SalGAN và PiCANet dựa trên Transfer Learning từ các backbone mạnh, trong khi $U^2$-Net cần được huấn luyện từ đầu (from scratch) để tối ưu cấu trúc lồng nhau.
+    \item \textbf{Khả năng mô hình hóa ngữ cảnh:} PiCANet chiếm ưu thế trong việc hiểu quan hệ giữa các pixel ở xa nhờ cơ chế Attention. $U^2$-Net tiếp cận theo hướng trích xuất đặc trưng đa quy mô lồng nhau để bao quát ngữ cảnh mà không làm mất đi chi tiết cục bộ.
+    \item \textbf{Khả năng ứng dụng thực tế:} $U^2$-Net hiện đang dẫn đầu về khả năng triển khai thực tế nhờ sự linh hoạt giữa độ chính xác và kích thước mô hình cực nhỏ. Trong khi đó, Spectral Residual vẫn có giá trị trong các tác vụ yêu cầu tốc độ xử lý cực cao với phần cứng tối giản.
+\end{itemize}

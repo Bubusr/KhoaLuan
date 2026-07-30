@@ -1,0 +1,171 @@
+\documentclass[12pt]{report}
+
+\usepackage{forest}
+\usepackage{caption}
+\usepackage{booktabs}
+\captionsetup[table]{skip=12pt}
+\usepackage{xurl} % hỗ trợ ngắt URL rất tốt
+
+\usepackage{hcmus-report-template}
+\usepackage[shortlabels]{enumitem}
+\usepackage{tocloft}
+\usepackage{amsthm}
+\theoremstyle{definition}
+\newtheorem{problem}{Bài toán}[chapter]
+\newtheorem{definition}{Định nghĩa}[chapter]
+
+%--------------------------------------------------
+% Paragraph layout
+%--------------------------------------------------
+\usepackage{indentfirst}
+\setlength{\parindent}{3em}
+\setlength{\parskip}{0pt}
+\renewcommand{\baselinestretch}{1.5}
+
+%--------------------------------------------------
+% Sectioning
+%--------------------------------------------------
+\usepackage{titlesec}
+
+% ===== CHAPTER FORMAT =====
+\renewcommand{\thechapter}{\arabic{chapter}}
+
+% Format heading chương: "Chương 1: Tổng quan nghiên cứu"
+\titleformat{\chapter}[block]
+  {\normalfont\huge\bfseries\centering}
+  {Chương \thechapter.}{0.5em}{}
+
+% ===== SECTION NUMBERING =====
+\renewcommand{\thesection}{\thechapter.\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+% ===== SUBSUBSUBSECTION =====
+\titleclass{\subsubsubsection}{straight}[\subsubsection]
+\newcounter{subsubsubsection}[subsubsection]
+\renewcommand{\thesubsubsubsection}{\thesubsubsection.\arabic{subsubsubsection}}
+
+% ===== HEADING FORMAT =====
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+\titleformat{\subsubsubsection}{\normalfont\normalsize\bfseries}{\thesubsubsubsection}{1em}{}
+
+% ===== SPACING =====
+\titlespacing*{\chapter}{0pt}{1em}{1em}
+\titlespacing*{\section}{0em}{1em}{1em}
+\titlespacing*{\subsection}{1em}{1em}{1em}
+\titlespacing*{\subsubsection}{1em}{1em}{1em}
+\titlespacing*{\subsubsubsection}{1em}{1em}{1em}
+
+% ===== DEPTH =====
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+% ===== RESET COUNTERS THEO CHAPTER =====
+\makeatletter
+\@addtoreset{section}{chapter}
+\@addtoreset{subsection}{section}
+\@addtoreset{subsubsection}{subsection}
+\@addtoreset{subsubsubsection}{subsubsection}
+\makeatother
+
+%--------------------------------------------------
+% TOC – subsubsubsection
+%--------------------------------------------------
+\makeatletter
+\def\toclevel@subsubsubsection{4}
+\newcommand{\l@subsubsubsection}{\@dottedtocline{4}{14em}{3em}}
+\makeatother
+
+%--------------------------------------------------
+% TOC formatting với tocloft
+%--------------------------------------------------
+
+% 1. Dòng CHAPTER trong TOC: "Chương 1: Tổng quan nghiên cứu"
+\renewcommand{\cftchapfont}{\bfseries}         % chữ đậm
+\renewcommand{\cftchappagefont}{\bfseries}     % số trang đậm
+
+% Thêm tiền tố & hậu tố quanh số chương
+\renewcommand{\cftchappresnum}{Chương~}
+\renewcommand{\cftchapaftersnum}{:\ }          % ra "Chương 1:"
+
+% Độ rộng phần số chương trong TOC (tránh dính chữ)
+\setlength{\cftchapnumwidth}{5.5em}              % tăng nếu vẫn bị dính
+
+% Khoảng cách trước mỗi dòng chapter trong TOC
+\setlength{\cftbeforechapskip}{0.75em}
+
+% 2. Indent cho các level con trong TOC
+\cftsetindents{chapter}{0em}{5.5em}
+\cftsetindents{section}{2em}{3em}
+\cftsetindents{subsection}{4em}{3.5em}
+\cftsetindents{subsubsection}{6em}{4em}
+% subsubsubsection được định nghĩa ở trên với indent 14em
+
+% Độ rộng cột số trang
+\cftsetpnumwidth{2.5em}
+
+% hcmus-report-template đã load hyperref, nên chỉ cần hypersetup
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+}
+
+%--------------------------------------------------
+% Report info
+%--------------------------------------------------
+
+\newcommand{\coursename}{Khóa luận Tốt nghiệp Đại học}
+\newcommand{\reporttitle}{BÁO CÁO KHÓA LUẬN TỐT NGHIỆP}
+\newcommand{\reportname}{Phát triển mô hình hỏi đáp tin cậy bệnh lý về xương dựa trên mô hình ngôn ngữ lớn và truy xuất tăng cường sinh nội dung dựa trên văn bản}
+
+\newcommand{\studentname}{Sinh viên thực hiện}
+\newcommand{\teachername}{Giảng viên hướng dẫn}
+
+% Header
+\lhead{
+  \coursename
+}
+\rhead{
+}
+
+% % Đảm bảo trang chapter có header (plain style mặc định không có header)
+% \fancypagestyle{plain}{
+%   \fancyhf{}
+%   \lhead{\coursename}
+%   \rhead{}
+%   \fancyfoot[R]{Trang \thepage}
+% }
+
+% ============ DOCUMENT ============
+\begin{document}
+
+
+\input{content/title.tex}
+
+\pagenumbering{roman}
+
+\input{content/acknowledgement.tex}
+
+\tableofcontents
+\clearpage
+\listoffigures
+\clearpage
+\listoftables
+\clearpage
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\input{content/chapter1/Chapter1-introduction}
+
+
+% References
+\input{ref/ref.tex}
+
+
+% Appendix
+\appendix
+
+\end{document}

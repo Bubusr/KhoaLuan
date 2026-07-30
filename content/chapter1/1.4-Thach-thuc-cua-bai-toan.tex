@@ -1,0 +1,21 @@
+\section{Các thách thức của bài toán}
+
+Quá trình xây dựng một hệ thống RAG chuyên biệt và tin cậy cho tập dữ liệu về các bệnh lý về xương phải đối mặt với bốn nhóm thách thức cốt lõi, bao phủ toàn bộ luồng vận hành của hệ thống:
+
+\subsection{Giới hạn của bộ truy xuất trước rào cản thuật ngữ và nhiễu ngữ nghĩa}
+Dữ liệu y khoa về các bệnh lý về xương sở hữu đặc thù với mật độ thuật ngữ chuyên ngành cao, bao gồm nhiều từ đồng nghĩa, từ mượn và danh từ viết tắt lâm sàng. Các thuật toán tìm kiếm theo từ khóa truyền thống như BM25 thường gặp hiện tượng bỏ sót tài liệu liên quan do sự bất đồng giữa từ ngữ người dùng truy vấn và thuật ngữ chính thống trong văn bản y học \cite{medrag2024}. Ngược lại, các mô hình nhúng biểu diễn không gian đa chiều tuy cải thiện khả năng tra cứu ngữ nghĩa nhưng lại dễ vấp phải rào cản nhiễu sau truy xuất \cite{xiong2024mirage}. Các mô hình này có xu hướng trích xuất các đoạn văn bản có độ tương đồng biểu diễn cao (như cùng đề cập đến một nhóm thuốc) nhưng lại thiếu hụt những thông tin lâm sàng mang tính quyết định (như chống chỉ định hoặc liều lượng áp dụng cho bệnh nhân có bệnh nền), dẫn đến sự sai lệch ngữ cảnh đầu vào cho mô hình ngôn ngữ lớn \cite{medtrustrag}.
+
+\subsection{Đứt gãy ngữ cảnh và năng lực suy luận y khoa đa bước}
+Một truy vấn y khoa trong thực tế lâm sàng thường đòi hỏi khả năng xử lý thông tin phức tạp và liên kết đa chiều. Để giải đáp một câu hỏi liên quan đến phác đồ điều trị kết hợp với tiền sử bệnh nền, hệ thống không thể chỉ dựa vào một đoạn văn bản đơn lẻ mà phải thực hiện tiến trình suy luận đa bước: xác định phác đồ điều trị chuẩn, sàng lọc danh sách chỉ định thuốc, và đối chiếu các tác dụng phụ đối với bệnh lý đi kèm \cite{imedrag}. Thách thức lớn nằm ở chỗ các kiến trúc RAG cơ bản thực hiện truy xuất đơn luồng thường làm đứt gãy mạch logic này. Việc chia nhỏ tài liệu thành các đoạn độc lập làm thất lạc thông tin liên kết, khiến mô hình ngôn ngữ lớn tiếp nhận ngữ cảnh thiếu hụt hoặc bị nhiễu loạn giữa tập tài liệu truy xuất có độ dài lớn \cite{xiong2024mirage}.
+
+\subsection{Xung đột tri thức và các dạng ảo giác y khoa}
+Khi ngữ cảnh được trích xuất mang về các phác đồ y học mới nhưng lại mâu thuẫn với tri thức được huấn luyện trước trong tham số của mô hình ngôn ngữ lớn, hiện tượng xung đột tri thức sẽ xuất hiện. Sự mâu thuẫn này là nguyên nhân cốt lõi phát sinh bốn dạng ảo giác nguy hiểm trong tư vấn y tế \cite{medtrustrag, xiong2024mirage}:
+\begin{enumerate}[label=(\arabic*)]
+    \item \textbf{Suy luận lỗi \cite{medtrustrag}:} Mô hình kết nối sai logic giữa triệu chứng lâm sàng và phương pháp điều trị, dẫn đến việc đưa ra kết luận thiếu căn cứ xác thực từ tài liệu gốc.
+    \item \textbf{Bỏ sót thông tin \cite{medtrustrag}:} Mô hình tóm tắt quá mức, làm bỏ sót các cảnh báo lâm sàng quan trọng hoặc các chống chỉ định y khoa nghiêm trọng.
+    \item \textbf{Từ chối quá mức \cite{medtrustrag}:} Mô hình từ chối trả lời mặc dù dữ liệu ngữ cảnh đã cung cấp đầy đủ thông tin bằng chứng.
+    \item \textbf{Gán sai nguồn trích dẫn \cite{medtrustrag}:} Mô hình đưa ra câu trả lời nhưng lại đính kèm trích dẫn tới đoạn văn bản không chứa thông tin chứng minh.
+\end{enumerate}
+
+\subsection{Sự khắt khe trong tiêu chuẩn an toàn và đánh giá lâm sàng}
+Biên độ chấp nhận sai sót trong các ứng dụng y tế gần như bằng không. Câu trả lời của hệ thống không chỉ cần tuân thủ độ trung thực so với văn bản ngữ cảnh, mà còn phải đáp ứng các tiêu chuẩn lâm sàng nghiêm ngặt bao gồm độ chính xác y khoa và độ an toàn lâm sàng nhằm đảm bảo không gây hại cho người bệnh \cite{who2022musculoskeletal, medtrustrag}. Bên cạnh đó, do người sử dụng hệ thống bao gồm cả bệnh nhân và cộng đồng, câu trả lời còn phải đáp ứng yêu cầu về khả năng đọc hiểu (tránh sử dụng thuật ngữ quá hàn lâm gây khó hiểu) và sự đồng cảm trong giao tiếp y khoa \cite{ortho_rag_13}. Đây là những tiêu chuẩn đa chiều mà các bộ chỉ số đo lường tự động thông thường rất khó đánh giá một cách toàn diện.

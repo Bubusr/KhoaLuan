@@ -1,0 +1,39 @@
+\section{Bối cảnh nghiên cứu}
+
+\subsection{Thực trạng tiếp cận thông tin y khoa về bệnh lý về xương}
+Trong bối cảnh y học hiện đại, khối lượng tri thức lâm sàng, các báo cáo thực nghiệm và phác đồ điều trị các bệnh lý về xương (bao gồm các bệnh lý phổ biến như loãng xương, thoái hóa xương khớp, gãy xương và viêm xương) đang gia tăng với tốc độ nhanh chóng \cite{who2022musculoskeletal}. Sự tích lũy tri thức y học quy mô lớn vừa mở ra cơ hội nâng cao chất lượng chăm sóc sức khỏe, vừa tạo ra thách thức lớn trong việc tiếp cận và khai thác thông tin chính xác \cite{medrag2024}. Thách thức này thể hiện rõ nét qua hai góc độ đối tượng sử dụng chính trong xã hội.
+
+
+Đối với đội ngũ nhân viên y tế và sinh viên y khoa, việc tìm kiếm cũng như tổng hợp dữ liệu lâm sàng từ các bộ tài liệu y học chuyên ngành, sách giáo khoa hoặc cơ sở dữ liệu y sinh quy mô lớn đòi hỏi lượng thời gian đáng kể \cite{ortho_rag_13}. Trong môi trường thực hành áp lực cao, thời gian tra cứu kéo dài có thể làm chậm quá trình đưa ra quyết định chẩn đoán và chỉ định phác đồ điều trị \cite{medrag2024}. Vì vậy, việc ứng dụng các công cụ tự động hóa nhằm hỗ trợ tra cứu tri thức chuẩn xác với tốc độ phản hồi tức thì là yêu cầu vô cùng cấp thiết.
+
+Đối với người bệnh và cộng đồng, xu hướng tự tra cứu triệu chứng và phương pháp điều trị các bệnh lý về xương trên mạng Internet ngày càng trở nên phổ biến. Tuy nhiên, nguồn tin trên không gian mạng thường rơi vào tình trạng nhiễu loạn và thiếu sự kiểm chứng từ chuyên gia. Việc tiếp cận các dữ liệu sai lệch dễ dẫn đến hành vi tự chẩn đoán sai, tự ý sử dụng thuốc không theo chỉ định, gây ra những biến chứng nguy hiểm. Thực trạng này đặt ra đòi hỏi phải xây dựng các giải pháp công nghệ có khả năng tư vấn y học chính xác, minh bạch, đảm bảo độ an toàn lâm sàng, khả năng đọc hiểu và sự đồng cảm với người bệnh \cite{ortho_rag_13}.
+
+
+\subsection{Sự tiến hóa của các hệ thống hỏi đáp y tế và điểm nghẽn công nghệ}
+Để giải quyết bài toán tra cứu và tư vấn thông tin y tế, các hệ thống hỏi đáp tự động đã trải qua quá trình phát triển qua nhiều thế hệ công nghệ với những đặc trưng và giới hạn riêng biệt.
+
+Thế hệ đầu tiên và thứ hai của các hệ thống hỏi đáp y tế được xây dựng dựa trên các hệ trợ giúp ra quyết định lâm sàng bằng tập luật \cite{rule_based_1, rule_based_2} kết hợp với thuật toán truy xuất từ khóa truyền thống như BM25 hay TF-IDF. Mặc dù các mô hình này đảm bảo tính an toàn cao nhờ tuân thủ nghiêm ngặt quy tắc logic định trước, chúng bộc lộ hạn chế lớn về tính linh hoạt. Do phụ thuộc vào việc khớp từ khóa chính xác, hệ thống không thể hiểu được ngữ nghĩa sâu xa, ngữ cảnh phức tạp hoặc các cách diễn đạt đa dạng trong câu hỏi ngôn ngữ tự nhiên từ người bệnh.
+
+Sự xuất hiện của kiến trúc Transformer \cite{vaswani2017} đã đánh dấu bước chuyển mình sang thế hệ thứ ba với sự bùng nổ của các mô hình ngôn ngữ lớn (LLM). Nhờ được huấn luyện trên tập ngữ liệu khổng lồ, mô hình ngôn ngữ lớn sở hữu khả năng hiểu và sinh ngôn ngữ tự nhiên mượt mà, giải quyết rào cản giao tiếp giữa con người và máy tính. Tuy nhiên, khi áp dụng trực tiếp vào lĩnh vực y tế đòi hỏi sự chính xác tuyệt đối, mô hình ngôn ngữ lớn độc lập lại vấp phải rào cản chí mạng là hiện tượng ảo giác. Do bản chất của LLM là sinh văn bản bằng cách dự đoán xác suất từ ngữ tiếp theo hoàn toàn dựa vào tri thức tích lũy từ quá trình huấn luyện, mô hình có xu hướng tự tạo ra các thông tin sai lệch, sai liều lượng thuốc hoặc đưa ra phác đồ điều trị không có thực nhưng với văn phong hết sức tự tin. Trong ngành y tế, rủi ro ảo giác có thể gây ảnh hưởng trực tiếp đến an toàn tính mạng của người bệnh.
+
+
+
+
+Để vượt qua điểm nghẽn ảo giác của các mô hình ngôn ngữ lớn độc lập, kiến trúc truy xuất tăng cường sinh nội dung (RAG) \cite{lewis2020, karpukhin2020} đã ra đời và tạo nên thế hệ thứ tư của các hệ thống hỏi đáp y tế.
+
+\begin{definition}[Truy xuất Tăng cường Sinh nội dung (RAG)]
+\label{def:rag}
+Truy xuất Tăng cường Sinh nội dung (RAG) là một kỹ thuật AI và mẫu thiết kế hệ thống kết hợp mô hình ngôn ngữ lớn với hệ thống truy xuất thông tin bên ngoài như cơ sở tri thức, chỉ mục tìm kiếm hay cơ sở dữ liệu \cite{nist_ai_100_2e2025, cheng2025knowledge}, nhằm đảm bảo các phản hồi sinh ra được căn cứ trực tiếp trên dữ liệu miền chuyên biệt và có thể cập nhật theo thời gian thực. Hệ thống RAG thực hiện truy xuất nội dung liên quan dựa trên truy vấn người dùng \cite{nist_ai_100_2e2025} để cung cấp ngữ cảnh đầu vào \cite{gao2023}, cho phép mô hình sinh ra câu trả lời chính xác, có thể kiểm chứng mà không cần tái huấn luyện \cite{nist_ai_100_2e2025}.
+\end{definition}
+
+
+\noindent Định nghĩa trên được tổng hợp từ các góc nhìn bổ trợ lẫn nhau giữa tổ chức tiêu chuẩn (NIST \cite{nist_ai_100_2e2025}) và các nghiên cứu tổng quan học thuật tiêu biểu (Gao et al. \cite{gao2023}, Cheng et al. \cite{cheng2025knowledge}). Sự hội tụ giữa các định nghĩa này cho thấy RAG vừa là một mẫu thiết kế hệ thống giúp phản hồi luôn có căn cứ xác thực từ dữ liệu miền chuyên biệt, vừa là một kiến trúc linh hoạt cho phép cập nhật tri thức liên tục mà không cần tái huấn luyện mô hình \cite{nist_ai_100_2e2025, gao2023}. Đáng chú ý, RAG không bị giới hạn trong bất kỳ công nghệ truy xuất cụ thể nào mà có thể kết nối với đa dạng nguồn dữ liệu từ văn bản, cơ sở dữ liệu quan hệ đến đồ thị tri thức \cite{cheng2025knowledge}.
+
+
+Chính nhờ cơ chế phân tách và xác thực tri thức chuẩn mực nêu trên, các nghiên cứu gần đây chứng minh rằng một mô hình mã nguồn mở quy mô vừa phải khi tích hợp RAG có thể đạt hiệu suất vượt trội hơn cả các mô hình độc quyền quy mô khổng lồ (như GPT-4) khi vận hành đơn lẻ không có cơ chế truy xuất \cite{medrag2024, gao2023}.
+
+
+
+
+
+

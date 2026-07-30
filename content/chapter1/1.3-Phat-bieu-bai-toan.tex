@@ -1,0 +1,32 @@
+\section{Phát biểu bài toán và Khung kiến trúc RAG cơ bản}
+
+\subsection{Phát biểu bài toán dưới góc độ toán học}
+Cho một cơ sở tri thức y khoa chuyên khoa Cơ Xương Khớp đã được chuyên gia y tế thẩm định và kiểm chứng, được biểu diễn dưới dạng tập hợp các đoạn văn bản ngữ liệu:
+\[
+    \mathcal{D} = \{d_1, d_2, \dots, d_n\}
+\]
+trong đó mỗi $d_i$ đại diện cho một đoạn văn bản (chunk) chứa đựng tri thức lâm sàng độc lập. Khi hệ thống nhận được một truy vấn ngôn ngữ tự nhiên $q$ (Query) từ người dùng, mục tiêu tổng quát của bài toán Hỏi đáp Tăng cường Truy xuất (RAG) là sinh ra câu trả lời $a^*$ thông qua việc giải quyết hai bài toán thành phần nối tiếp nhau:
+
+Bài toán thành phần thứ nhất là **Bài toán Truy xuất Ngữ cảnh (Context Retrieval)**. Mục tiêu là định nghĩa một hàm truy xuất $f_{\text{ret}}$ nhằm tìm kiếm và trích xuất tập hợp $k$ đoạn văn bản ngữ cảnh $\mathcal{C} \subset \mathcal{D}$ có độ tương quan ngữ nghĩa cao nhất với câu hỏi $q$:
+\[
+    \mathcal{C} = f_{\text{ret}}(q, \mathcal{D}, k) = \{d_{(1)}, d_{(2)}, \dots, d_{(k)}\}
+\]
+
+Bài toán thành phần thứ hai là **Bài toán Sinh Nội dung Tăng cường (Augmented Generation)**. Cho một Mô hình Ngôn ngữ Lớn (LLM) được tham số hóa bởi tập trọng số $\theta$, mục tiêu là tìm kiếm câu trả lời tối ưu $a^*$ bằng cách cực đại hóa xác suất điều kiện sinh ngôn ngữ dựa trên câu hỏi $q$ và tập ngữ cảnh truy xuất $\mathcal{C}$:
+\[
+    a^* = \arg\max_{a} P_{\theta}(a \mid q, \mathcal{C}) = \arg\max_{a} \prod_{t=1}^{T} P_{\theta}(y_t \mid y_{<t}, q, \mathcal{C})
+\]
+trong đó $y_t$ là token thứ $t$ trong chuỗi câu trả lời $a$ có độ dài $T$.
+
+\textbf{Điều kiện ràng buộc khắt khe (Faithfulness Constraint):}
+Khác với các bài toán sinh văn bản tự do, câu trả lời $a^*$ trong hệ thống RAG y tế bắt buộc phải tuân thủ nghiêm ngặt theo thông tin có trong tập ngữ cảnh $\mathcal{C}$. Hàm đánh giá độ trung thực $\text{Faithfulness}(a^*, \mathcal{C})$ đo lường tỷ lệ các tuyên bố trong $a^*$ được bảo chứng trực tiếp bởi $\mathcal{C}$, đòi hỏi phải đạt ngưỡng tiệm cận tuyệt đối nhằm tối thiểu hóa hiện tượng ảo giác (Minimizing Hallucination):
+\[
+    \text{Faithfulness}(a^*, \mathcal{C}) \ge 1 - \epsilon \quad (\text{với } \epsilon \to 0)
+\]
+
+\subsection{Khung kiến trúc hệ thống RAG cơ bản (Standard Baseline RAG Pipeline)}
+Khung kiến trúc hệ thống được thiết kế dựa trên đường ống RAG cổ điển tiêu chuẩn (Standard Baseline RAG Pipeline), bao gồm hai giai đoạn vận hành độc lập nhưng liên kết chặt chẽ:
+
+Giai đoạn thứ nhất là **Giai đoạn Offline (Lập chỉ mục tri thức)**. Tiến trình này bắt đầu bằng việc thu thập dữ liệu y khoa chuẩn hóa từ các sách giáo khoa, phác đồ điều trị chuyên khoa cơ xương khớp của Bộ Y tế và các nghiên cứu y sinh uy tín. Dữ liệu thô sau đó trải qua quá trình tiền xử lý, làm sạch nhiễu và áp dụng chiến lược phân đoạn văn bản (Chunking) để chia nhỏ tài liệu thành các khối văn bản $d_i$ có độ dài cố định kèm theo vùng ngữ cảnh đệm (overlap). Tiếp theo, một mô hình nhúng văn bản (Embedding Model) $e(\cdot)$ chuyển đổi từng đoạn văn bản $d_i$ thành một vector biểu diễn trong không gian đa chiều $\mathbf{v}_i = e(d_i) \in \mathbb{R}^d$. Toàn bộ các vector nhúng $\mathbf{v}_i$ cùng dữ liệu nguyên bản và thông tin siêu dữ liệu (metadata) được lưu trữ và lập chỉ mục không gian (spatial indexing) trong Cơ sở dữ liệu Vector (Vector Database) nhằm phục vụ tra cứu tốc độ cao.
+
+Giai đoạn thứ hai là **Giai đoạn Online (Suy luận thời gian thực)**. Khi nhận được câu hỏi ngôn ngữ tự nhiên $q$ từ người dùng, hệ thống sử dụng cùng mô hình nhúng $e(\cdot)$ để mã hóa câu hỏi thành vector truy vấn $\mathbf{v}_q = e(q)$. Bộ truy xuất tiến hành tính toán độ tương đồng ngữ nghĩa (chẳng hạn như điểm tương đồng Cosine $\cos(\mathbf{v}_q, \mathbf{v}_i)$) giữa vector truy vấn và toàn bộ các vector trong Cơ sở dữ liệu Vector để chọn ra $k$ đoạn văn bản có điểm số cao nhất, tạo thành tập ngữ cảnh $\mathcal{C}$. Ngữ cảnh $\mathcal{C}$ sau đó được lồng ghép cùng câu hỏi $q$ vào một cấu trúc Prompt được thiết kế chuyên biệt cho y tế (Medical Prompt Template). Mô hình Ngôn ngữ Lớn tiếp nhận Prompt này, phân tích dữ liệu ngữ cảnh và sinh ra câu trả lời cuối cùng $a^*$. Để đảm bảo tính minh bạch, hệ thống đính kèm các trích dẫn (Citations) tham chiếu trực tiếp tới các đoạn văn bản gốc trong $\mathcal{C}$, giúp người dùng dễ dàng đối chiếu và kiểm chứng bằng chứng y khoa.

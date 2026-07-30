@@ -1,0 +1,148 @@
+\section{Các phương thức tiếp cận saliency detection}
+
+Saliency Detection, hay phát hiện vùng nổi bật, là bài toán xác định các vùng trong ảnh thu hút sự chú ý của con người hoặc máy tính. Bài toán này xuất phát từ nghiên cứu về hệ thống thị giác của con người, đặc biệt là cơ chế attention - khả năng tập trung vào các kích thích thị giác quan trọng trong môi trường phức tạp. Từ những hiểu biết này, các nhà khoa học máy tính đã phát triển những thuật toán mô phỏng và tự động hóa quá trình này.
+
+\subsection{Phân loại các Phương pháp Saliency Detection}
+
+Các phương pháp Saliency Detection có thể được phân loại theo hai trục chính: chủ thể quan sát và kỹ thuật thực hiện, tạo ra bốn nhóm phương pháp khác biệt.
+
+\begin{table}[h!]
+    \centering
+    \label{tab:saliency_classification}
+    \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{Chủ thể / Phương pháp} & \textbf{Traditional Methods} & \textbf{Deep Learning Methods} \\
+    \hline
+    \textbf{Human Visual Attention} & Eye-tracking studies, & Attention-guided CNNs, \\
+    & Bottom-up models & Neuromorphic approaches \\
+    \hline
+    \textbf{Computational Attention} & Hand-crafted features, & CNN-based models, \\
+    & Itti-Koch model, & GAN-based approaches, \\
+    & Spectral Residual & Multi-scale deep networks \\
+    \hline
+    \end{tabular}
+    \caption{Ma trận phân loại các phương pháp Saliency Detection}
+\end{table}
+
+\subsection{Human Visual Attention}
+Những hiểu biết về Human Visual Attention tạo nền tảng sinh học-tâm lý cho việc phát triển các mô hình computational, giúp các thuật toán mô phỏng cách con người nhìn và chú ý vào các vùng quan trọng trong ảnh. Human Visual Attention dựa trên cơ chế sinh lý và tâm lý của hệ thống thị giác con người. Theo lý thuyết Feature Integration Theory của Treisman, sự chú ý thị giác được điều khiển bởi hai giai đoạn: giai đoạn tiền chú ý (pre-attentive stage) xử lý các đặc trưng cơ bản như màu sắc, độ tương phản, định hướng song song; và giai đoạn chú ý có chọn lọc (focused attention stage) tích hợp các đặc trưng này để nhận diện đối tượng \\
+
+\textbf{a - Hướng bottom-up (Cơ sở của các phương pháp truyền thống)}
+Cơ chế này đề cập đến sự thu hút tự động, không tự nguyện của ánh nhìn bởi các đặc điểm thị giác cấp thấp.
+
+\begin{itemize}
+\item \textbf{Cơ sở lý thuyết:} Nó dựa trên \textit{Lý thuyết tích hợp đặc điểm} \cite{treisman1980feature}, cho rằng các đặc điểm như màu sắc và hướng được ghi nhận sớm, tự động và song song.
+\item \textbf{Các đặc trưng chính:}
+    \begin{itemize}
+    \item \textit{Độ tương phản \& Màu sắc:} Được điều khiển bởi các cơ chế đối lập màu sắc trong võng mạc của con người.
+    \item \textit{Hướng \& Cường độ:} Được xử lý bởi vỏ não thị giác
+    \item \textit{Chuyển động (Motion):} Các vật thể chuyển động, đặc biệt là chuyển động không đều hoặc đột ngột, có độ ưu tiên cao trong hệ thống attention. Đây là cơ chế bảo vệ quan trọng được thừa hưởng từ tiến hóa.
+    \item \textit{Cấu trúc hình học (Geometric Structure):} Các hình dạng quen thuộc, đối xứng, hoặc có cấu trúc rõ ràng thường được ưu tiên xử lý. Điều này phản ánh khả năng nhận dạng pattern của não bộ..
+    \end{itemize}
+\item \textbf{Vai trò:} Các quy tắc sinh học này đóng vai trò là logic trực tiếp cho các thuật toán truyền thống như \cite{itti1998model} và \cite{cheng2011global}.
+\end{itemize}
+
+\textbf{b -  Hướng top-down (Cơ sở cho Học sâu)}
+Cơ chế này liên quan đến sự chú ý nhận thức, hướng theo nhiệm vụ, đòi hỏi sự học hỏi và hiểu biết ngữ nghĩa.
+
+\begin{itemize}
+\item \textbf{Cơ sở lý thuyết:} Nghiên cứu trong \cite{yarbus1967eye} đã chứng minh rằng chuyển động mắt (scan) được xác định bởi nhiệm vụ của người quan sát, chứ không chỉ bởi các đặc điểm ảnh.
+\item \textbf{Groundtruth:} Việc ghi lại vật lý các điểm tập trung này thông qua thiết bị theo dõi mắt tạo ra các bản đồ "Groundtruth" \cite{consensus_saliency}, rất cần thiết để đánh giá và huấn luyện các mô hình học sâu.
+\end{itemize}
+
+\subsection{Computational/Machine Attention}
+
+Computational Attention là việc mô phỏng và tự động hóa quá trình attention của con người thông qua các thuật toán máy tính. Phương pháp này được chia thành hai nhóm chính dựa trên kỹ thuật thực hiện.
+
+\textbf{a - Phương pháp truyền thống (Traditional Methods)}
+\begin{itemize}
+\item \textbf{Cơ sở lý thuyết:} \textbf{Không học máy / Thủ công}.
+\item \textbf{Hướng tiếp cận:} Các nhà nghiên cứu định nghĩa rõ ràng các bộ lọc toán học để trích xuất độ tương phản, màu sắc và cường độ mà không cần dữ liệu huấn luyện.
+\item Một số công trình tiêu biểu:
+\begin{itemize}
+    \item \textbf{Mô hình Itti-Koch \cite{itti1998model}:} Mô hình này mô phỏng cơ chế bottom-up attention thông qua việc tính toán các feature maps cho intensity, color, và orientation, sau đó kết hợp chúng để tạo ra saliency map cuối cùng.
+    \item \textbf{Spectral Residual \cite{sr_2007}:} Phương pháp này sử dụng phép biến đổi Fourier để phân tích phổ tần số của ảnh và xác định residual spectrum làm cơ sở cho saliency detection.
+\end{itemize}
+\item \textbf{Ưu điểm và Hạn chế:}
+    \begin{itemize}
+        \item \textbf{Ưu điểm:} Tính hiệu quả tính toán cao, không yêu cầu dữ liệu huấn luyện, và có khả năng giải thích rõ ràng.          
+        \item \textbf{Hạn chế:} Hiệu suất thấp trên các ảnh phức tạp và khả năng tổng quát hóa hạn chế do phụ thuộc vào thiết kế features thủ công.
+    \end{itemize}
+\end{itemize}
+\textbf{b - Phương pháp học sâu (Deep Learning-based Methods)}
+
+Deep Learning-based Methods sử dụng neural networks, đặc biệt là Convolutional Neural Networks (CNNs), để học các đặc trưng trực tiếp từ dữ liệu. Những phương pháp này có khả năng tự động học các representation phức tạp và achieve hiệu suất cao trên nhiều loại ảnh khác nhau. \\
+Các kỹ thuật chính trong nhóm này bao gồm:
+\begin{itemize}
+    \item \textbf{CNN-based approaches:} Sử dụng kiến trúc CNN để trích xuất đặc trưng ở nhiều tầng khác nhau, từcác đặc trưng cấp thấp (cạnh, góc) đến các đặc trưng ngữ nghĩa cấp cao (đối tượng, cảnh). Ứng dụng sớm Mạng nơ-ron tích chập (Convolutional Neural Networks) cho saliency detection \cite{wang2017saliency, u2net_2020}.
+    \item \textbf{Dựa trên Transformer:} Giới thiệu về Vision Transformers (ViT) \cite{dosovitskiy2020image} và cơ chế Tự chú ý \cite{huang2022ssit}, cho phép mô hình hóa ngữ cảnh toàn cục gần hơn với quá trình xử lý nhận thức của con người
+    \item \textbf{Attention mechanisms:} Tích hợp các module attention trực tiếp vào kiến trúc mạng, cho phép mô hình tự động focus vào các vùng quan trọng trong quá trình xử lý.
+    \item \textbf{Multi-scale processing:} Xử lý ảnh ở nhiều độ phân giải khác nhau để ghi lại thông tin từ chi tiết cục bộ đến context toàn cục. 
+    \item \textbf{Adversarial training:} Sử dụng Generative Adversarial Networks (GANs) để học cách tạo ra saliency maps chính xác và chi tiết.
+\end{itemize}
+
+Ưu điểm của deep learning methods là hiệu suất cao, khả năng xử lý ảnh phức tạp, và khả năng tổng quát hóa tốt khi có đủ dữ liệu huấn luyện. Tuy nhiên, nhược điểm bao gồm yêu cầu dữ liệu huấn luyện lớn, chi phí tính toán cao, và tính giải thích kém (black-box nature).
+
+\subsection{Benchmark và Evaluation Metrics}
+
+Việc đánh giá hiệu suất các phương pháp Saliency Detection đòi hỏi các benchmark dataset chuẩn hóa và metrics đáng tin cậy. Ba benchmark chính được sử dụng rộng rãi trong lĩnh vực này là:
+
+\textbf{MIT300:} Dataset chứa 300 ảnh tự nhiên với saliency data được thu thập từ 39 subjects thông qua eye-tracking. Dataset này tập trung vào việc đánh giá khả năng dự đoán fixation patterns của con người.
+
+\textbf{SALICON:} Dataset lớn với hơn 10,000 ảnh training và 5,000 ảnh testing, saliency data được thu thập thông qua mouse-tracking trên crowdsourcing platform. SALICON cung cấp khối lượng dữ liệu lớn phù hợp cho training deep learning models.
+
+\textbf{DUT-OMRON:} Dataset chứa 5,168 ảnh với ground truth được tạo bằng cách kết hợp multiple annotation sources. Dataset này đặc biệt challenging do có nhiều objects và background phức tạp. \\
+Các metrics đánh giá chính bao gồm:
+
+\textbf{AUC (Area Under Curve):} Đo diện tích dưới đường cong ROC, phản ánh khả năng phân biệt giữa salient và non-salient regions.
+    \begin{equation}
+        AUC = \int_{0}^{1} TPR(t) \, d(FPR(t))
+    \end{equation}
+trong đó $TPR$ là True Positive Rate và $FPR$ là False Positive Rate tại ngưỡng $t$.
+
+\textbf{NSS (Normalized Scanpath Saliency):} Đo mức độ correlation giữa predicted saliency và human fixations:
+
+\begin{equation}
+NSS = \frac{1}{N} \sum_{i=1}^{N} \frac{S(x_i, y_i) - \mu_S}{\sigma_S}
+\end{equation}
+trong đó $S(x_i, y_i)$ là predicted saliency value tại fixation location $(x_i, y_i)$, $\mu_S$ và $\sigma_S$ là mean và standard deviation của predicted saliency map, $N$ là số lượng fixations.
+
+\textbf{F-measure:} Đánh giá precision và recall của salient region detection:
+
+\begin{equation}
+F_\beta = \frac{(1 + \beta^2) \cdot Precision \cdot Recall}{\beta^2 \cdot Precision + Recall}
+\end{equation}
+với $\beta^2$ thường được chọn là 0.3 để ưu tiên precision:
+
+\begin{equation}
+Precision = \frac{|S_{binary} \cap G_{binary}|}{|S_{binary}|}
+\end{equation}
+
+\begin{equation}
+Recall = \frac{|S_{binary} \cap G_{binary}|}{|G_{binary}|}
+\end{equation}
+trong đó $S_{binary}$ và $G_{binary}$ là predicted và ground truth saliency maps sau khi binarization.
+
+\subsection{Công tác Dữ liệu và Challenges}
+
+\subsubsection{Tính Chủ quan của Saliency Data}
+
+Một thách thức cơ bản trong Saliency Detection là tính chủ quan cao của saliency data. Khác với các bài toán computer vision khác có ground truth khách quan (như object detection, image classification), saliency phụ thuộc vào perception cá nhân, cultural background, và task-specific context. Điều này dẫn đến vấn đề đồng thuận (inter-observer agreement) thấp giữa các annotators.
+
+\subsubsection{Phương pháp Thu thập Ground Truth}
+\noindent Các phương pháp chính để tạo ground truth cho saliency data bao gồm:
+
+\begin{itemize}
+    \item \textbf{Eye-tracking:} Sử dụng thiết bị eye-tracker để ghi lại fixation patterns của subjects khi xem ảnh. Đây là phương pháp chính xác nhất nhưng đòi hỏi thiết bị chuyên dụng và chi phí cao.
+    \item \textbf{Mouse-click tracking:} Subjects sử dụng chuột để click vào các vùng họ cho là salient. Phương pháp này cost-effective và có thể scale lên easily thông qua crowdsourcing, nhưng ít chính xác hơn eye-tracking.
+    \item \textbf{Manual annotation:} Experts hoặc annotators thủ công đánh dấu salient regions. Phương pháp này flexible nhưng time-consuming và có bias cao.
+\end{itemize}
+
+\subsubsection{Challenges trong Data Quality}
+\begin{itemize}
+    \item \textbf{Nhiễu nhãn (Label noise):} Do tính chủ quan của task, ground truth thường chứa noise và inconsistencies. Điều này ảnh hưởng đến việc training và evaluation của models.
+    \item \textbf{Bias dữ liệu:} Dataset thường bias về certain types of images, objects, hoặc scenes. Ví dụ, nhiều dataset focus vào human faces và central objects, dẫn đến models có center bias.
+    \item \textbf{Overfitting:} Do dataset size hạn chế và complexity của deep learning models, overfitting là vấn đề thường gặp. Models có thể học được dataset-specific patterns thay vì generalizable saliency principles.
+    \item \textbf{Cross-dataset generalization:} Models trained trên một dataset thường perform poorly khi test trên datasets khác, indicating poor generalization capability.
+\end{itemize}
+Những challenges này đòi hỏi các researchers phải carefully design data collection protocols, sử dụng appropriate regularization techniques, và evaluate models trên multiple datasets để đảm bảo robustness và generalization capability.

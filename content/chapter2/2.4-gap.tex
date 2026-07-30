@@ -1,0 +1,32 @@
+\section{Research Gap và Hướng Nghiên cứu}
+
+\subsection{Định nghĩa Research Gap}
+
+Trong Saliency Detection, Research Gap không chỉ là những vấn đề chưa được nghiên cứu, mà chủ yếu là các thách thức kỹ thuật chưa được giải quyết triệt để hoặc các đánh đổi mà các phương pháp hiện tại buộc phải chấp nhận. Các khoảng trống này tồn tại ngay cả trong các phương pháp state-of-the-art, làm hạn chế khả năng đạt hiệu suất tối ưu và cản trở việc triển khai trong các ứng dụng thực tế. Việc phân tích các gap này, dựa trên hạn chế cụ thể của các phương pháp SOTA, đóng vai trò định hướng trực tiếp cho hướng nghiên cứu ở Chương 3.
+
+\subsection{Gap 1: Trade-off giữa Độ chính xác và Chi phí Tính toán}
+
+Các phương pháp SOTA thể hiện một sự phân cực rõ rệt giữa năng lực tính toán và độ chính xác. Spectral Residual \cite{sr_2007} đạt tốc độ xử lý tức thời (\textbf{1.5ms/ảnh}) nhưng chỉ đạt \textbf{Hit Rate khoảng 0.4}, không đủ khả năng nhận diện các vật thể mang tính ngữ nghĩa cao. Ngược lại, PiCANet \cite{picanet_2018} với cơ chế Global Attention đạt độ chính xác cao nhưng tốc độ chỉ đạt \textbf{6.2 FPS}, yêu cầu tài nguyên GPU rất lớn. Mặc dù $U^2$-Net \cite{u2net_2020} đã tối ưu hóa thông qua cấu trúc lồng nhau (Nested U-structure), nhưng việc duy trì độ phân giải cao ở mọi cấp độ vẫn gây áp lực lên bộ nhớ RAM khi xử lý ảnh độ phân giải lớn.
+
+Khoảng trống này đặt ra nhu cầu về một kiến trúc có khả năng trích xuất đặc trưng sâu nhưng vẫn giữ được tốc độ xử lý thời gian thực trên các thiết bị cấu hình trung bình.
+
+\subsection{Gap 2: Phụ thuộc vào Dữ liệu và Chất lượng Ground Truth}
+Các phương pháp Deep Learning hiện nay phụ thuộc hoàn toàn vào dữ liệu gán nhãn quy mô lớn (như DUTS với hơn 10,000 ảnh). Tuy nhiên, việc gán nhãn Saliency mang tính chủ quan cao. Như đã thấy trong thực nghiệm của Spectral Residual, tác giả phải loại bỏ các ảnh mà người đánh giá không thể xác định đối tượng ngay lập tức để đảm bảo tính "pre-attentive". Sự không đồng nhất này tạo ra các bias trong dữ liệu Ground Truth, khiến mô hình dễ bị quá khớp (overfitting) với một phong cách gán nhãn cụ thể và giảm khả năng tổng quát hóa khi đánh giá chéo (cross-dataset evaluation). 
+
+Khoảng trống này nhấn mạnh nhu cầu phát triển các phương pháp ít phụ thuộc vào dữ liệu gán nhãn hoặc có khả năng học từ dữ liệu không gán nhãn một cách hiệu quả hơn.
+
+\subsection{Gap 3: Hạn chế trong Khai thác Ngữ cảnh và Multi-scale}
+Mặc dù contextual modeling đã được chú trọng, nhưng cách tiếp cận hiện tại vẫn tồn tại hạn chế:\begin{itemize}\item \textbf{Cơ chế Attention (PiCANet):} Thường có độ phức tạp tính toán bậc hai ($O(N^2)$), gây lãng phí tài nguyên cho các vùng nền không quan trọng.\item \textbf{Cấu trúc Đa quy mô (U²-Net):} Dù khai thác được đặc trưng ở nhiều cấp độ, nhưng đôi khi lại thiếu sự phân cấp ưu tiên, dẫn đến việc nhầm lẫn giữa vật thể nổi bật và các vùng nền có cấu trúc phức tạp nhưng không phải là mục tiêu chính.\end{itemize}
+
+Điều này mở ra hướng nghiên cứu về các cơ chế chú ý chọn lọc hoặc tích hợp đặc trưng đa quy mô có trọng số để tối ưu hóa việc phân loại pixel..
+\subsection{Gap 4: Độ Robust trong Điều kiện Thị giác Đa dạng}
+
+Các phương pháp SOTA thường được tối ưu trên benchmark tiêu chuẩn và suy giảm hiệu suất trong các điều kiện thị giác khó như ánh sáng bất lợi, nền phức tạp hoặc nhiều vùng salient cạnh tranh. Dataset bias và sự thiếu đa dạng trong dữ liệu huấn luyện khiến mô hình khó thích nghi với các kịch bản ngoài phân phối huấn luyện.
+
+Khoảng trống này nhấn mạnh yêu cầu nâng cao tính robust và khả năng thích ứng của mô hình.
+
+\subsection{Tổng hợp và Dẫn dắt Hướng Nghiên cứu}
+
+Tổng hợp các gap cho thấy các phương pháp hiện tại thường tối ưu từng khía cạnh riêng lẻ và đánh đổi các yếu tố còn lại, làm hạn chế khả năng ứng dụng thực tế. Các vấn đề cốt lõi bao gồm: cân bằng giữa độ chính xác và chi phí tính toán, phụ thuộc dữ liệu gán nhãn, hạn chế trong khai thác context và multi-scale, và thiếu robust trong điều kiện đa dạng.
+
+Những nhận định này là cơ sở trực tiếp cho hướng nghiên cứu ở Chương 3, nhằm đề xuất các phương pháp saliency đạt hiệu suất cao, hiệu quả tính toán và có khả năng tổng quát hóa tốt hơn.
