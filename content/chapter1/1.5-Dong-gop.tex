@@ -1,17 +1,15 @@
 \section{Đóng góp của nghiên cứu}
 
-Trên cơ sở kế thừa khung RAG chuẩn, nghiên cứu hướng đến các đóng góp về phương pháp luận và giá trị ứng dụng sau:
+Trên cơ sở kế thừa khung RAG chuẩn, nghiên cứu hướng đến năm đóng góp sau:
 
 \begin{enumerate}[label=(\arabic*)]
-    \item \textbf{Chuẩn hóa khung hệ thống RAG đầu cuối cho bài toán hỏi--đáp y khoa:} Đề xuất, cài đặt và đánh giá một quy trình gồm hai pipeline huấn luyện và suy diễn, kết hợp kho tri thức đã kiểm chứng, bộ truy xuất, mô hình ngôn ngữ lớn và lớp bảo đảm chất lượng. Quy trình được chuyên biệt hóa cho dữ liệu về các bệnh lý về xương, đồng thời thiết lập mốc so sánh (baseline) để đánh giá các kỹ thuật RAG nâng cao trong tương lai.
-    
-    \item \textbf{Xây dựng bộ dữ liệu và bộ câu hỏi đánh giá chuyên ngành về các bệnh lý về xương:} Thu thập, tiền xử lý và chuẩn hóa bộ ngữ liệu y khoa chuyên sâu từ các nguồn tài liệu chính thống, đồng thời xây dựng tập câu hỏi thực nghiệm nhằm cung cấp tài nguyên dữ liệu phục vụ nghiên cứu hỏi đáp y tế.
+    \item \textbf{Khung hệ thống RAG đầu cuối cho hỏi--đáp y khoa:} Xây dựng hai pipeline huấn luyện và suy diễn thống nhất, liên kết kho tri thức, bộ truy xuất, LLM và lớp bảo đảm chất lượng cho miền bệnh lý về xương; qua đó tạo một baseline có thể tái sử dụng trong các thực nghiệm tiếp theo.
 
-    \item \textbf{Thiết kế cơ chế truy xuất lai và song ngữ phù hợp với dữ liệu y khoa:} Kết hợp truy xuất đặc (dense retrieval) để tìm theo ngữ nghĩa với truy xuất thưa (sparse retrieval) để nhận diện chính xác tên bệnh, thuốc, xét nghiệm và thuật ngữ chuyên môn. Quy trình chuẩn hóa thuật ngữ Việt--Anh hỗ trợ trường hợp ngôn ngữ câu hỏi khác ngôn ngữ tài liệu, câu hỏi trộn hai ngôn ngữ hoặc sử dụng tên thông dụng thay cho thuật ngữ y khoa chuẩn; kết quả sau đó được lọc và xếp hạng lại dựa trên siêu dữ liệu và độ tin cậy của nguồn.
+    \item \textbf{Ngữ liệu và bộ câu hỏi đánh giá chuyên ngành:} Thu thập, làm sạch và chuẩn hóa tài liệu y khoa từ các nguồn chính thống, đồng thời xây dựng tập câu hỏi phục vụ huấn luyện và đánh giá hệ thống.
 
-    \item \textbf{Chuyên biệt hóa mô hình sinh bằng các mẫu huấn luyện có bằng chứng:} Xây dựng mẫu tinh chỉnh có giám sát từ câu hỏi, bối cảnh bệnh nhân, lịch sử hội thoại đã cô đọng, bằng chứng truy xuất và câu trả lời chuẩn. Mục tiêu là giúp mô hình ưu tiên tài liệu được cung cấp, trích dẫn nguồn, biểu đạt độ không chắc chắn và không bổ sung thông tin không có căn cứ.
+    \item \textbf{Truy xuất lai và song ngữ Việt--Anh:} Phối hợp truy xuất đặc theo ngữ nghĩa với truy xuất thưa theo từ khóa, kết hợp chuẩn hóa thuật ngữ song ngữ để xử lý sự khác biệt giữa cách diễn đạt thông dụng và ngôn ngữ chuyên môn.
 
-    \item \textbf{Đề xuất lớp bảo đảm chất lượng và cơ chế an toàn Answer--Abstain--Escalate:} Sau khi sinh câu trả lời nháp, hệ thống đánh giá độ liên quan, độ bám sát bằng chứng, tính đầy đủ, tính đúng đắn của trích dẫn, mức độ rủi ro và độ tin cậy. Từ đó hệ thống lựa chọn trả lời khi đủ căn cứ, từ chối khi bằng chứng thiếu hoặc mâu thuẫn, hoặc chuyển đến chuyên gia khi tình huống có nguy cơ cao, thay vì buộc LLM luôn phải trả lời.
+    \item \textbf{Sinh câu trả lời có bằng chứng và cơ chế Answer--Abstain--Escalate:} Tinh chỉnh mô hình bằng các mẫu chứa câu hỏi, ngữ cảnh, bằng chứng và đáp án chuẩn; sau đó kiểm tra chất lượng để quyết định trả lời, từ chối hoặc chuyển đến chuyên gia.
 
-    \item \textbf{Thực nghiệm và đánh giá hệ thống theo nhiều tầng:} Đánh giá riêng chất lượng truy xuất, chất lượng sinh và hiệu quả hỏi--đáp đầu cuối, bao gồm khả năng trả lời đúng, từ chối đúng và phát hiện trường hợp cần chuyển chuyên gia. Cách đánh giá này nhằm đo lường khả năng giảm thiểu hiện tượng ảo giác, nâng cao độ trung thực và độ tin cậy, đồng thời xác định lỗi đến từ bộ truy xuất, mô hình sinh hay lớp kiểm tra chất lượng.
+    \item \textbf{Đánh giá thực nghiệm theo nhiều tầng:} Đo lường riêng chất lượng truy xuất, chất lượng sinh và hiệu quả đầu cuối nhằm đánh giá khả năng giảm ảo giác, tăng độ trung thực và xác định thành phần gây lỗi trong hệ thống.
 \end{enumerate}

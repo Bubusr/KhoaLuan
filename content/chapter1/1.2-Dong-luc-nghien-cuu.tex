@@ -1,19 +1,15 @@
 \section{Động lực nghiên cứu}
 
-Việc phát triển một giải pháp hỏi đáp y khoa tin cậy xuất phát từ đòi hỏi cấp thiết trong cả nghiên cứu xử lý ngôn ngữ tự nhiên lẫn thực tiễn lâm sàng.
+Việc phát triển một giải pháp hỏi--đáp y khoa tin cậy mang ý nghĩa đối với cả nghiên cứu xử lý ngôn ngữ tự nhiên và hoạt động tra cứu thông tin sức khỏe.
 
 \subsection{Ý nghĩa khoa học}
-Về mặt lý thuyết, mặc dù mô hình ngôn ngữ lớn thể hiện tiềm năng ấn tượng trong xử lý ngôn ngữ tự nhiên, việc triển khai công nghệ này vào dữ liệu y tế chuyên sâu vẫn vấp phải nhiều thách thức. Động lực khoa học cốt lõi của đề tài hướng tới việc thúc đẩy nghiên cứu các phương pháp RAG tiên tiến trên nền ngữ liệu chuyên ngành, nơi các cấu trúc thông tin phức tạp và thuật ngữ y khoa đặc thù đặt ra những giới hạn riêng biệt.
 
-Bên cạnh đó, trước khi xây dựng các cải tiến nâng cao, việc khảo sát toàn diện và đánh giá thực nghiệm một quy trình RAG tiêu chuẩn đóng vai trò vô cùng quan trọng. Tiến trình này giúp làm sáng tỏ khả năng vận hành, đo lường mức độ kiểm soát hiện tượng ảo giác cũng như nhận diện những điểm nghẽn kỹ thuật vốn có của kiến trúc RAG cơ sở. Trên mốc so sánh đó, đề tài khảo sát giá trị bổ sung của truy xuất lai giữa ngữ nghĩa và từ khóa, tinh chỉnh LLM bằng các mẫu có bằng chứng, bảo đảm chất lượng đầu ra và chính sách phản hồi an toàn. Việc đánh giá tách biệt ba tầng truy xuất, sinh câu trả lời và hỏi--đáp đầu cuối còn giúp xác định lỗi phát sinh từ bộ truy xuất, mô hình sinh hay bộ lọc chất lượng, thay vì quy toàn bộ sai sót cho một chỉ số tổng quát \cite{xiong2024mirage, medrag2024}.
+Về phương diện khoa học, đề tài thiết lập một khung thực nghiệm đầu cuối để khảo sát cách RAG vận hành trên ngữ liệu chuyên ngành về các bệnh lý về xương. Khung này cho phép so sánh RAG cơ sở với các cải tiến về truy xuất lai, tinh chỉnh mô hình bằng bằng chứng và kiểm soát phản hồi an toàn. Thay vì chỉ đo câu trả lời cuối cùng, việc đánh giá riêng ba tầng truy xuất, sinh nội dung và hỏi--đáp đầu cuối giúp xác định lỗi thuộc về kho tri thức, bộ truy xuất, mô hình sinh hay lớp bảo đảm chất lượng \cite{xiong2024mirage, medrag2024}.
+
+Kết quả thực nghiệm có thể cung cấp mốc so sánh cho các nghiên cứu tiếp theo về hỏi--đáp y khoa tiếng Việt, đặc biệt trong việc cân bằng giữa khả năng trả lời, độ bám sát nguồn và hành vi từ chối hợp lý.
 
 \subsection{Ý nghĩa thực tiễn}
-Về mặt ứng dụng, đề tài được thúc đẩy bởi hai đòi hỏi thực tế từ đời sống và ngành y tế:
 
-Thứ nhất, giải quyết áp lực quá tải thông tin cho đội ngũ bác sĩ, nhân viên y tế và sinh viên y khoa. Trong môi trường lâm sàng nhiều áp lực, một công cụ tự động tra cứu phác đồ điều trị cùng tài liệu chuyên khoa về bệnh lý về xương chính xác sẽ giúp rút ngắn thời gian tìm kiếm thủ công và tối ưu hóa hiệu suất ra quyết định chuyên môn \cite{ortho_rag_13}.
+Về phương diện ứng dụng, hệ thống hướng đến việc rút ngắn thời gian tra cứu tài liệu chuyên khoa cho nhân viên y tế và sinh viên, đồng thời cung cấp cho người bệnh một kênh tham khảo ban đầu có nguồn bằng chứng rõ ràng \cite{ortho_rag_13}. Cơ chế Answer--Abstain--Escalate giúp biểu đạt giới hạn của hệ thống: chỉ trả lời khi đủ căn cứ, từ chối khi chưa chắc chắn và khuyến nghị gặp chuyên gia khi có nguy cơ.
 
-Thứ hai, định hướng hành vi y tế đúng đắn và bảo vệ sức khỏe cộng đồng. Trước thực trạng thông tin sai lệch lan truyền trên không gian mạng cùng nguy cơ biến chứng do tự ý điều trị, việc phát triển kênh tư vấn sức khỏe ban đầu an toàn, giải đáp thắc mắc các bệnh lý về xương kèm nguồn trích dẫn bằng chứng minh bạch sẽ góp phần nâng cao nhận thức và bảo vệ người bệnh \cite{ortho_rag_13}.
-
-Thứ ba, nâng cao tính minh bạch và khả năng kiểm soát rủi ro của hệ thống hỏi--đáp. Thay vì buộc mô hình luôn tạo câu trả lời, hệ thống có thể từ chối khi bằng chứng thiếu hoặc mâu thuẫn và chuyển đến bác sĩ khi nhận diện tình huống nguy cơ cao. Cơ chế này vừa giúp người dùng nhận biết giới hạn của công cụ, vừa duy trì vai trò giám sát của con người trong các quyết định lâm sàng.
-
-Cuối cùng, quy trình xử lý dữ liệu có ý nghĩa thực tiễn đối với bảo vệ thông tin cá nhân: chỉ sử dụng phần bối cảnh bệnh nhân cần thiết và được phép, loại bỏ thông tin nhận dạng trong kho dữ liệu, đồng thời tránh đưa toàn bộ lịch sử hội thoại vào câu lệnh khi không cần thiết. Những nguyên tắc này giúp hệ thống phù hợp hơn với vai trò hỗ trợ tra cứu và giáo dục sức khỏe.
+Giá trị thực tiễn của giải pháp còn nằm ở khả năng cập nhật kho tri thức mà không phải huấn luyện lại toàn bộ LLM, cũng như việc đặt bảo vệ dữ liệu cá nhân và giám sát của con người thành điều kiện vận hành. Hệ thống vì thế đóng vai trò hỗ trợ tra cứu và giáo dục sức khỏe, không thay thế quyết định lâm sàng của bác sĩ.
