@@ -56,62 +56,18 @@ Nhóm thứ hai gồm các biến phải suy ra cho mỗi lượt hỏi:
 
 \subsection{Nguyên lý và phát biểu toán học tổng quát}
 
-Từ câu hỏi, bối cảnh bệnh nhân và lịch sử hội thoại, hàm tiền xử lý $f_{\mathrm{pre}}$ tạo truy vấn độc lập
-\[
-    q'=f_{\mathrm{pre}}(q,u,h).
-\]
-Quá trình này bao gồm kiểm tra đầu vào, cô đọng lịch sử, xác định ý định và trích xuất thực thể y khoa. Vector truy vấn được tạo bởi mô hình nhúng $E_{\phi}$:
-\[
-    \mathbf{z}_q=E_{\phi}(q').
-\]
-
-Để khai thác đồng thời tương đồng ngữ nghĩa và thuật ngữ chính xác, điểm truy xuất lai giữa truy vấn $q'$ và đoạn $c$ được xác định bởi
-\[
-    s_{\phi}(q',c)
-    =\alpha s_{\mathrm{dense},\phi}(q',c)
-    +(1-\alpha)s_{\mathrm{sparse}}(q',c),
-\]
-trong đó $s_{\mathrm{dense},\phi}$ là điểm truy xuất đặc dựa trên biểu diễn ngữ nghĩa, $s_{\mathrm{sparse}}$ là điểm truy xuất thưa dựa trên từ khóa, và $\alpha\in[0,1]$ là hệ số phối hợp hai thành phần. Tập bằng chứng được chọn là
-\[
-    C^*=\operatorname{TopK}_{c\in C}\,s_{\phi}(q',c),
-\]
-sau đó có thể được lọc theo siêu dữ liệu và xếp hạng lại.
-
-Gọi $\bar{h}$ là phần lịch sử hội thoại đã được cô đọng và $I_{\mathrm{safe}}$ là chỉ dẫn an toàn của hệ thống. Câu lệnh cuối cùng $P$ được xây dựng bởi
-\[
-    P=\operatorname{Concat}(I_{\mathrm{safe}},q',u,\bar{h},C^*).
-\]
-LLM với tham số $\theta$ sinh câu trả lời nháp theo
-\[
-    \widetilde{y}
-    =\arg\max_{y}P_{\theta}(y\mid q',u,\bar{h},C^*).
-\]
-Lớp bảo đảm chất lượng $g_{\psi}$ đánh giá truy vấn, bằng chứng và câu trả lời nháp để tạo vector điểm $\mathbf{v}$ và quyết định
-\[
-    (\mathbf{v},d)=g_{\psi}(q',u,C^*,\widetilde{y}),
-\]
-với chính sách tổng quát
-\[
-    d=
-    \begin{cases}
-        \text{Answer}, & \text{nếu bằng chứng đầy đủ, câu trả lời bám sát nguồn và an toàn},\\
-        \text{Abstain}, & \text{nếu bằng chứng thiếu, mâu thuẫn hoặc độ tin cậy thấp},\\
-        \text{Escalate}, & \text{nếu phát hiện tình huống nguy cơ cao hoặc cần thăm khám trực tiếp}.
-    \end{cases}
-\]
-
-Toàn bộ bài toán được biểu diễn bằng ánh xạ
+Nguyên lý cốt lõi của bài toán là sinh phản hồi có căn cứ và có chọn lọc. Bộ truy xuất cung cấp bằng chứng từ kho tri thức đã kiểm chứng; LLM tổng hợp câu trả lời trên bằng chứng đó; lớp bảo đảm chất lượng có quyền ngăn câu trả lời hoặc chuyển đến chuyên gia khi điều kiện an toàn không được đáp ứng. Toàn bộ bài toán được biểu diễn bởi ánh xạ
 \[
     F_{\phi,\theta,\psi}:(q,u,h,I)\longrightarrow(C^*,\hat{y},d).
 \]
-Mục tiêu là tối đa hóa hàm hữu dụng y khoa $\mathcal{U}$, phản ánh đồng thời độ chính xác, độ bám sát bằng chứng, độ an toàn và chất lượng quyết định, dưới các ràng buộc về thời gian phản hồi, bộ nhớ và độ dài cửa sổ ngữ cảnh:
+Trong đó, các thành phần đầu vào, đầu ra và tham số đã được định nghĩa ở hai mục trên. Gọi $\mathcal{T}$ là phân phối dữ liệu đánh giá và $\mathcal{U}$ là hàm hữu dụng y khoa phản ánh đồng thời độ chính xác, độ bám sát bằng chứng, độ an toàn và chất lượng quyết định. Bài toán tối ưu tổng quát là
 \[
     (\phi^*,\theta^*,\psi^*)
     =\arg\max_{\phi,\theta,\psi}
     \mathbb{E}_{X\sim\mathcal{T}}
     \left[\mathcal{U}\bigl(F_{\phi,\theta,\psi}(X)\bigr)\right].
 \]
-Ở đây, $\mathcal{T}$ là phân phối dữ liệu đánh giá. Mục tiêu này nhấn mạnh rằng hệ thống không chỉ cần sinh câu trả lời đúng mà còn phải biết từ chối khi không đủ căn cứ và chuyển đến chuyên gia khi có rủi ro.
+Việc tối ưu phải thỏa mãn các ràng buộc về thời gian phản hồi, bộ nhớ và độ dài cửa sổ ngữ cảnh. Các phép biến đổi cụ thể tạo nên ánh xạ $F_{\phi,\theta,\psi}$ được trình bày trong hai pipeline dưới đây.
 
 \subsection{Pipeline huấn luyện}
 
@@ -137,6 +93,14 @@ trong đó $\ell$ là kích thước đoạn và $s$ là bước trượt. Mỗi
 \subsubsection{Bước 2: Lập chỉ mục tri thức và huấn luyện bộ truy xuất}
 
 Mô hình nhúng $E_{\phi}$ biến mỗi đoạn $c_j$ thành vector $\mathbf{z}_j=E_{\phi}(c_j)\in\mathbb{R}^{d_e}$. Vector, nội dung đoạn, siêu dữ liệu và thông tin trích dẫn được lưu trong chỉ mục đặc $I_{\mathrm{dense}}$; đồng thời, biểu diễn từ khóa được lưu trong chỉ mục thưa $I_{\mathrm{sparse}}$. Chỉ mục tri thức hoàn chỉnh là $I=(I_{\mathrm{dense}},I_{\mathrm{sparse}})$.
+
+Điểm truy xuất lai giữa truy vấn $q$ và đoạn $c$ được xác định bởi
+\[
+    s_{\phi}(q,c)
+    =\alpha s_{\mathrm{dense},\phi}(q,c)
+    +(1-\alpha)s_{\mathrm{sparse}}(q,c),
+\]
+trong đó $s_{\mathrm{dense},\phi}$ là điểm tương đồng ngữ nghĩa, $s_{\mathrm{sparse}}$ là điểm khớp từ khóa và $\alpha\in[0,1]$ là hệ số phối hợp hai thành phần.
 
 Khi có nhãn đoạn dương và đoạn âm, bộ truy xuất được huấn luyện để đưa câu hỏi gần đoạn liên quan và xa các đoạn không liên quan. Với $c_i^+$ là đoạn đúng và $\mathcal{B}_i^-$ là tập đoạn âm hoặc âm khó của câu hỏi $q_i$, hàm mất mát truy xuất được xác định bởi \cite{karpukhin2020}
 \[
