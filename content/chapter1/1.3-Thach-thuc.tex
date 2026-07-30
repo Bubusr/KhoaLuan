@@ -1,0 +1,33 @@
+\section{Các thách thức}
+
+Quá trình xây dựng một hệ thống RAG chuyên biệt và tin cậy cho tập dữ liệu về các bệnh lý về xương phải đối mặt với bốn nhóm thách thức cốt lõi, được phân rã theo bốn giai đoạn trong luồng vận hành hệ thống:
+
+\begin{enumerate}[label=(\arabic*)]
+    \item \textbf{Thách thức từ tính phi cấu trúc, đa dạng và mâu thuẫn của dữ liệu y khoa thực tế:}
+    \begin{itemize}
+        \item \textit{Sự đa dạng về định dạng và tính phi cấu trúc của dữ liệu:} Tri thức y học về các bệnh lý về xương nằm rải rác trong các phác đồ điều trị, giáo trình chuyên khoa và báo cáo thực nghiệm dưới dạng tệp PDF. Dữ liệu này chứa mật độ cao các bảng biểu phức tạp, sơ đồ phân loại chấn thương gãy xương hoặc cây quyết định chẩn đoán lâm sàng, gây rào cản lớn cho các bộ trích xuất văn bản tự động \cite{collaco2026}.
+        \item \textit{Sự phức tạp và bất đồng về thuật ngữ y khoa và tên thuốc:} Tồn tại sự bất đồng lớn giữa tên gốc hóa học, tên thương mại của thuốc điều trị xương khớp, từ viết tắt lâm sàng và cách diễn đạt trong các văn bản y học khác nhau \cite{medrag2024}.
+        \item \textit{Xung đột tri thức theo thời gian và cấp độ áp dụng:} Dữ liệu y khoa thường có sự mâu thuẫn giữa phác đồ cũ đã hết hiệu lực và phác đồ mới vừa cập nhật. Đồng thời, tồn tại sự mâu thuẫn hoặc khác biệt giữa Hướng dẫn lâm sàng quốc tế và Quy trình điều trị thực tế tại từng bệnh viện ở Việt Nam \cite{xiong2024mirage}.
+    \end{itemize}
+
+    \item \textbf{Giới hạn của các bộ truy xuất trước rào cản thuật ngữ và nhiễu ngữ nghĩa:}
+    \begin{itemize}
+        \item \textit{Bất đồng ngôn ngữ giữa truy vấn người dùng và tài liệu tri thức:} Sự bất đồng lớn giữa câu hỏi tiếng Việt từ người bệnh và các nguồn tài liệu tham khảo chuẩn quốc tế bằng tiếng Anh (hoặc tài liệu chứa từ viết tắt chuyên khoa) \cite{medrag2024}.
+        \item \textit{Hạn chế của các thuật toán truy xuất theo từ khóa truyền thống:} Các thuật toán truy xuất theo từ khóa truyền thống như BM25 thường gặp hiện tượng bỏ sót tài liệu liên quan do không thể nhận diện sự tương đồng ngữ nghĩa khi truy vấn của người dùng khác biệt với thuật ngữ chính thống trong văn bản y học \cite{medrag2024}.
+        \item \textit{Hiện tượng nhiễu sau truy xuất:} Phương pháp truy xuất biểu diễn ngữ nghĩa tuy cải thiện khả năng tra cứu theo ngữ cảnh nhưng lại dễ trích xuất các đoạn văn bản có độ tương đồng biểu diễn bề mặt cao (như cùng đề cập đến một nhóm thuốc) mà thiếu hụt những thông tin lâm sàng mang tính quyết định (như chống chỉ định hoặc liều lượng áp dụng cho bệnh nhân có bệnh nền), dẫn đến sự sai lệch ngữ cảnh đầu vào \cite{xiong2024mirage, medtrustrag}.
+    \end{itemize}
+
+    \item \textbf{Đứt gãy ngữ cảnh và các rủi ro ảo giác trong suy luận y khoa đa bước:}
+    \begin{itemize}
+        \item \textit{Đứt gãy mạch logic trong suy luận y khoa đa bước:} Một truy vấn y khoa lâm sàng thường đòi hỏi phải tổng hợp cùng lúc nhiều đoạn tài liệu từ nhiều nguồn khác nhau (xác định phác đồ điều trị chuẩn $\to$ sàng lọc danh sách chỉ định thuốc $\to$ đối chiếu tác dụng phụ đối với bệnh lý đi kèm) \cite{imedrag}. Việc chia nhỏ tài liệu thành các đoạn độc lập làm thất lạc mối liên hệ giữa các đoạn tài liệu, khiến mô hình ngôn ngữ lớn tiếp nhận ngữ cảnh thiếu hụt hoặc bị nhiễu loạn giữa tập tài liệu trích xuất có độ dài lớn \cite{xiong2024mirage, medtrustrag}.
+        \item \textit{Biến động ngữ cảnh do tích lũy lịch sử hội thoại:} Trong tiến trình hội thoại nhiều lượt, việc đưa trực tiếp toàn bộ lịch sử hội thoại vào câu lệnh tăng cường gây ra hiện tượng trôi ngữ cảnh, làm tăng mạnh tỷ lệ ảo giác khi hội thoại kéo dài do lịch sử hội thoại làm sai lệch trọng tâm truy vấn gốc \cite{imedrag}.
+        \item \textit{Xung đột tri thức và bốn dạng ảo giác y khoa nguy hiểm:} Khi ngữ cảnh trích xuất chứa thông tin mâu thuẫn, thiếu bằng chứng hoặc trái với tri thức ghi nhớ sẵn trong mô hình, bốn dạng ảo giác nguy hiểm sẽ xuất hiện \cite{medtrustrag, xiong2024mirage}, bao gồm Suy luận lỗi, Bỏ sót thông tin, Từ chối quá mức và Gán sai nguồn trích dẫn.
+    \end{itemize}
+
+    \item \textbf{Sự khắt khe trong tiêu chuẩn an toàn lâm sàng và giới hạn của các bộ chỉ số tự động:}
+    \begin{itemize}
+        \item \textit{Biên độ sai sót trong y tế tiệm cận bằng không:} Biên độ chấp nhận sai sót trong các ứng dụng y tế gần như bằng không \cite{who2022musculoskeletal, medtrustrag}. Nếu bộ truy xuất lấy nhầm tài liệu cũ hoặc chứa nội dung mâu thuẫn, mô hình ngôn ngữ lớn sẽ sinh ra phản hồi sai nhưng lại có vẻ vô cùng thuyết phục vì được gắn nhãn chứng thực bởi tài liệu trích xuất.
+        \item \textit{Rào cản nhận biết ranh giới từ chối:} Hệ thống cần có khả năng tự nhận biết ranh giới bằng chứng để chủ động từ chối trả lời khi thiếu thông tin, thay vì cố gắng đưa ra phỏng đoán nguy hiểm cho tính mạng người bệnh \cite{medtrustrag}.
+        \item \textit{Khả năng đọc hiểu, sự đồng cảm và giới hạn của các bộ chỉ số tự động:} Phản hồi y khoa cần tính đồng cảm và khả năng đọc hiểu cao đối với người bệnh \cite{ortho_rag_13}, đây là điều mà các bộ chỉ số đo lường tự động truyền thống (như BLEU, ROUGE hoặc độ tương đồng văn bản) hoàn toàn không thể đánh giá được \cite{ragas2023, medtrustrag}.
+    \end{itemize}
+\end{enumerate}
