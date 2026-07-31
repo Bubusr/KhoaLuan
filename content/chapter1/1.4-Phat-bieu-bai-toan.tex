@@ -80,7 +80,7 @@ Pipeline huấn luyện tạo kho tri thức có thể truy xuất, dữ liệu 
     \label{fig:training-pipeline}
 \end{figure}
 
-\subsubsection{Bước 1: Thu thập và tiền xử lý dữ liệu}
+\subsubsection*{Bước 1: Thu thập và tiền xử lý dữ liệu}
 
 Tập tài liệu $D$ được thu thập từ các nguồn y khoa chính thống như giáo trình, hướng dẫn lâm sàng, phác đồ chẩn đoán--điều trị và các cặp hỏi--đáp đã được kiểm chứng. Tài liệu thô ở dạng PDF, Word, HTML hoặc cơ sở dữ liệu được trích xuất văn bản; loại bỏ đầu trang, chân trang, ký tự lỗi và nội dung trùng lặp; chuẩn hóa thuật ngữ, đơn vị và định dạng; đồng thời loại bỏ hoặc ẩn thông tin nhận dạng bệnh nhân.
 
@@ -90,7 +90,7 @@ Hàm phân đoạn $f_{\mathrm{chunk}}$ chuyển tập tài liệu thành các �
 \]
 trong đó $\ell$ là kích thước đoạn và $s$ là bước trượt. Mỗi đoạn $c_j$ được gắn siêu dữ liệu $\mu_j$ gồm tên tài liệu, chuyên khoa, chủ đề, tổ chức phát hành, ngày ban hành, phiên bản, vị trí trong tài liệu, phạm vi áp dụng, trạng thái hiệu lực và độ tin cậy của nguồn. Đầu ra của bước này là tập các đoạn sạch $(c_j,\mu_j)$ đủ thông tin để truy xuất và trích dẫn.
 
-\subsubsection{Bước 2: Lập chỉ mục tri thức và huấn luyện bộ truy xuất}
+\subsubsection*{Bước 2: Lập chỉ mục tri thức và huấn luyện bộ truy xuất}
 
 Mô hình nhúng $E_{\phi}$ biến mỗi đoạn $c_j$ thành vector $\mathbf{z}_j=E_{\phi}(c_j)\in\mathbb{R}^{d_e}$. Vector, nội dung đoạn, siêu dữ liệu và thông tin trích dẫn được lưu trong chỉ mục đặc $I_{\mathrm{dense}}$; đồng thời, biểu diễn từ khóa được lưu trong chỉ mục thưa $I_{\mathrm{sparse}}$. Chỉ mục tri thức hoàn chỉnh là $I=(I_{\mathrm{dense}},I_{\mathrm{sparse}})$.
 
@@ -112,7 +112,7 @@ Khi có nhãn đoạn dương và đoạn âm, bộ truy xuất được huấn 
 \]
 Nếu tham số $\phi$ được cập nhật, toàn bộ vector đoạn phải được tạo lại và chỉ mục $I_{\mathrm{dense}}$ phải được cập nhật trước các bước tiếp theo.
 
-\subsubsection{Bước 3: Tạo dữ liệu huấn luyện RAG}
+\subsubsection*{Bước 3: Tạo dữ liệu huấn luyện RAG}
 
 Từ bộ $\mathcal{T}_{\mathrm{QA}}$, câu hỏi được chuẩn hóa hoặc mở rộng bằng các cách diễn đạt tương đương, câu hỏi sinh từ tài liệu, câu hỏi nối tiếp trong hội thoại và trường hợp cố ý thiếu bằng chứng. Với mỗi câu hỏi, hệ thống thực hiện truy xuất lai, lấy Top-$k$ đoạn, lọc theo siêu dữ liệu và có thể xếp hạng lại để thu được $C_i^*$.
 
@@ -123,7 +123,7 @@ Tập mẫu tinh chỉnh được tạo thành
 \]
 trong đó $\bar{h}_i$ là lịch sử đã cô đọng và $d_i^*\in\Delta$ là nhãn hành động chuẩn. Mỗi mẫu dạy mô hình đọc bằng chứng, trả lời dựa trên nguồn, trích dẫn đúng, biểu đạt độ không chắc chắn, từ chối khi bằng chứng không đủ và chuyển chuyên gia đối với tình huống nguy cơ cao.
 
-\subsubsection{Bước 4: Tinh chỉnh LLM và lớp quyết định}
+\subsubsection*{Bước 4: Tinh chỉnh LLM và lớp quyết định}
 
 LLM nền được tinh chỉnh có giám sát (Supervised Fine-Tuning, SFT) trên $\mathcal{T}_{\mathrm{RAG}}$. Hàm mất mát sinh câu trả lời là
 \[
@@ -144,7 +144,7 @@ Hàm mục tiêu tổng hợp được viết dưới dạng
 \]
 trong đó các hệ số không âm $\lambda_{\mathrm{ret}}$, $\lambda_{\mathrm{gen}}$ và $\lambda_{\mathrm{safe}}$ kiểm soát đóng góp tương đối của ba mục tiêu. Các thành phần có thể được tối ưu theo từng giai đoạn, nhưng phải được đánh giá lại trong cùng một pipeline đầu cuối.
 
-\subsubsection{Bước 5: Đánh giá và lựa chọn mô hình}
+\subsubsection*{Bước 5: Đánh giá và lựa chọn mô hình}
 
 Đánh giá được thực hiện ở ba tầng:
 \begin{itemize}
@@ -166,27 +166,27 @@ Pipeline suy diễn sử dụng các thành phần đã tạo trong huấn luy�
     \label{fig:inference-pipeline}
 \end{figure}
 
-\subsubsection{Bước 1: Hiểu và tiền xử lý truy vấn}
+\subsubsection*{Bước 1: Hiểu và tiền xử lý truy vấn}
 
 Hệ thống tiếp nhận câu hỏi $q$, bối cảnh bệnh nhân $u$ và lịch sử hội thoại $h$. Bối cảnh bệnh nhân có thể gồm tuổi, giới tính, triệu chứng, tiền sử, thuốc đang dùng, dị ứng hoặc kết quả xét nghiệm, nhưng chỉ phần dữ liệu cần thiết và được phép mới được sử dụng. Đầu vào được kiểm tra về định dạng, phạm vi, dữ liệu nhạy cảm và dấu hiệu cấp cứu.
 
 Lịch sử $h$ được lọc và cô đọng thành $\bar{h}$ thay vì đưa nguyên văn toàn bộ hội thoại vào câu lệnh. Hàm $f_{\mathrm{pre}}$ viết lại câu hỏi nối tiếp thành truy vấn độc lập $q'$, nhận diện ngôn ngữ, chuẩn hóa thuật ngữ Việt--Anh, xác định ý định $m$ và trích xuất các thực thể $e$ như bệnh, thuốc, triệu chứng, liều lượng, thời gian và yếu tố nguy cơ.
 
-\subsubsection{Bước 2: Truy xuất bằng chứng}
+\subsubsection*{Bước 2: Truy xuất bằng chứng}
 
 Truy vấn $q'$ được mã hóa thành $\mathbf{z}_q$ bằng cùng mô hình $E_{\phi}$ đã dùng khi lập chỉ mục. Hệ thống kết hợp truy xuất đặc và truy xuất thưa theo điểm $s_{\phi}$, lấy Top-$k$ đoạn rồi lọc theo chuyên khoa, ngày ban hành, trạng thái hiệu lực và phạm vi áp dụng. Một bộ xếp hạng lại có thể đưa bằng chứng phù hợp nhất lên đầu và loại các đoạn nhiễu hoặc trùng lặp.
 
 Đầu ra là tập $C^*$, trong đó mỗi đoạn đi kèm nội dung, nguồn tài liệu, ngày hoặc phiên bản, điểm liên quan và siêu dữ liệu cần thiết để trích dẫn. Nếu bằng chứng không đủ hoặc các nguồn mâu thuẫn nghiêm trọng, tín hiệu này được chuyển đến lớp quyết định thay vì bị che giấu ở bước sinh.
 
-\subsubsection{Bước 3: Xây dựng câu lệnh}
+\subsubsection*{Bước 3: Xây dựng câu lệnh}
 
 Câu lệnh $P$ gồm chỉ dẫn an toàn $I_{\mathrm{safe}}$, truy vấn đã xử lý $q'$, phần bối cảnh bệnh nhân $u$ có liên quan, lịch sử cô đọng $\bar{h}$, tập bằng chứng $C^*$ và định dạng đầu ra yêu cầu. Chỉ dẫn an toàn buộc mô hình ưu tiên bằng chứng, không tự tạo chẩn đoán chắc chắn hoặc liều thuốc khi thiếu dữ liệu, nêu rõ giới hạn, và đề nghị gặp chuyên gia khi có dấu hiệu nguy hiểm. Mỗi đoạn bằng chứng được đánh dấu nguồn rõ ràng để hỗ trợ kiểm tra trích dẫn.
 
-\subsubsection{Bước 4: Sinh câu trả lời nháp}
+\subsubsection*{Bước 4: Sinh câu trả lời nháp}
 
 LLM hỏi--đáp y khoa với tham số $\theta^*$ đọc câu lệnh $P$ và tạo câu trả lời nháp $\widetilde{y}$. Câu trả lời có thể gồm nội dung chính, giải thích, bằng chứng hỗ trợ, trích dẫn, cảnh báo và mức độ không chắc chắn. Bản nháp chưa được gửi trực tiếp cho người dùng mà phải qua lớp bảo đảm chất lượng.
 
-\subsubsection{Bước 5: Kiểm tra chất lượng và ra quyết định}
+\subsubsection*{Bước 5: Kiểm tra chất lượng và ra quyết định}
 
 Lớp $g_{\psi^*}$ đánh giá bản nháp theo các tiêu chí: trả lời đúng trọng tâm; được bằng chứng hỗ trợ; không thêm luận điểm ngoài nguồn; trích dẫn đúng; không bỏ sót cảnh báo quan trọng; không gây hại; nhất quán với bối cảnh bệnh nhân; và đủ tin cậy để phản hồi. Kết quả tạo quyết định cuối cùng:
 \begin{itemize}
