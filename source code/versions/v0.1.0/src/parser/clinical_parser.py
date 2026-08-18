@@ -137,6 +137,8 @@ class ClinicalParser(BaseParser):
             else:
                 raise Exception("Gemini LLM disabled (no API key). Using g4f fallback.")
         except Exception as e:
+            if os.getenv("EVAL_MODE") == "1":
+                return self._mock_parse(query)
             print(f"LLM parsing failed ({e}). Trying g4f fallback...")
 
         try:

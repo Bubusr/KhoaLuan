@@ -67,10 +67,21 @@ class RAGEvaluator:
             query = tc["query"]
             expected = tc["expected_top_chunk"]
             
+            import time
             # Chạy thử nghiệm các Level qua Pipeline
+            print(f"[{tc_id}] Processing Level 0...")
             l0_res = self.pipeline.run_level_0(query, k=len(self.pipeline.retriever.chunks))
+            time.sleep(1)
+            
+            print(f"[{tc_id}] Processing Level 1...")
             l1_res = self.pipeline.run_level_1(query, k=len(self.pipeline.retriever.chunks))
+            time.sleep(1)
+            
+            print(f"[{tc_id}] Processing Level 2...")
             l2_res = self.pipeline.run_level_2(query, k=len(self.pipeline.retriever.chunks))
+            time.sleep(1)
+            
+            print(f"✅ Completed {tc_id}: {tc['name']}")
             
             l0_order = [r["chunk"].id for r in l0_res["candidates"]]
             l1_order = [r["chunk"].id for r in l1_res["candidates"]]

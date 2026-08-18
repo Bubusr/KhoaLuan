@@ -244,6 +244,8 @@ class ClinicalGenerator(BaseGenerator):
         is_medical = any(kw in query.lower() for kw in medical_keywords)
 
         if not is_medical:
+            if os.getenv("EVAL_MODE") == "1":
+                return "Mock Off-Topic Response", decision
             # Câu hỏi thông thường → gọi g4f trực tiếp như một chatbot bình thường
             try:
                 g4f_answer = _call_g4f_llm(query)
@@ -318,6 +320,8 @@ class ClinicalGenerator(BaseGenerator):
             else:
                 raise Exception("Gemini LLM is disabled (no API key). Using g4f fallback.")
         except Exception as e:
+            if os.getenv("EVAL_MODE") == "1":
+                return self._mock_generate(query, chunks, structured_query, decision, history), decision
             print(f"LLM generation failed ({e}). Trying g4f fallback...")
             try:
                 g4f_answer = _call_g4f_llm(prompt_text)
