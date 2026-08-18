@@ -76,9 +76,9 @@ class RAGEvaluator:
             l1_order = [r["chunk"].id for r in l1_res["candidates"]]
             l2_order = [r["chunk"].id for r in l2_res["candidates"]]
 
-            l0_rank = l0_order.index(expected) + 1 if expected in l0_order else len(l0_order)
-            l1_rank = l1_order.index(expected) + 1 if expected in l1_order else len(l1_order)
-            l2_rank = l2_order.index(expected) + 1 if expected in l2_order else len(l2_order)
+            l0_mrr = 1.0 / (l0_order.index(expected) + 1) if expected in l0_order else 0.0
+            l1_mrr = 1.0 / (l1_order.index(expected) + 1) if expected in l1_order else 0.0
+            l2_mrr = 1.0 / (l2_order.index(expected) + 1) if expected in l2_order else 0.0
 
             # Tính CVR của ca này
             l0_cvr = self.is_violating(l0_order[0], query)
@@ -91,11 +91,11 @@ class RAGEvaluator:
                 "Query": query,
                 "Expected": expected,
                 "L0_Top": l0_order[0],
-                "L0_MRR": 1.0 / l0_rank,
+                "L0_MRR": l0_mrr,
                 "L1_Top": l1_order[0],
-                "L1_MRR": 1.0 / l1_rank,
+                "L1_MRR": l1_mrr,
                 "L2_Top": l2_order[0],
-                "L2_MRR": 1.0 / l2_rank,
+                "L2_MRR": l2_mrr,
                 "L0_Decision": l0_res["decision"],
                 "L1_Decision": l1_res["decision"],
                 "L2_Decision": l2_res["decision"],
@@ -142,8 +142,17 @@ class RAGEvaluator:
         # 4. Tính Decision F1-Score (giả sử Gold Decision cho TC002 và TC007 là Escalate, còn lại là Answer)
         gold_decisions = ["Answer", "Escalate", "Answer", "Answer", "Answer", "Answer", "Escalate"]
         def compute_dec_f1(pred_list):
-            correct = sum(1 for p, g in zip(pred_list, gold_decisions) if p == g)
-            return correct / len(gold_decisions)
+            classes = set(gold_decisions)
+            f1_sum = 0.0
+            for c in classes:
+                tp = sum(1 for p, g in zip(pred_list, gold_decisions) if p == c and g == c)
+                fp = sum(1 for p, g in zip(pred_list, gold_decisions) if p == c and g != c)
+                fn = sum(1 for p, g in zip(pred_list, gold_decisions) if p != c and g == c)
+                precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+                recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+                f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
+                f1_sum += f1
+            return f1_sum / len(classes)
 
         l0_dec_f1 = compute_dec_f1(df["L0_Decision"].tolist())
         l1_dec_f1 = compute_dec_f1(df["L1_Decision"].tolist())
