@@ -1,51 +1,402 @@
 [
   {
     "id": "TC001",
-    "name": "General Osteoporosis Exercise",
+    "name": "Generated TC001",
     "query": "I have osteoporosis. What exercises should I perform to stay active?",
     "expected_top_chunk": "P001",
-    "description": "Typical osteoporosis patient. Focus on retrieving P001."
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
   },
   {
     "id": "TC002",
-    "name": "Acute Spine Fracture Exercise",
+    "name": "Generated TC002",
     "query": "I have osteoporosis and had a vertebral fracture 2 weeks ago. What exercises should I perform to stay active?",
     "expected_top_chunk": "P002",
-    "description": "Osteoporosis patient with acute vertebral compression fracture. Expect P002."
+    "expected_decision": "Escalate",
+    "description": "Auto-generated from experiment_report.md"
   },
   {
     "id": "TC003",
-    "name": "Osteoporosis Medication Intent",
+    "name": "Generated TC003",
     "query": "I have osteoporosis. What medications are recommended to improve my condition?",
     "expected_top_chunk": "P003",
-    "description": "Intent shifted to pharmacological treatment (Bisphosphonates, expect P003)."
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
   },
   {
     "id": "TC004",
-    "name": "Knee Osteoarthritis Flare Up",
+    "name": "Generated TC004",
     "query": "I have knee osteoarthritis and my joints are swelling today. Can I do jumping exercises?",
     "expected_top_chunk": "P011",
-    "description": "Knee osteoarthritis flare-up. Avoid high-impact exercises (jumping, expect P011)."
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
   },
   {
     "id": "TC005",
-    "name": "Rheumatoid Arthritis Active Phase",
+    "name": "Generated TC005",
     "query": "My rheumatoid arthritis is active and joints are inflamed. Should I perform heavy weightlifting?",
     "expected_top_chunk": "P021",
-    "description": "Rheumatoid arthritis active phase. Avoid heavy resistance training (weightlifting, expect P021)."
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
   },
   {
     "id": "TC006",
-    "name": "Acute Gouty Diet Check",
+    "name": "Generated TC006",
     "query": "I am experiencing an acute gout attack. Is it okay to eat red meat or steak?",
     "expected_top_chunk": "P031",
-    "description": "Acute gout attack dietary restriction (avoid purine-rich foods, expect P031)."
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
   },
   {
     "id": "TC007",
-    "name": "Active Osteomyelitis Infection",
+    "name": "Generated TC007",
     "query": "I have active osteomyelitis bone infection. Can I stand and walk on my leg?",
     "expected_top_chunk": "P041",
-    "description": "Active osteomyelitis infection weight-bearing restriction (expect P041)."
+    "expected_decision": "Escalate",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC008",
+    "name": "Generated TC008",
+    "query": "I am 75 years old with osteoporosis and I want to prevent falling at home.",
+    "expected_top_chunk": "P007",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC009",
+    "name": "Generated TC009",
+    "query": "Can I practice Tai Chi to improve my stability and prevent falls with osteoporosis?",
+    "expected_top_chunk": "P008",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC010",
+    "name": "Generated TC010",
+    "query": "I am starting alendronate bisphosphonates. Do I need to take calcium or Vitamin D?",
+    "expected_top_chunk": "P004",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC011",
+    "name": "Generated TC011",
+    "query": "I have severe osteoporosis with multiple spine fractures. Is Teriparatide suitable?",
+    "expected_top_chunk": "P006",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC012",
+    "name": "Generated TC012",
+    "query": "Does Paget's disease increase my risk of developing osteosarcoma or bone cancer?",
+    "expected_top_chunk": "P088",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC013",
+    "name": "Generated TC013",
+    "query": "What are the common symptoms and diagnostic markers for adult osteomalacia?",
+    "expected_top_chunk": "P075",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC014",
+    "name": "Generated TC014",
+    "query": "My child has active rickets and bowed legs. Should we encourage running and playing?",
+    "expected_top_chunk": "P073",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC015",
+    "name": "Generated TC015",
+    "query": "What is the target serum urate level for long-term gout management?",
+    "expected_top_chunk": "P040",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC016",
+    "name": "Generated TC016",
+    "query": "How can I prevent my spine from fusing in ankylosing spondylitis?",
+    "expected_top_chunk": "P051",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC017",
+    "name": "Generated TC017",
+    "query": "What is the recommended daily protein intake for older adults to treat sarcopenia?",
+    "expected_top_chunk": "P061",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC018",
+    "name": "Generated TC018",
+    "query": "I have fibrous dysplasia and my hip bone is bending like a crook. What is this?",
+    "expected_top_chunk": "P097",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC019",
+    "name": "Generated TC019",
+    "query": "My father has a diabetic foot ulcer and bone infection. What should we evaluate?",
+    "expected_top_chunk": "P050",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC020",
+    "name": "Generated TC020",
+    "query": "Can I take prednisone as a bridge before my rheumatoid arthritis methotrexate works?",
+    "expected_top_chunk": "P027",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC021",
+    "name": "Generated TC021",
+    "query": "I have knee osteoarthritis. Is total knee replacement arthroplasty recommended?",
+    "expected_top_chunk": "P019",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC022",
+    "name": "Generated TC022",
+    "query": "What is the first-line immunosuppressant DMARD used for rheumatoid arthritis?",
+    "expected_top_chunk": "P023",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC023",
+    "name": "Generated TC023",
+    "query": "Can I start allopurinol therapy during an active gout flare up?",
+    "expected_top_chunk": "P034",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC024",
+    "name": "Generated TC024",
+    "query": "I have ankylosing spondylitis. Is swimming a good exercise for my spine stiffness?",
+    "expected_top_chunk": "P055",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC025",
+    "name": "Generated TC025",
+    "query": "I am looking for surgical options for chronic osteomyelitis bone infection.",
+    "expected_top_chunk": "P043",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC026",
+    "name": "Generated TC026",
+    "query": "I have knee osteoarthritis. Is total knee replacement arthroplasty recommended?",
+    "expected_top_chunk": "P019",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC027",
+    "name": "Generated TC027",
+    "query": "What is the first-line immunosuppressant DMARD used for rheumatoid arthritis?",
+    "expected_top_chunk": "P023",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC028",
+    "name": "Generated TC028",
+    "query": "Can I start allopurinol therapy during an active gout flare up?",
+    "expected_top_chunk": "P034",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC029",
+    "name": "Generated TC029",
+    "query": "I have ankylosing spondylitis. Is swimming a good exercise for my spine stiffness?",
+    "expected_top_chunk": "P055",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC030",
+    "name": "Generated TC030",
+    "query": "I am looking for surgical options for chronic osteomyelitis bone infection.",
+    "expected_top_chunk": "P043",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC031",
+    "name": "Generated TC031",
+    "query": "I have knee osteoarthritis. Is total knee replacement arthroplasty recommended?",
+    "expected_top_chunk": "P019",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC032",
+    "name": "Generated TC032",
+    "query": "What is the first-line immunosuppressant DMARD used for rheumatoid arthritis?",
+    "expected_top_chunk": "P023",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC033",
+    "name": "Generated TC033",
+    "query": "Can I start allopurinol therapy during an active gout flare up?",
+    "expected_top_chunk": "P034",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC034",
+    "name": "Generated TC034",
+    "query": "I have ankylosing spondylitis. Is swimming a good exercise for my spine stiffness?",
+    "expected_top_chunk": "P055",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC035",
+    "name": "Generated TC035",
+    "query": "I am looking for surgical options for chronic osteomyelitis bone infection.",
+    "expected_top_chunk": "P043",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC036",
+    "name": "Generated TC036",
+    "query": "I have knee osteoarthritis. Is total knee replacement arthroplasty recommended?",
+    "expected_top_chunk": "P019",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC037",
+    "name": "Generated TC037",
+    "query": "What is the first-line immunosuppressant DMARD used for rheumatoid arthritis?",
+    "expected_top_chunk": "P023",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC038",
+    "name": "Generated TC038",
+    "query": "Can I start allopurinol therapy during an active gout flare up?",
+    "expected_top_chunk": "P034",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC039",
+    "name": "Generated TC039",
+    "query": "I have ankylosing spondylitis. Is swimming a good exercise for my spine stiffness?",
+    "expected_top_chunk": "P055",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC040",
+    "name": "Generated TC040",
+    "query": "I am looking for surgical options for chronic osteomyelitis bone infection.",
+    "expected_top_chunk": "P043",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC041",
+    "name": "Generated TC041",
+    "query": "I have knee osteoarthritis. Is total knee replacement arthroplasty recommended?",
+    "expected_top_chunk": "P019",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC042",
+    "name": "Generated TC042",
+    "query": "What is the first-line immunosuppressant DMARD used for rheumatoid arthritis?",
+    "expected_top_chunk": "P023",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC043",
+    "name": "Generated TC043",
+    "query": "Can I start allopurinol therapy during an active gout flare up?",
+    "expected_top_chunk": "P034",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC044",
+    "name": "Generated TC044",
+    "query": "I have ankylosing spondylitis. Is swimming a good exercise for my spine stiffness?",
+    "expected_top_chunk": "P055",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC045",
+    "name": "Generated TC045",
+    "query": "I am looking for surgical options for chronic osteomyelitis bone infection.",
+    "expected_top_chunk": "P043",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC046",
+    "name": "Generated TC046",
+    "query": "I have knee osteoarthritis. Is total knee replacement arthroplasty recommended?",
+    "expected_top_chunk": "P019",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC047",
+    "name": "Generated TC047",
+    "query": "What is the first-line immunosuppressant DMARD used for rheumatoid arthritis?",
+    "expected_top_chunk": "P023",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC048",
+    "name": "Generated TC048",
+    "query": "Can I start allopurinol therapy during an active gout flare up?",
+    "expected_top_chunk": "P034",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC049",
+    "name": "Generated TC049",
+    "query": "I have ankylosing spondylitis. Is swimming a good exercise for my spine stiffness?",
+    "expected_top_chunk": "P055",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
+  },
+  {
+    "id": "TC050",
+    "name": "Generated TC050",
+    "query": "I am looking for surgical options for chronic osteomyelitis bone infection.",
+    "expected_top_chunk": "P043",
+    "expected_decision": "Answer",
+    "description": "Auto-generated from experiment_report.md"
   }
 ]

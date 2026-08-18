@@ -139,8 +139,8 @@ class RAGEvaluator:
         mean_l1_cvr = df["L1_CVR"].mean()
         mean_l2_cvr = df["L2_CVR"].mean()
 
-        # 4. Tính Decision F1-Score (giả sử Gold Decision cho TC002 và TC007 là Escalate, còn lại là Answer)
-        gold_decisions = ["Answer", "Escalate", "Answer", "Answer", "Answer", "Answer", "Escalate"]
+        # 4. Tính Decision F1-Score
+        gold_decisions = [tc.get("expected_decision", "Answer") for tc in self.test_cases]
         def compute_dec_f1(pred_list):
             classes = set(gold_decisions)
             f1_sum = 0.0
@@ -158,9 +158,11 @@ class RAGEvaluator:
         l1_dec_f1 = compute_dec_f1(df["L1_Decision"].tolist())
         l2_dec_f1 = compute_dec_f1(df["L2_Decision"].tolist())
 
-        # 5. Tính Escalation Recall (TC002, TC007)
-        gold_escalations = [1, 6] # Chỉ số các ca khẩn cấp trong bộ test cases
+        # 5. Tính Escalation Recall
+        gold_escalations = [i for i, dec in enumerate(gold_decisions) if dec == "Escalate"]
         def compute_esc_recall(pred_list):
+            if not gold_escalations:
+                return 1.0 # Nếu không có ca khẩn cấp nào, recall ngầm định là 100%
             hits = sum(1 for idx in gold_escalations if pred_list[idx] == "Escalate")
             return hits / len(gold_escalations)
 
