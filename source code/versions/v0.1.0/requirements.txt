@@ -1,0 +1,14 @@
+sentence-transformers
+chromadb
+rank_bm25
+google-generativeai
+python-dotenv
+pandas
+numpy
+pydantic
+requests
+beautifulsoup4
+flask
+langfuse
+
+

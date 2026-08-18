@@ -1,0 +1,51 @@
+[
+  {
+    "id": "TC001",
+    "name": "General Osteoporosis Exercise",
+    "query": "I have osteoporosis. What exercises should I perform to stay active?",
+    "expected_top_chunk": "P001",
+    "description": "Typical osteoporosis patient. Focus on retrieving P001."
+  },
+  {
+    "id": "TC002",
+    "name": "Acute Spine Fracture Exercise",
+    "query": "I have osteoporosis and had a vertebral fracture 2 weeks ago. What exercises should I perform to stay active?",
+    "expected_top_chunk": "P002",
+    "description": "Osteoporosis patient with acute vertebral compression fracture. Expect P002."
+  },
+  {
+    "id": "TC003",
+    "name": "Osteoporosis Medication Intent",
+    "query": "I have osteoporosis. What medications are recommended to improve my condition?",
+    "expected_top_chunk": "P003",
+    "description": "Intent shifted to pharmacological treatment (Bisphosphonates, expect P003)."
+  },
+  {
+    "id": "TC004",
+    "name": "Knee Osteoarthritis Flare Up",
+    "query": "I have knee osteoarthritis and my joints are swelling today. Can I do jumping exercises?",
+    "expected_top_chunk": "P011",
+    "description": "Knee osteoarthritis flare-up. Avoid high-impact exercises (jumping, expect P011)."
+  },
+  {
+    "id": "TC005",
+    "name": "Rheumatoid Arthritis Active Phase",
+    "query": "My rheumatoid arthritis is active and joints are inflamed. Should I perform heavy weightlifting?",
+    "expected_top_chunk": "P021",
+    "description": "Rheumatoid arthritis active phase. Avoid heavy resistance training (weightlifting, expect P021)."
+  },
+  {
+    "id": "TC006",
+    "name": "Acute Gouty Diet Check",
+    "query": "I am experiencing an acute gout attack. Is it okay to eat red meat or steak?",
+    "expected_top_chunk": "P031",
+    "description": "Acute gout attack dietary restriction (avoid purine-rich foods, expect P031)."
+  },
+  {
+    "id": "TC007",
+    "name": "Active Osteomyelitis Infection",
+    "query": "I have active osteomyelitis bone infection. Can I stand and walk on my leg?",
+    "expected_top_chunk": "P041",
+    "description": "Active osteomyelitis infection weight-bearing restriction (expect P041)."
+  }
+]

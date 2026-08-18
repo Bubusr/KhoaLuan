@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "KhoaLuan",
+			"path": "../../../../KhoaLuan"
+		},
+		{
+			"name": "KhoaLuan_TH",
+			"path": "../../.."
+		}
+	],
+	"settings": {}
+}

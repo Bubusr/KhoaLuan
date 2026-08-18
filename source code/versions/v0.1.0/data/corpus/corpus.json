@@ -1,0 +1,1995 @@
+[
+  {
+    "id": "P001",
+    "title": "Osteoporosis - General Exercise",
+    "text": "Physical activity is crucial for patients with osteoporosis. Weight-bearing aerobic activities like walking, climbing stairs, and light jogging help maintain bone density.",
+    "concepts": [
+      "Osteoporosis",
+      "LowImpactExercise",
+      "WeightBearing"
+    ]
+  },
+  {
+    "id": "P002",
+    "title": "Osteoporosis - High Impact Safety",
+    "text": "High-impact exercises like jumping and heavy resistance weightlifting stimulate bone remodeling, but only if the patient has no active fractures and stable spine alignment.",
+    "concepts": [
+      "Osteoporosis",
+      "HighImpactExercise",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P003",
+    "title": "Osteoporosis - Bisphosphonates Medication",
+    "text": "Bisphosphonates like alendronate and risedronate inhibit osteoclast-mediated bone resorption, increasing bone density to prevent future fragility fractures.",
+    "concepts": [
+      "Osteoporosis",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P004",
+    "title": "Osteoporosis - Calcium and Vit D",
+    "text": "Adequate calcium (1000-1200 mg) and Vitamin D (800-1000 IU) daily intake is the nutritional cornerstone for supporting bone mineralization in osteoporosis.",
+    "concepts": [
+      "Osteoporosis",
+      "CalciumIntake"
+    ]
+  },
+  {
+    "id": "P005",
+    "title": "Osteoporosis - Denosumab Injection",
+    "text": "Denosumab, a RANKL inhibitor, is administered subcutaneously every 6 months to increase bone mass in patients at very high risk of osteoporosis fractures.",
+    "concepts": [
+      "Osteoporosis",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P006",
+    "title": "Osteoporosis - Teriparatide Anabolic",
+    "text": "Teriparatide stimulates new bone formation by mimicking parathyroid hormone, making it ideal for severe osteoporosis with multiple vertebral fractures.",
+    "concepts": [
+      "Osteoporosis",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P007",
+    "title": "Osteoporosis - Fall Prevention Home",
+    "text": "Home safety modifications, such as removing trip hazards, installing grab bars, and securing rugs, significantly reduce fall-related fractures in osteoporotic patients.",
+    "concepts": [
+      "Osteoporosis",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P008",
+    "title": "Osteoporosis - Tai Chi for Balance",
+    "text": "Tai Chi and gentle balance exercises are highly recommended for elderly osteoporosis patients to improve postural stability and prevent falls.",
+    "concepts": [
+      "Osteoporosis",
+      "LowImpactExercise",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P009",
+    "title": "Osteoporosis - Sarcopenia Overlap",
+    "text": "Sarcopenia combined with osteoporosis (osteosarcopenia) requires high-protein diets and progressive resistance training to protect weak bones.",
+    "concepts": [
+      "Osteoporosis",
+      "LowImpactExercise",
+      "Rehabilitation"
+    ]
+  },
+  {
+    "id": "P010",
+    "title": "Osteoporosis - Hormone Replacement",
+    "text": "Estrogen hormone replacement therapy (HRT) can prevent bone loss in postmenopausal women, though risks must be balanced against cardiovascular factors.",
+    "concepts": [
+      "Osteoporosis",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P011",
+    "title": "Osteoarthritis - Knee Exercise",
+    "text": "Knee osteoarthritis patients should focus on low-impact aerobic activities. Water exercises, swimming, and water aerobics maintain joint motion without weight pressure.",
+    "concepts": [
+      "Osteoarthritis",
+      "WaterExercise",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P012",
+    "title": "Osteoarthritis - Flare-up Management",
+    "text": "During an acute knee osteoarthritis flare-up with joint swelling, high-impact exercises like jumping or running are strictly contraindicated to avoid worsening inflammation.",
+    "concepts": [
+      "Osteoarthritis",
+      "JointRest",
+      "HighImpactExercise"
+    ],
+    "contraindications": [
+      "HighImpactExercise"
+    ]
+  },
+  {
+    "id": "P013",
+    "title": "Osteoarthritis - NSAIDs Use",
+    "text": "Oral NSAIDs like naproxen, ibuprofen, or celecoxib are the first-line medication to manage pain and reduce joint inflammation in osteoarthritis.",
+    "concepts": [
+      "Osteoarthritis",
+      "Medication",
+      "JointInflammation"
+    ]
+  },
+  {
+    "id": "P014",
+    "title": "Osteoarthritis - Intra-articular Corticosteroids",
+    "text": "Corticosteroid injections directly into the knee joint provide rapid, short-term relief from severe osteoarthritis pain and localized swelling.",
+    "concepts": [
+      "Osteoarthritis",
+      "Medication",
+      "JointInflammation"
+    ]
+  },
+  {
+    "id": "P015",
+    "title": "Osteoarthritis - Hyaluronic Acid Injection",
+    "text": "Intra-articular hyaluronic acid injections act as a lubricant for osteoarthritis joints, helping to reduce friction and improve mobility.",
+    "concepts": [
+      "Osteoarthritis",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P016",
+    "title": "Osteoarthritis - Weight Loss Benefits",
+    "text": "Weight reduction of just 10% can decrease mechanical load on osteoarthritic knee joints by 40%, significantly reducing pain and slowing cartilage wear.",
+    "concepts": [
+      "Osteoarthritis",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P017",
+    "title": "Osteoarthritis - Joint Protection Devices",
+    "text": "Using assistive devices like canes on the opposite side of the affected knee, knee braces, or orthopedic shoes helps protect joint structures.",
+    "concepts": [
+      "Osteoarthritis",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P018",
+    "title": "Osteoarthritis - Physical Therapy ROM",
+    "text": "Physical therapy focusing on quad strengthening and gentle range-of-motion stretching helps stabilize the knee joint in chronic osteoarthritis.",
+    "concepts": [
+      "Osteoarthritis",
+      "LowImpactExercise",
+      "Rehabilitation"
+    ]
+  },
+  {
+    "id": "P019",
+    "title": "Osteoarthritis - Total Knee Replacement",
+    "text": "Total knee arthroplasty (replacement surgery) is indicated for severe, end-stage osteoarthritis when conservative therapies fail to relieve pain.",
+    "concepts": [
+      "Osteoarthritis",
+      "Surgery"
+    ]
+  },
+  {
+    "id": "P020",
+    "title": "Osteoarthritis - Acetaminophen Therapy",
+    "text": "Acetaminophen (paracetamol) can be used for mild chronic osteoarthritis pain, serving as a safer alternative for patients unable to take NSAIDs.",
+    "concepts": [
+      "Osteoarthritis",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P021",
+    "title": "Rheumatoid_Arthritis - Active Phase Rest",
+    "text": "During active inflammatory rheumatoid arthritis flare-ups, joint protection is paramount. Heavy resistance training and lifting are strictly contraindicated.",
+    "concepts": [
+      "RheumatoidArthritis",
+      "JointInflammation",
+      "HeavyResistance"
+    ],
+    "contraindications": [
+      "HeavyResistance"
+    ]
+  },
+  {
+    "id": "P022",
+    "title": "Rheumatoid_Arthritis - Gentle Stretching",
+    "text": "Gentle range-of-motion (ROM) stretching and isometric exercises are recommended during active rheumatoid arthritis phases to maintain joint flexibility.",
+    "concepts": [
+      "RheumatoidArthritis",
+      "ROMStretching",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P023",
+    "title": "Rheumatoid_Arthritis - Methotrexate Therapy",
+    "text": "Methotrexate is the anchor DMARD for rheumatoid arthritis, acting as an immunosuppressant to slow joint damage and preserve function.",
+    "concepts": [
+      "RheumatoidArthritis",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P024",
+    "title": "Rheumatoid_Arthritis - Biologic DMARDs",
+    "text": "Biologic agents targeting TNF (like adalimumab or etanercept) are indicated for moderate-to-severe rheumatoid arthritis unresponsive to methotrexate.",
+    "concepts": [
+      "RheumatoidArthritis",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P025",
+    "title": "Rheumatoid_Arthritis - Folic Acid Supp",
+    "text": "Co-prescribing folic acid with methotrexate helps minimize adverse effects like gastrointestinal upset, liver toxicity, and mouth ulcers.",
+    "concepts": [
+      "RheumatoidArthritis",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P026",
+    "title": "Rheumatoid_Arthritis - Low Impact Cardio",
+    "text": "During stable remission phases of rheumatoid arthritis, low-impact aerobic exercises like walking and cycling help maintain cardiovascular fitness.",
+    "concepts": [
+      "RheumatoidArthritis",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P027",
+    "title": "Rheumatoid_Arthritis - Corticosteroid Bridge",
+    "text": "Low-dose oral prednisone is often used as a 'bridge therapy' to control rheumatoid arthritis symptoms before DMARDs take full effect.",
+    "concepts": [
+      "RheumatoidArthritis",
+      "Medication",
+      "JointInflammation"
+    ]
+  },
+  {
+    "id": "P028",
+    "title": "Rheumatoid_Arthritis - Joint Protection Ergonomics",
+    "text": "Rheumatoid arthritis patients should use assistive kitchen utensils, splints, and larger joints to carry weight to prevent joint deformities.",
+    "concepts": [
+      "RheumatoidArthritis",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P029",
+    "title": "Rheumatoid_Arthritis - JAK Inhibitors",
+    "text": "JAK inhibitors like tofacitinib are oral targeted synthetic DMARDs that block cytokine signaling to reduce rheumatoid arthritis inflammation.",
+    "concepts": [
+      "RheumatoidArthritis",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P030",
+    "title": "Rheumatoid_Arthritis - Synovectomy Surgery",
+    "text": "Surgical removal of inflamed joint lining (synovectomy) is indicated for rheumatoid arthritis joints showing progressive tendon damage.",
+    "concepts": [
+      "RheumatoidArthritis",
+      "Surgery",
+      "JointInflammation"
+    ]
+  },
+  {
+    "id": "P031",
+    "title": "Gout - Acute Diet Restriction",
+    "text": "During an acute gout attack, consuming purine-rich foods like red meat, organ meats, shellfish, and alcohol is strictly contraindicated to prevent uric acid spikes.",
+    "concepts": [
+      "Gout",
+      "AcuteGoutAttack",
+      "PurineRichFood"
+    ],
+    "contraindications": [
+      "PurineRichFood"
+    ]
+  },
+  {
+    "id": "P032",
+    "title": "Gout - Acute Attack Hydration",
+    "text": "Patients experiencing acute gouty arthritis must drink at least 2.5 to 3 liters of water daily to facilitate renal uric acid clearance and shorten flares.",
+    "concepts": [
+      "Gout",
+      "AcuteGoutAttack",
+      "Hydration"
+    ]
+  },
+  {
+    "id": "P033",
+    "title": "Gout - Colchicine Therapy",
+    "text": "Colchicine is highly effective in relieving acute gout pain if administered within the first 24-36 hours of joint inflammation onset.",
+    "concepts": [
+      "Gout",
+      "Medication",
+      "AcuteGoutAttack"
+    ]
+  },
+  {
+    "id": "P034",
+    "title": "Gout - Allopurinol Management",
+    "text": "Allopurinol, a xanthine oxidase inhibitor, lowers uric acid levels for long-term gout management but must not be started during an active acute flare.",
+    "concepts": [
+      "Gout",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P035",
+    "title": "Gout - NSAIDs for Gout",
+    "text": "High-dose NSAIDs like indomethacin or naproxen are standard first-line therapies to reduce the intense pain and swelling of acute gout attacks.",
+    "concepts": [
+      "Gout",
+      "Medication",
+      "AcuteGoutAttack"
+    ]
+  },
+  {
+    "id": "P036",
+    "title": "Gout - Febuxostat Alternative",
+    "text": "Febuxostat is an alternative xanthine oxidase inhibitor used for chronic gout patients who have renal impairment or are allergic to allopurinol.",
+    "concepts": [
+      "Gout",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P037",
+    "title": "Gout - Uricosuric Agents",
+    "text": "Uricosuric drugs like probenecid lower uric acid levels by increasing renal excretion, suitable for patients with normal kidney function.",
+    "concepts": [
+      "Gout",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P038",
+    "title": "Gout - Joint Rest Ice",
+    "text": "Applying ice packs and elevating the affected joint (usually the big toe) provides significant non-pharmacological relief during an acute gout flare.",
+    "concepts": [
+      "Gout",
+      "JointRest",
+      "AcuteGoutAttack"
+    ]
+  },
+  {
+    "id": "P039",
+    "title": "Gout - Tophi Surgical Indications",
+    "text": "Surgical removal of gouty tophi is indicated if they cause nerve compression, joint infection, skin ulceration, or severe deformity.",
+    "concepts": [
+      "Gout",
+      "Surgery"
+    ]
+  },
+  {
+    "id": "P040",
+    "title": "Gout - Urate Lowering Goal",
+    "text": "The clinical goal of chronic gout treatment is to maintain serum urate levels below 6.0 mg/dL (or 360 umol/L) to dissolve existing urate crystals.",
+    "concepts": [
+      "Gout",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P041",
+    "title": "Osteomyelitis - Weight Bearing Restriction",
+    "text": "Active osteomyelitis weakens bone structures. Immediate weight-bearing on the affected long bone is contraindicated to prevent pathological fractures.",
+    "concepts": [
+      "Osteomyelitis",
+      "ActiveInfection",
+      "WeightBearing"
+    ],
+    "contraindications": [
+      "WeightBearing"
+    ]
+  },
+  {
+    "id": "P042",
+    "title": "Osteomyelitis - IV Antibiotics Therapy",
+    "text": "Osteomyelitis requires a prolonged course of intravenous (IV) antibiotics (typically 4 to 6 weeks) to penetrate the avascular infected bone tissue.",
+    "concepts": [
+      "Osteomyelitis",
+      "ActiveInfection",
+      "AntibioticTherapy"
+    ]
+  },
+  {
+    "id": "P043",
+    "title": "Osteomyelitis - Surgical Debridement",
+    "text": "Surgical debridement to remove necrotic bone (sequestrum) and infected tissue is essential for successful treatment of chronic osteomyelitis.",
+    "concepts": [
+      "Osteomyelitis",
+      "Surgery",
+      "ActiveInfection"
+    ]
+  },
+  {
+    "id": "P044",
+    "title": "Osteomyelitis - Hyperbaric Oxygen",
+    "text": "Adjunctive hyperbaric oxygen therapy can enhance osteoclast activity and antibiotic efficacy in refractory chronic osteomyelitis.",
+    "concepts": [
+      "Osteomyelitis",
+      "ActiveInfection"
+    ]
+  },
+  {
+    "id": "P045",
+    "title": "Osteomyelitis - Bone Grafting Reconstruction",
+    "text": "Following extensive surgical debridement of infected bone, bone grafting or muscle flaps are used to fill structural defects and restore blood flow.",
+    "concepts": [
+      "Osteomyelitis",
+      "Surgery"
+    ]
+  },
+  {
+    "id": "P046",
+    "title": "Osteomyelitis - Chronic Phase Antibiotics",
+    "text": "After IV antibiotic therapy, chronic osteomyelitis patients may transition to long-term oral antibiotics based on bone culture sensitivity results.",
+    "concepts": [
+      "Osteomyelitis",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P047",
+    "title": "Osteomyelitis - Infected Implant Removal",
+    "text": "If osteomyelitis is associated with orthopedic implants (screws, plates), complete removal of the hardware is usually necessary to cure the infection.",
+    "concepts": [
+      "Osteomyelitis",
+      "Surgery",
+      "ActiveInfection"
+    ]
+  },
+  {
+    "id": "P048",
+    "title": "Osteomyelitis - Jaw Osteomyelitis Care",
+    "text": "Osteomyelitis of the jaw (often post-dental extraction) requires debridement, antibiotics, and strict avoidance of pressure on the mandible.",
+    "concepts": [
+      "Osteomyelitis",
+      "ActiveInfection",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P049",
+    "title": "Osteomyelitis - Vertebral Osteomyelitis",
+    "text": "Vertebral osteomyelitis requires strict spinal immobilization with a brace and immediate IV antibiotic therapy to prevent spinal instability.",
+    "concepts": [
+      "Osteomyelitis",
+      "ActiveInfection",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P050",
+    "title": "Osteomyelitis - Diabetic Foot Osteomyelitis",
+    "text": "Osteomyelitis in diabetic foot ulcers often involves multiple pathogens and requires vascular evaluation alongside antibiotic therapy.",
+    "concepts": [
+      "Osteomyelitis",
+      "ActiveInfection",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P051",
+    "title": "Ankylosing Spondylitis - Daily Stretching",
+    "text": "For patients with ankylosing spondylitis, daily range-of-motion stretching and back extensions are critical to prevent spinal fusion and chest rigidity.",
+    "concepts": [
+      "AnkylosingSpondylitis",
+      "ROMStretching"
+    ]
+  },
+  {
+    "id": "P052",
+    "title": "Ankylosing Spondylitis - Heavy Weightlifting Contraindication",
+    "text": "Heavy weightlifting and contact sports are contraindicated in advanced ankylosing spondylitis due to risk of spinal fracture.",
+    "concepts": [
+      "AnkylosingSpondylitis",
+      "HeavyResistance"
+    ],
+    "contraindications": [
+      "HeavyResistance"
+    ]
+  },
+  {
+    "id": "P053",
+    "title": "Ankylosing Spondylitis - Biologics for Spine",
+    "text": "TNF inhibitors like infliximab or adalimumab are highly effective in reducing spinal inflammation and stiffness in ankylosing spondylitis.",
+    "concepts": [
+      "AnkylosingSpondylitis",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P054",
+    "title": "Ankylosing Spondylitis - NSAIDs First Line",
+    "text": "NSAIDs are the first-line medication for ankylosing spondylitis, helping to control pain and morning stiffness to allow exercise.",
+    "concepts": [
+      "AnkylosingSpondylitis",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P055",
+    "title": "Ankylosing Spondylitis - Swimming Benefits",
+    "text": "Swimming is the ideal exercise for ankylosing spondylitis, as it promotes spinal extension and chest expansion without joint impact.",
+    "concepts": [
+      "AnkylosingSpondylitis",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P056",
+    "title": "Ankylosing Spondylitis - Postural Training",
+    "text": "Sleep on a firm mattress without a pillow and practice posture training to maintain spinal alignment in ankylosing spondylitis.",
+    "concepts": [
+      "AnkylosingSpondylitis",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P057",
+    "title": "Ankylosing Spondylitis - Kyphosis Surgery",
+    "text": "Spinal osteotomy surgery is indicated for severe kyphosis deformity in ankylosing spondylitis to restore upright gaze.",
+    "concepts": [
+      "AnkylosingSpondylitis",
+      "Surgery"
+    ]
+  },
+  {
+    "id": "P058",
+    "title": "Ankylosing Spondylitis - DMARDs Limitations",
+    "text": "Traditional DMARDs like sulfasalazine have limited efficacy for axial spine symptoms of ankylosing spondylitis.",
+    "concepts": [
+      "AnkylosingSpondylitis",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P059",
+    "title": "Ankylosing Spondylitis - Uveitis Association",
+    "text": "Ankylosing spondylitis is associated with acute anterior uveitis (eye inflammation), requiring immediate steroid eye drops.",
+    "concepts": [
+      "AnkylosingSpondylitis",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P060",
+    "title": "Ankylosing Spondylitis - Cardiovascular Risk",
+    "text": "Chronic systemic inflammation in ankylosing spondylitis increases cardiovascular risk, requiring regular screening and healthy lifestyle.",
+    "concepts": [
+      "AnkylosingSpondylitis",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P061",
+    "title": "Sarcopenia - Protein Supplementation",
+    "text": "Sarcopenia management in elderly adults requires adequate daily protein intake (1.2-1.5 g/kg) to stimulate muscle protein synthesis.",
+    "concepts": [
+      "Sarcopenia",
+      "Nutrition"
+    ]
+  },
+  {
+    "id": "P062",
+    "title": "Sarcopenia - Resistance Training",
+    "text": "Progressive resistance training (light weights, bands) is the most effective exercise modality to increase muscle mass and strength in sarcopenia.",
+    "concepts": [
+      "Sarcopenia",
+      "LowImpactExercise",
+      "Rehabilitation"
+    ]
+  },
+  {
+    "id": "P063",
+    "title": "Sarcopenia - Fall Risk association",
+    "text": "Sarcopenia worsens balance and increases fall risk, necessitating dynamic balance exercises and postural training.",
+    "concepts": [
+      "Sarcopenia",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P064",
+    "title": "Sarcopenia - Vitamin D and Muscle",
+    "text": "Vitamin D supplementation improves muscle fiber composition and physical performance in sarcopenic older adults.",
+    "concepts": [
+      "Sarcopenia",
+      "Nutrition"
+    ]
+  },
+  {
+    "id": "P065",
+    "title": "Sarcopenia - High Impact Contraindication",
+    "text": "High-impact jumping or intense rapid heavy lifting is contraindicated in frail sarcopenic patients with poor joint stability.",
+    "concepts": [
+      "Sarcopenia",
+      "HighImpactExercise"
+    ],
+    "contraindications": [
+      "HighImpactExercise"
+    ]
+  },
+  {
+    "id": "P066",
+    "title": "Sarcopenia - Creatine Benefits",
+    "text": "Creatine supplementation combined with resistance training can further enhance muscle mass gains in older adults with sarcopenia.",
+    "concepts": [
+      "Sarcopenia",
+      "Nutrition"
+    ]
+  },
+  {
+    "id": "P067",
+    "title": "Sarcopenia - Aerobic Exercise",
+    "text": "While aerobic exercise is good for fitness, it must be paired with resistance training to reverse muscle wasting in sarcopenia.",
+    "concepts": [
+      "Sarcopenia",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P068",
+    "title": "Sarcopenia - Testosterone Therapy",
+    "text": "Testosterone replacement can increase muscle mass in sarcopenic men, but has significant cardiovascular side effects.",
+    "concepts": [
+      "Sarcopenia",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P069",
+    "title": "Sarcopenia - Growth Hormone",
+    "text": "Growth hormone therapy is not recommended for sarcopenia due to high rate of side effects without functional strength gains.",
+    "concepts": [
+      "Sarcopenia",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P070",
+    "title": "Sarcopenia - Anti-inflammatory Diet",
+    "text": "An anti-inflammatory diet rich in omega-3 fatty acids helps reduce chronic low-grade inflammation that contributes to sarcopenia.",
+    "concepts": [
+      "Sarcopenia",
+      "Nutrition"
+    ]
+  },
+  {
+    "id": "P071",
+    "title": "Rickets Osteomalacia - Vitamin D Rickets",
+    "text": "Nutritional rickets in children is treated with high-dose Vitamin D therapy (ergocalciferol or cholecalciferol) to restore bone mineralization.",
+    "concepts": [
+      "Rickets",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P072",
+    "title": "Rickets Osteomalacia - Calcium Co-therapy",
+    "text": "Adequate dietary calcium intake is essential during Vitamin D therapy for osteomalacia to prevent hungry bone syndrome.",
+    "concepts": [
+      "Osteomalacia",
+      "CalciumIntake"
+    ]
+  },
+  {
+    "id": "P073",
+    "title": "Rickets Osteomalacia - Bowing Deformity Care",
+    "text": "Children with active rickets should avoid heavy weight-bearing to minimize bowing deformities of the lower limbs.",
+    "concepts": [
+      "Rickets",
+      "WeightBearing"
+    ],
+    "contraindications": [
+      "WeightBearing"
+    ]
+  },
+  {
+    "id": "P074",
+    "title": "Rickets Osteomalacia - Phosphate Supplementation",
+    "text": "X-linked hypophosphatemic rickets requires oral phosphate supplements and active Vitamin D (calcitriol) therapy.",
+    "concepts": [
+      "Rickets",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P075",
+    "title": "Rickets Osteomalacia - Adult Osteomalacia",
+    "text": "Adult osteomalacia presents with diffuse bone pain and muscle weakness, and is diagnosed by low serum 25(OH)D levels.",
+    "concepts": [
+      "Osteomalacia",
+      "Nutrition"
+    ]
+  },
+  {
+    "id": "P076",
+    "title": "Rickets Osteomalacia - Sunlight Exposure",
+    "text": "Regular, safe sunlight exposure (10-15 minutes daily) is recommended to promote natural cutaneous Vitamin D synthesis.",
+    "concepts": [
+      "Rickets",
+      "Nutrition"
+    ]
+  },
+  {
+    "id": "P077",
+    "title": "Rickets Osteomalacia - Alk Phos Biomarker",
+    "text": "Elevated serum alkaline phosphatase (ALP) is a key laboratory marker for active rickets and osteomalacia bone turnover.",
+    "concepts": [
+      "Rickets",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P078",
+    "title": "Rickets Osteomalacia - Looser Zones Fracture",
+    "text": "Osteomalacia causes pseudo-fractures (Looser's zones) in the pelvis and femur, requiring rest and mineralization therapy.",
+    "concepts": [
+      "Osteomalacia",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P079",
+    "title": "Rickets Osteomalacia - Malabsorption Rickets",
+    "text": "Patients with celiac disease or gastric bypass can develop malabsorption-induced osteomalacia, requiring high-dose active Vitamin D.",
+    "concepts": [
+      "Osteomalacia",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P080",
+    "title": "Rickets Osteomalacia - Surgical Correction",
+    "text": "Surgical osteotomy to correct leg deformities is delayed until active rickets is fully cured medically.",
+    "concepts": [
+      "Rickets",
+      "Surgery"
+    ]
+  },
+  {
+    "id": "P081",
+    "title": "Paget Disease - Bisphosphonates for Paget",
+    "text": "Intravenous zoledronic acid is the first-line medication to suppress rapid bone remodeling in active Paget's disease.",
+    "concepts": [
+      "PagetDisease",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P082",
+    "title": "Paget Disease - High Impact Contraindication",
+    "text": "High-impact exercises like running and jumping are contraindicated in Paget's disease due to risk of micro-fractures in abnormal bone.",
+    "concepts": [
+      "PagetDisease",
+      "HighImpactExercise"
+    ],
+    "contraindications": [
+      "HighImpactExercise"
+    ]
+  },
+  {
+    "id": "P083",
+    "title": "Paget Disease - Calcitonin Therapy",
+    "text": "Subcutaneous calcitonin is a second-line antiresorptive agent used for Paget's patients who cannot tolerate bisphosphonates.",
+    "concepts": [
+      "PagetDisease",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P084",
+    "title": "Paget Disease - Bone Deformity Surgery",
+    "text": "Surgical osteotomy or joint arthroplasty is indicated in Paget's disease to treat severe osteoarthritis secondary to bone deformity.",
+    "concepts": [
+      "PagetDisease",
+      "Surgery"
+    ]
+  },
+  {
+    "id": "P085",
+    "title": "Paget Disease - Hearing Loss Concern",
+    "text": "Paget's disease affecting the skull can compress cranial nerves, leading to progressive hearing loss or headaches.",
+    "concepts": [
+      "PagetDisease",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P086",
+    "title": "Paget Disease - Alkaline Phosphatase monitoring",
+    "text": "Serum total alkaline phosphatase (ALP) is monitored regularly to evaluate treatment response and disease activity in Paget's disease.",
+    "concepts": [
+      "PagetDisease",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P087",
+    "title": "Paget Disease - Gentle Exercise",
+    "text": "Low-impact physical activities like walking, swimming, and cycling are recommended to maintain joint mobility in Paget's disease.",
+    "concepts": [
+      "PagetDisease",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P088",
+    "title": "Paget Disease - Osteosarcoma Risk",
+    "text": "A rare but fatal complication of Paget's disease is Pagetic osteosarcoma (bone cancer), characterized by sudden severe pain.",
+    "concepts": [
+      "PagetDisease",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P089",
+    "title": "Paget Disease - Calcium Monitoring",
+    "text": "Pre-treatment calcium levels must be normal before administering zoledronic acid in Paget's disease to avoid hypocalcemia.",
+    "concepts": [
+      "PagetDisease",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P090",
+    "title": "Paget Disease - Spinal Stenosis",
+    "text": "Paget's disease of the spine can cause vertebral enlargement, leading to spinal stenosis and requiring surgical decompression.",
+    "concepts": [
+      "PagetDisease",
+      "Surgery"
+    ]
+  },
+  {
+    "id": "P091",
+    "title": "Fibrous Dysplasia - Surgical Stabilization",
+    "text": "Fibrous dysplasia replaces normal bone with fibrous tissue. Surgical stabilization with intramedullary rods is indicated for deformity.",
+    "concepts": [
+      "FibrousDysplasia",
+      "Surgery"
+    ]
+  },
+  {
+    "id": "P092",
+    "title": "Fibrous Dysplasia - Avoid Weight Bearing",
+    "text": "Immediate heavy weight-bearing on lower limb bones affected by fibrous dysplasia is contraindicated during active pain to prevent fractures.",
+    "concepts": [
+      "FibrousDysplasia",
+      "WeightBearing"
+    ],
+    "contraindications": [
+      "WeightBearing"
+    ]
+  },
+  {
+    "id": "P093",
+    "title": "Fibrous Dysplasia - Bisphosphonates Relief",
+    "text": "Intravenous bisphosphonates (like pamidronate) help reduce bone pain and strengthen fibrous dysplasia bone lesions.",
+    "concepts": [
+      "FibrousDysplasia",
+      "Medication"
+    ]
+  },
+  {
+    "id": "P094",
+    "title": "Fibrous Dysplasia - McCune Albright Syndrome",
+    "text": "Polyostotic fibrous dysplasia associated with cafe-au-lait spots and endocrine abnormalities indicates McCune-Albright syndrome.",
+    "concepts": [
+      "FibrousDysplasia",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P095",
+    "title": "Fibrous Dysplasia - Craniofacial Dysplasia",
+    "text": "Craniofacial fibrous dysplasia can cause facial asymmetry, vision loss, or nasal obstruction, requiring surgical reduction.",
+    "concepts": [
+      "FibrousDysplasia",
+      "Surgery"
+    ]
+  },
+  {
+    "id": "P096",
+    "title": "Fibrous Dysplasia - Malignant Transformation",
+    "text": "Although rare, fibrous dysplasia lesions can undergo malignant transformation (sarcoma), accelerated by radiation therapy.",
+    "concepts": [
+      "FibrousDysplasia",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P097",
+    "title": "Fibrous Dysplasia - Shepherd Crook Deformity",
+    "text": "Femoral fibrous dysplasia often leads to a 'shepherd's crook' deformity of the hip, requiring reconstructive surgery.",
+    "concepts": [
+      "FibrousDysplasia",
+      "Surgery"
+    ]
+  },
+  {
+    "id": "P098",
+    "title": "Fibrous Dysplasia - Gentle Mobility",
+    "text": "Low-impact exercises and physical therapy to strengthen surrounding muscles are recommended to support fibrous dysplasia bones.",
+    "concepts": [
+      "FibrousDysplasia",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P099",
+    "title": "Fibrous Dysplasia - Calcium Intake Support",
+    "text": "Maintaining optimal dietary calcium and Vitamin D levels supports mineralization of normal bone surrounding fibrous lesions.",
+    "concepts": [
+      "FibrousDysplasia",
+      "CalciumIntake"
+    ]
+  },
+  {
+    "id": "P100",
+    "title": "Fibrous Dysplasia - Monitoring Lesions",
+    "text": "Regular X-rays or CT scans are necessary to monitor the progression of fibrous dysplasia lesions, especially during growth spurts.",
+    "concepts": [
+      "FibrousDysplasia",
+      "Safety"
+    ]
+  },
+  {
+    "id": "P101",
+    "title": "Psoriatic Arthritis - Guideline Case 1",
+    "text": "This is clinical guideline document 1 for Psoriatic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "PsoriaticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P102",
+    "title": "Psoriatic Arthritis - Guideline Case 2",
+    "text": "This is clinical guideline document 2 for Psoriatic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "PsoriaticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P103",
+    "title": "Psoriatic Arthritis - Guideline Case 3",
+    "text": "This is clinical guideline document 3 for Psoriatic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "PsoriaticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P104",
+    "title": "Psoriatic Arthritis - Guideline Case 4",
+    "text": "This is clinical guideline document 4 for Psoriatic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "PsoriaticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P105",
+    "title": "Psoriatic Arthritis - Guideline Case 5",
+    "text": "This is clinical guideline document 5 for Psoriatic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders. High-impact exercises and heavy resistance training are strictly contraindicated to protect the patient's joints.",
+    "concepts": [
+      "PsoriaticArthritis",
+      "Safety",
+      "LowImpactExercise",
+      "HighImpactExercise"
+    ],
+    "contraindications": [
+      "HighImpactExercise"
+    ]
+  },
+  {
+    "id": "P106",
+    "title": "Psoriatic Arthritis - Guideline Case 6",
+    "text": "This is clinical guideline document 6 for Psoriatic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "PsoriaticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P107",
+    "title": "Psoriatic Arthritis - Guideline Case 7",
+    "text": "This is clinical guideline document 7 for Psoriatic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "PsoriaticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P108",
+    "title": "Psoriatic Arthritis - Guideline Case 8",
+    "text": "This is clinical guideline document 8 for Psoriatic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "PsoriaticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P109",
+    "title": "Psoriatic Arthritis - Guideline Case 9",
+    "text": "This is clinical guideline document 9 for Psoriatic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "PsoriaticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P110",
+    "title": "Psoriatic Arthritis - Guideline Case 10",
+    "text": "This is clinical guideline document 10 for Psoriatic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "PsoriaticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P111",
+    "title": "Septic Arthritis - Guideline Case 1",
+    "text": "This is clinical guideline document 1 for Septic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SepticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P112",
+    "title": "Septic Arthritis - Guideline Case 2",
+    "text": "This is clinical guideline document 2 for Septic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SepticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P113",
+    "title": "Septic Arthritis - Guideline Case 3",
+    "text": "This is clinical guideline document 3 for Septic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SepticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P114",
+    "title": "Septic Arthritis - Guideline Case 4",
+    "text": "This is clinical guideline document 4 for Septic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SepticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P115",
+    "title": "Septic Arthritis - Guideline Case 5",
+    "text": "This is clinical guideline document 5 for Septic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders. High-impact exercises and heavy resistance training are strictly contraindicated to protect the patient's joints.",
+    "concepts": [
+      "SepticArthritis",
+      "Safety",
+      "LowImpactExercise",
+      "HighImpactExercise"
+    ],
+    "contraindications": [
+      "HighImpactExercise"
+    ]
+  },
+  {
+    "id": "P116",
+    "title": "Septic Arthritis - Guideline Case 6",
+    "text": "This is clinical guideline document 6 for Septic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SepticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P117",
+    "title": "Septic Arthritis - Guideline Case 7",
+    "text": "This is clinical guideline document 7 for Septic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SepticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P118",
+    "title": "Septic Arthritis - Guideline Case 8",
+    "text": "This is clinical guideline document 8 for Septic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SepticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P119",
+    "title": "Septic Arthritis - Guideline Case 9",
+    "text": "This is clinical guideline document 9 for Septic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SepticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P120",
+    "title": "Septic Arthritis - Guideline Case 10",
+    "text": "This is clinical guideline document 10 for Septic Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SepticArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P121",
+    "title": "Spinal Stenosis - Guideline Case 1",
+    "text": "This is clinical guideline document 1 for Spinal Stenosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SpinalStenosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P122",
+    "title": "Spinal Stenosis - Guideline Case 2",
+    "text": "This is clinical guideline document 2 for Spinal Stenosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SpinalStenosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P123",
+    "title": "Spinal Stenosis - Guideline Case 3",
+    "text": "This is clinical guideline document 3 for Spinal Stenosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SpinalStenosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P124",
+    "title": "Spinal Stenosis - Guideline Case 4",
+    "text": "This is clinical guideline document 4 for Spinal Stenosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SpinalStenosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P125",
+    "title": "Spinal Stenosis - Guideline Case 5",
+    "text": "This is clinical guideline document 5 for Spinal Stenosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders. High-impact exercises and heavy resistance training are strictly contraindicated to protect the patient's joints.",
+    "concepts": [
+      "SpinalStenosis",
+      "Safety",
+      "LowImpactExercise",
+      "HighImpactExercise"
+    ],
+    "contraindications": [
+      "HighImpactExercise"
+    ]
+  },
+  {
+    "id": "P126",
+    "title": "Spinal Stenosis - Guideline Case 6",
+    "text": "This is clinical guideline document 6 for Spinal Stenosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SpinalStenosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P127",
+    "title": "Spinal Stenosis - Guideline Case 7",
+    "text": "This is clinical guideline document 7 for Spinal Stenosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SpinalStenosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P128",
+    "title": "Spinal Stenosis - Guideline Case 8",
+    "text": "This is clinical guideline document 8 for Spinal Stenosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SpinalStenosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P129",
+    "title": "Spinal Stenosis - Guideline Case 9",
+    "text": "This is clinical guideline document 9 for Spinal Stenosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SpinalStenosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P130",
+    "title": "Spinal Stenosis - Guideline Case 10",
+    "text": "This is clinical guideline document 10 for Spinal Stenosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "SpinalStenosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P131",
+    "title": "Herniated Disc - Guideline Case 1",
+    "text": "This is clinical guideline document 1 for Herniated Disc. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "HerniatedDisc",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P132",
+    "title": "Herniated Disc - Guideline Case 2",
+    "text": "This is clinical guideline document 2 for Herniated Disc. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "HerniatedDisc",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P133",
+    "title": "Herniated Disc - Guideline Case 3",
+    "text": "This is clinical guideline document 3 for Herniated Disc. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "HerniatedDisc",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P134",
+    "title": "Herniated Disc - Guideline Case 4",
+    "text": "This is clinical guideline document 4 for Herniated Disc. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "HerniatedDisc",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P135",
+    "title": "Herniated Disc - Guideline Case 5",
+    "text": "This is clinical guideline document 5 for Herniated Disc. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders. High-impact exercises and heavy resistance training are strictly contraindicated to protect the patient's joints.",
+    "concepts": [
+      "HerniatedDisc",
+      "Safety",
+      "LowImpactExercise",
+      "HighImpactExercise"
+    ],
+    "contraindications": [
+      "HighImpactExercise"
+    ]
+  },
+  {
+    "id": "P136",
+    "title": "Herniated Disc - Guideline Case 6",
+    "text": "This is clinical guideline document 6 for Herniated Disc. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "HerniatedDisc",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P137",
+    "title": "Herniated Disc - Guideline Case 7",
+    "text": "This is clinical guideline document 7 for Herniated Disc. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "HerniatedDisc",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P138",
+    "title": "Herniated Disc - Guideline Case 8",
+    "text": "This is clinical guideline document 8 for Herniated Disc. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "HerniatedDisc",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P139",
+    "title": "Herniated Disc - Guideline Case 9",
+    "text": "This is clinical guideline document 9 for Herniated Disc. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "HerniatedDisc",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P140",
+    "title": "Herniated Disc - Guideline Case 10",
+    "text": "This is clinical guideline document 10 for Herniated Disc. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "HerniatedDisc",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P141",
+    "title": "Adhesive Capsulitis - Guideline Case 1",
+    "text": "This is clinical guideline document 1 for Adhesive Capsulitis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AdhesiveCapsulitis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P142",
+    "title": "Adhesive Capsulitis - Guideline Case 2",
+    "text": "This is clinical guideline document 2 for Adhesive Capsulitis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AdhesiveCapsulitis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P143",
+    "title": "Adhesive Capsulitis - Guideline Case 3",
+    "text": "This is clinical guideline document 3 for Adhesive Capsulitis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AdhesiveCapsulitis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P144",
+    "title": "Adhesive Capsulitis - Guideline Case 4",
+    "text": "This is clinical guideline document 4 for Adhesive Capsulitis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AdhesiveCapsulitis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P145",
+    "title": "Adhesive Capsulitis - Guideline Case 5",
+    "text": "This is clinical guideline document 5 for Adhesive Capsulitis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders. High-impact exercises and heavy resistance training are strictly contraindicated to protect the patient's joints.",
+    "concepts": [
+      "AdhesiveCapsulitis",
+      "Safety",
+      "LowImpactExercise",
+      "HighImpactExercise"
+    ],
+    "contraindications": [
+      "HighImpactExercise"
+    ]
+  },
+  {
+    "id": "P146",
+    "title": "Adhesive Capsulitis - Guideline Case 6",
+    "text": "This is clinical guideline document 6 for Adhesive Capsulitis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AdhesiveCapsulitis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P147",
+    "title": "Adhesive Capsulitis - Guideline Case 7",
+    "text": "This is clinical guideline document 7 for Adhesive Capsulitis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AdhesiveCapsulitis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P148",
+    "title": "Adhesive Capsulitis - Guideline Case 8",
+    "text": "This is clinical guideline document 8 for Adhesive Capsulitis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AdhesiveCapsulitis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P149",
+    "title": "Adhesive Capsulitis - Guideline Case 9",
+    "text": "This is clinical guideline document 9 for Adhesive Capsulitis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AdhesiveCapsulitis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P150",
+    "title": "Adhesive Capsulitis - Guideline Case 10",
+    "text": "This is clinical guideline document 10 for Adhesive Capsulitis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AdhesiveCapsulitis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P151",
+    "title": "Bone Tumors - Guideline Case 1",
+    "text": "This is clinical guideline document 1 for Bone Tumors. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "BoneTumors",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P152",
+    "title": "Bone Tumors - Guideline Case 2",
+    "text": "This is clinical guideline document 2 for Bone Tumors. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "BoneTumors",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P153",
+    "title": "Bone Tumors - Guideline Case 3",
+    "text": "This is clinical guideline document 3 for Bone Tumors. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "BoneTumors",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P154",
+    "title": "Bone Tumors - Guideline Case 4",
+    "text": "This is clinical guideline document 4 for Bone Tumors. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "BoneTumors",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P155",
+    "title": "Bone Tumors - Guideline Case 5",
+    "text": "This is clinical guideline document 5 for Bone Tumors. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders. High-impact exercises and heavy resistance training are strictly contraindicated to protect the patient's joints.",
+    "concepts": [
+      "BoneTumors",
+      "Safety",
+      "LowImpactExercise",
+      "HighImpactExercise"
+    ],
+    "contraindications": [
+      "HighImpactExercise"
+    ]
+  },
+  {
+    "id": "P156",
+    "title": "Bone Tumors - Guideline Case 6",
+    "text": "This is clinical guideline document 6 for Bone Tumors. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "BoneTumors",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P157",
+    "title": "Bone Tumors - Guideline Case 7",
+    "text": "This is clinical guideline document 7 for Bone Tumors. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "BoneTumors",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P158",
+    "title": "Bone Tumors - Guideline Case 8",
+    "text": "This is clinical guideline document 8 for Bone Tumors. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "BoneTumors",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P159",
+    "title": "Bone Tumors - Guideline Case 9",
+    "text": "This is clinical guideline document 9 for Bone Tumors. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "BoneTumors",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P160",
+    "title": "Bone Tumors - Guideline Case 10",
+    "text": "This is clinical guideline document 10 for Bone Tumors. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "BoneTumors",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P161",
+    "title": "Avascular Necrosis - Guideline Case 1",
+    "text": "This is clinical guideline document 1 for Avascular Necrosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AvascularNecrosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P162",
+    "title": "Avascular Necrosis - Guideline Case 2",
+    "text": "This is clinical guideline document 2 for Avascular Necrosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AvascularNecrosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P163",
+    "title": "Avascular Necrosis - Guideline Case 3",
+    "text": "This is clinical guideline document 3 for Avascular Necrosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AvascularNecrosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P164",
+    "title": "Avascular Necrosis - Guideline Case 4",
+    "text": "This is clinical guideline document 4 for Avascular Necrosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AvascularNecrosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P165",
+    "title": "Avascular Necrosis - Guideline Case 5",
+    "text": "This is clinical guideline document 5 for Avascular Necrosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders. High-impact exercises and heavy resistance training are strictly contraindicated to protect the patient's joints.",
+    "concepts": [
+      "AvascularNecrosis",
+      "Safety",
+      "LowImpactExercise",
+      "HighImpactExercise"
+    ],
+    "contraindications": [
+      "HighImpactExercise"
+    ]
+  },
+  {
+    "id": "P166",
+    "title": "Avascular Necrosis - Guideline Case 6",
+    "text": "This is clinical guideline document 6 for Avascular Necrosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AvascularNecrosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P167",
+    "title": "Avascular Necrosis - Guideline Case 7",
+    "text": "This is clinical guideline document 7 for Avascular Necrosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AvascularNecrosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P168",
+    "title": "Avascular Necrosis - Guideline Case 8",
+    "text": "This is clinical guideline document 8 for Avascular Necrosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AvascularNecrosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P169",
+    "title": "Avascular Necrosis - Guideline Case 9",
+    "text": "This is clinical guideline document 9 for Avascular Necrosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AvascularNecrosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P170",
+    "title": "Avascular Necrosis - Guideline Case 10",
+    "text": "This is clinical guideline document 10 for Avascular Necrosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "AvascularNecrosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P171",
+    "title": "Scoliosis - Guideline Case 1",
+    "text": "This is clinical guideline document 1 for Scoliosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "Scoliosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P172",
+    "title": "Scoliosis - Guideline Case 2",
+    "text": "This is clinical guideline document 2 for Scoliosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "Scoliosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P173",
+    "title": "Scoliosis - Guideline Case 3",
+    "text": "This is clinical guideline document 3 for Scoliosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "Scoliosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P174",
+    "title": "Scoliosis - Guideline Case 4",
+    "text": "This is clinical guideline document 4 for Scoliosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "Scoliosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P175",
+    "title": "Scoliosis - Guideline Case 5",
+    "text": "This is clinical guideline document 5 for Scoliosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders. High-impact exercises and heavy resistance training are strictly contraindicated to protect the patient's joints.",
+    "concepts": [
+      "Scoliosis",
+      "Safety",
+      "LowImpactExercise",
+      "HighImpactExercise"
+    ],
+    "contraindications": [
+      "HighImpactExercise"
+    ]
+  },
+  {
+    "id": "P176",
+    "title": "Scoliosis - Guideline Case 6",
+    "text": "This is clinical guideline document 6 for Scoliosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "Scoliosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P177",
+    "title": "Scoliosis - Guideline Case 7",
+    "text": "This is clinical guideline document 7 for Scoliosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "Scoliosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P178",
+    "title": "Scoliosis - Guideline Case 8",
+    "text": "This is clinical guideline document 8 for Scoliosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "Scoliosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P179",
+    "title": "Scoliosis - Guideline Case 9",
+    "text": "This is clinical guideline document 9 for Scoliosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "Scoliosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P180",
+    "title": "Scoliosis - Guideline Case 10",
+    "text": "This is clinical guideline document 10 for Scoliosis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "Scoliosis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P181",
+    "title": "Gouty Tophi - Guideline Case 1",
+    "text": "This is clinical guideline document 1 for Gouty Tophi. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "GoutyTophi",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P182",
+    "title": "Gouty Tophi - Guideline Case 2",
+    "text": "This is clinical guideline document 2 for Gouty Tophi. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "GoutyTophi",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P183",
+    "title": "Gouty Tophi - Guideline Case 3",
+    "text": "This is clinical guideline document 3 for Gouty Tophi. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "GoutyTophi",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P184",
+    "title": "Gouty Tophi - Guideline Case 4",
+    "text": "This is clinical guideline document 4 for Gouty Tophi. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "GoutyTophi",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P185",
+    "title": "Gouty Tophi - Guideline Case 5",
+    "text": "This is clinical guideline document 5 for Gouty Tophi. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders. High-impact exercises and heavy resistance training are strictly contraindicated to protect the patient's joints.",
+    "concepts": [
+      "GoutyTophi",
+      "Safety",
+      "LowImpactExercise",
+      "HighImpactExercise"
+    ],
+    "contraindications": [
+      "HighImpactExercise"
+    ]
+  },
+  {
+    "id": "P186",
+    "title": "Gouty Tophi - Guideline Case 6",
+    "text": "This is clinical guideline document 6 for Gouty Tophi. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "GoutyTophi",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P187",
+    "title": "Gouty Tophi - Guideline Case 7",
+    "text": "This is clinical guideline document 7 for Gouty Tophi. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "GoutyTophi",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P188",
+    "title": "Gouty Tophi - Guideline Case 8",
+    "text": "This is clinical guideline document 8 for Gouty Tophi. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "GoutyTophi",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P189",
+    "title": "Gouty Tophi - Guideline Case 9",
+    "text": "This is clinical guideline document 9 for Gouty Tophi. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "GoutyTophi",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P190",
+    "title": "Gouty Tophi - Guideline Case 10",
+    "text": "This is clinical guideline document 10 for Gouty Tophi. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "GoutyTophi",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P191",
+    "title": "Juvenile Rheumatoid Arthritis - Guideline Case 1",
+    "text": "This is clinical guideline document 1 for Juvenile Rheumatoid Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "JuvenileRheumatoidArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P192",
+    "title": "Juvenile Rheumatoid Arthritis - Guideline Case 2",
+    "text": "This is clinical guideline document 2 for Juvenile Rheumatoid Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "JuvenileRheumatoidArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P193",
+    "title": "Juvenile Rheumatoid Arthritis - Guideline Case 3",
+    "text": "This is clinical guideline document 3 for Juvenile Rheumatoid Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "JuvenileRheumatoidArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P194",
+    "title": "Juvenile Rheumatoid Arthritis - Guideline Case 4",
+    "text": "This is clinical guideline document 4 for Juvenile Rheumatoid Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "JuvenileRheumatoidArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P195",
+    "title": "Juvenile Rheumatoid Arthritis - Guideline Case 5",
+    "text": "This is clinical guideline document 5 for Juvenile Rheumatoid Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders. High-impact exercises and heavy resistance training are strictly contraindicated to protect the patient's joints.",
+    "concepts": [
+      "JuvenileRheumatoidArthritis",
+      "Safety",
+      "LowImpactExercise",
+      "HighImpactExercise"
+    ],
+    "contraindications": [
+      "HighImpactExercise"
+    ]
+  },
+  {
+    "id": "P196",
+    "title": "Juvenile Rheumatoid Arthritis - Guideline Case 6",
+    "text": "This is clinical guideline document 6 for Juvenile Rheumatoid Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "JuvenileRheumatoidArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P197",
+    "title": "Juvenile Rheumatoid Arthritis - Guideline Case 7",
+    "text": "This is clinical guideline document 7 for Juvenile Rheumatoid Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "JuvenileRheumatoidArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P198",
+    "title": "Juvenile Rheumatoid Arthritis - Guideline Case 8",
+    "text": "This is clinical guideline document 8 for Juvenile Rheumatoid Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "JuvenileRheumatoidArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P199",
+    "title": "Juvenile Rheumatoid Arthritis - Guideline Case 9",
+    "text": "This is clinical guideline document 9 for Juvenile Rheumatoid Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "JuvenileRheumatoidArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  },
+  {
+    "id": "P200",
+    "title": "Juvenile Rheumatoid Arthritis - Guideline Case 10",
+    "text": "This is clinical guideline document 10 for Juvenile Rheumatoid Arthritis. It outlines standard diagnostic criteria, exercise protocols, pharmacological safety, and surgical management of patients presenting with bone and joint disorders.",
+    "concepts": [
+      "JuvenileRheumatoidArthritis",
+      "Safety",
+      "LowImpactExercise"
+    ]
+  }
+]
