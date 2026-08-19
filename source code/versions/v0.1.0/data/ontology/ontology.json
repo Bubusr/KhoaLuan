@@ -4,163 +4,622 @@
       "id": "C001",
       "name": "Osteoporosis",
       "type": "Disease",
-      "synonyms": ["bone loss", "thin bones", "low bone density", "loãng xương"]
+      "synonyms": [
+        "bone loss",
+        "thin bones",
+        "low bone density",
+        "loãng xương"
+      ]
     },
     {
       "id": "C002",
       "name": "VertebralFracture",
       "type": "Disease",
-      "synonyms": ["vertebral compression fracture", "broken vertebra", "broken spine bone", "spine fracture", "gãy cột sống"]
+      "synonyms": [
+        "vertebral compression fracture",
+        "broken vertebra",
+        "broken spine bone",
+        "gãy lún cột sống"
+      ]
     },
     {
       "id": "C003",
-      "name": "Spine",
-      "type": "Anatomy",
-      "synonyms": ["backbone", "vertebral column", "cột sống"]
+      "name": "HipFracture",
+      "type": "Disease",
+      "synonyms": [
+        "femoral neck fracture",
+        "broken hip",
+        "intertrochanteric fracture",
+        "gãy cổ xương đùi"
+      ]
     },
     {
       "id": "C004",
-      "name": "Vertebra",
-      "type": "Anatomy",
-      "synonyms": ["spinal bone", "vertebral body", "đốt sống"]
+      "name": "Osteoarthritis",
+      "type": "Disease",
+      "synonyms": [
+        "degenerative joint disease",
+        "wear and tear arthritis",
+        "thoái hóa khớp"
+      ]
     },
     {
       "id": "C005",
-      "name": "AcutePostFracture",
-      "type": "ClinicalState",
-      "synonyms": ["recent fracture", "new fracture", "fresh fracture", "giai đoạn cấp"]
+      "name": "RheumatoidArthritis",
+      "type": "Disease",
+      "synonyms": [
+        "inflammatory arthritis",
+        "autoimmune joint disease",
+        "viêm khớp dạng thấp"
+      ]
     },
     {
       "id": "C006",
-      "name": "Stable",
-      "type": "ClinicalState",
-      "synonyms": ["chronic", "no recent fracture", "recovered", "giai đoạn ổn định"]
+      "name": "Gout",
+      "type": "Disease",
+      "synonyms": [
+        "gouty arthritis",
+        "hyperuricemia",
+        "podagra",
+        "bệnh gút"
+      ]
     },
     {
       "id": "C007",
-      "name": "HighImpactExercise",
-      "type": "Intervention",
-      "synonyms": ["running", "jogging", "jumping", "heavy weightlifting", "forward bending", "spinal flexion", "chạy bộ", "tập nặng"]
+      "name": "Osteomyelitis",
+      "type": "Disease",
+      "synonyms": [
+        "bone infection",
+        "bone suppuration",
+        "infectious osteitis",
+        "viêm xương tủy"
+      ]
     },
     {
       "id": "C008",
-      "name": "LowImpactExercise",
-      "type": "Intervention",
-      "synonyms": ["walking", "swimming", "gentle stretching", "tai chi", "đi bộ", "bơi"]
+      "name": "AnkylosingSpondylitis",
+      "type": "Disease",
+      "synonyms": [
+        "axial spondyloarthritis",
+        "bamboo spine",
+        "viêm cột sống dính khớp"
+      ]
     },
     {
       "id": "C009",
-      "name": "Rest",
-      "type": "Intervention",
-      "synonyms": ["bed rest", "immobilization", "limited activity", "nghỉ ngơi"]
+      "name": "Sarcopenia",
+      "type": "Disease",
+      "synonyms": [
+        "muscle wasting",
+        "muscle loss in elderly",
+        "suy giảm khối lượng cơ"
+      ]
     },
     {
       "id": "C010",
-      "name": "Rehabilitation",
-      "type": "Intent",
-      "synonyms": ["exercise guideline", "rehab protocol", "physiotherapy", "recovery exercises", "phục hồi chức năng"]
+      "name": "Rickets",
+      "type": "Disease",
+      "synonyms": [
+        "pediatric rickets",
+        "vitamin D deficiency rickets",
+        "còi xương trẻ em"
+      ]
     },
     {
       "id": "C011",
-      "name": "Safety",
-      "type": "Intent",
-      "synonyms": ["contraindications", "warnings", "risks", "dangers", "chống chỉ định"]
+      "name": "Osteomalacia",
+      "type": "Disease",
+      "synonyms": [
+        "adult bone softening",
+        "impaired bone mineralization",
+        "nhuyễn xương"
+      ]
     },
     {
       "id": "C012",
-      "name": "Osteoarthritis",
+      "name": "PagetDisease",
       "type": "Disease",
-      "synonyms": ["degenerative joint disease", "wear and tear arthritis", "thoái hóa khớp"]
+      "synonyms": [
+        "osteitis deformans",
+        "pagetic bone",
+        "bệnh paget xương"
+      ]
     },
     {
       "id": "C013",
-      "name": "Knee",
-      "type": "Anatomy",
-      "synonyms": ["knee joint", "patella", "khớp gối"]
+      "name": "FibrousDysplasia",
+      "type": "Disease",
+      "synonyms": [
+        "shepherd crook deformity",
+        "monostotic fibrous dysplasia",
+        "loạn sản xơ xương"
+      ]
     },
     {
       "id": "C014",
-      "name": "FlareUp",
-      "type": "ClinicalState",
-      "synonyms": ["acute inflammation", "acute joint swelling", "đợt viêm cấp"]
+      "name": "PepticUlcerDisease",
+      "type": "Disease",
+      "synonyms": [
+        "gastric ulcer",
+        "duodenal ulcer",
+        "stomach bleed",
+        "loét dạ dày tá tràng"
+      ]
     },
     {
       "id": "C015",
-      "name": "WaterExercise",
-      "type": "Intervention",
-      "synonyms": ["aquatic therapy", "swimming", "water aerobics", "thể thao dưới nước"]
+      "name": "ChronicKidneyDisease",
+      "type": "Disease",
+      "synonyms": [
+        "renal failure",
+        "low eGFR",
+        "kidney disease",
+        "suy thận mạn"
+      ]
     },
     {
       "id": "C016",
-      "name": "RheumatoidArthritis",
+      "name": "DiabetesMellitus",
       "type": "Disease",
-      "synonyms": ["inflammatory arthritis", "autoimmune joint disease", "viêm khớp dạng thấp"]
+      "synonyms": [
+        "diabetic foot",
+        "hyperglycemia",
+        "đái tháo đường"
+      ]
     },
     {
       "id": "C017",
-      "name": "JointInflammation",
-      "type": "ClinicalState",
-      "synonyms": ["active synovitis", "painful joints", "sưng khớp"]
+      "name": "Hypertension",
+      "type": "Disease",
+      "synonyms": [
+        "high blood pressure",
+        "tăng huyết áp"
+      ]
     },
     {
       "id": "C018",
-      "name": "ROMStretching",
-      "type": "Intervention",
-      "synonyms": ["range of motion", "gentle stretching", "flexibility exercises", "tập kéo giãn"]
-    },
-    {
-      "id": "C019",
-      "name": "HeavyResistance",
-      "type": "Intervention",
-      "synonyms": ["heavy lifting", "high intensity training", "tập kháng lực nặng"]
+      "name": "SevereLiverDisease",
+      "type": "Disease",
+      "synonyms": [
+        "hepatic impairment",
+        "cirrhosis",
+        "suy gan"
+      ]
     },
     {
       "id": "C020",
-      "name": "Gout",
-      "type": "Disease",
-      "synonyms": ["gouty arthritis", "uric acid joint disease", "bệnh gút"]
+      "name": "Spine",
+      "type": "Anatomy",
+      "synonyms": [
+        "backbone",
+        "vertebral column",
+        "cột sống"
+      ]
     },
     {
       "id": "C021",
-      "name": "AcuteGoutAttack",
-      "type": "ClinicalState",
-      "synonyms": ["gout flare", "acute gout attack", "cơn gút cấp"]
+      "name": "Vertebra",
+      "type": "Anatomy",
+      "synonyms": [
+        "spinal bone",
+        "vertebral body",
+        "đốt sống"
+      ]
     },
     {
       "id": "C022",
-      "name": "PurineRichFood",
-      "type": "Intervention",
-      "synonyms": ["red meat", "seafood", "alcohol", "thực phẩm giàu purin"]
+      "name": "Knee",
+      "type": "Anatomy",
+      "synonyms": [
+        "knee joint",
+        "patella",
+        "tibiofemoral",
+        "khớp gối"
+      ]
     },
     {
       "id": "C023",
-      "name": "Hydration",
-      "type": "Intervention",
-      "synonyms": ["drinking water", "fluid intake", "uống nhiều nước"]
+      "name": "Hip",
+      "type": "Anatomy",
+      "synonyms": [
+        "hip joint",
+        "femur",
+        "acetabulum",
+        "khớp háng"
+      ]
     },
     {
       "id": "C024",
-      "name": "Osteomyelitis",
-      "type": "Disease",
-      "synonyms": ["bone infection", "bacterial bone disease", "viêm xương tủy"]
+      "name": "HandJoints",
+      "type": "Anatomy",
+      "synonyms": [
+        "MCP",
+        "PIP",
+        "wrist",
+        "khớp bàn tay"
+      ]
     },
     {
       "id": "C025",
-      "name": "ActiveInfection",
-      "type": "ClinicalState",
-      "synonyms": ["bone suppuration", "acute bone infection", "nhiễm trùng tiến triển"]
+      "name": "FirstMTP",
+      "type": "Anatomy",
+      "synonyms": [
+        "great toe joint",
+        "big toe",
+        "ngón chân cái"
+      ]
     },
     {
       "id": "C026",
-      "name": "AntibioticTherapy",
-      "type": "Intervention",
-      "synonyms": ["IV antibiotics", "antimicrobial treatment", "kháng sinh truyền tĩnh mạch"]
+      "name": "Skull",
+      "type": "Anatomy",
+      "synonyms": [
+        "cranium",
+        "temporal bone",
+        "hộp sọ"
+      ]
     },
     {
-      "id": "C027",
+      "id": "C030",
+      "name": "AcutePostFracture",
+      "type": "ClinicalState",
+      "synonyms": [
+        "recent fracture",
+        "new fracture",
+        "fresh fracture",
+        "giai đoạn gãy cấp"
+      ]
+    },
+    {
+      "id": "C031",
+      "name": "Stable",
+      "type": "ClinicalState",
+      "synonyms": [
+        "chronic",
+        "no recent fracture",
+        "recovered",
+        "giai đoạn ổn định"
+      ]
+    },
+    {
+      "id": "C032",
+      "name": "FlareUp",
+      "type": "ClinicalState",
+      "synonyms": [
+        "acute joint swelling",
+        "acute inflammation",
+        "đợt bùng phát cấp"
+      ]
+    },
+    {
+      "id": "C033",
+      "name": "JointInflammation",
+      "type": "ClinicalState",
+      "synonyms": [
+        "active synovitis",
+        "inflamed joints",
+        "viêm màng hoạt dịch cấp"
+      ]
+    },
+    {
+      "id": "C034",
+      "name": "AcuteGoutAttack",
+      "type": "ClinicalState",
+      "synonyms": [
+        "podagra attack",
+        "acute flare",
+        "cơn gút cấp"
+      ]
+    },
+    {
+      "id": "C035",
+      "name": "ActiveInfection",
+      "type": "ClinicalState",
+      "synonyms": [
+        "bone suppuration",
+        "fistula",
+        "sequestrum",
+        "nhiễm trùng tủy xương cấp"
+      ]
+    },
+    {
+      "id": "C036",
+      "name": "Remission",
+      "type": "ClinicalState",
+      "synonyms": [
+        "disease remission",
+        "low disease activity",
+        "giai đoạn lui bệnh"
+      ]
+    },
+    {
+      "id": "C040",
+      "name": "HighImpactExercise",
+      "type": "Intervention",
+      "synonyms": [
+        "running",
+        "jogging",
+        "jumping",
+        "heavy weightlifting",
+        "spinal flexion",
+        "chạy bộ",
+        "tập nặng"
+      ]
+    },
+    {
+      "id": "C041",
+      "name": "LowImpactExercise",
+      "type": "Intervention",
+      "synonyms": [
+        "walking",
+        "gentle cycling",
+        "tai chi",
+        "đi bộ",
+        "đạp xe nhẹ"
+      ]
+    },
+    {
+      "id": "C042",
+      "name": "WaterExercise",
+      "type": "Intervention",
+      "synonyms": [
+        "aquatic therapy",
+        "swimming",
+        "water aerobics",
+        "thể thao dưới nước",
+        "bơi"
+      ]
+    },
+    {
+      "id": "C043",
       "name": "WeightBearing",
       "type": "Intervention",
-      "synonyms": ["walking on foot", "standing", "tì đè lực lên chân"]
+      "synonyms": [
+        "weight-bearing exercise",
+        "brisk walking",
+        "stair climbing",
+        "tập tì đè lực"
+      ]
+    },
+    {
+      "id": "C044",
+      "name": "ROMStretching",
+      "type": "Intervention",
+      "synonyms": [
+        "range of motion",
+        "daily stretching",
+        "spine posture exercises",
+        "kéo giãn cột sống"
+      ]
+    },
+    {
+      "id": "C045",
+      "name": "Rest",
+      "type": "Intervention",
+      "synonyms": [
+        "bed rest",
+        "immobilization",
+        "brace",
+        "nẹp cố định",
+        "nghỉ ngơi"
+      ]
+    },
+    {
+      "id": "C046",
+      "name": "Medication",
+      "type": "Intervention",
+      "synonyms": [
+        "pharmacotherapy",
+        "drug therapy",
+        "thuốc điều trị"
+      ]
+    },
+    {
+      "id": "C047",
+      "name": "NSAID",
+      "type": "Intervention",
+      "synonyms": [
+        "ibuprofen",
+        "naproxen",
+        "celecoxib",
+        "meloxicam",
+        "thuốc chống viêm không steroid"
+      ]
+    },
+    {
+      "id": "C048",
+      "name": "DMARD",
+      "type": "Intervention",
+      "synonyms": [
+        "methotrexate",
+        "leflunomide",
+        "sulfasalazine",
+        "thuốc ức chế miễn dịch cơ bản"
+      ]
+    },
+    {
+      "id": "C049",
+      "name": "BiologicTherapy",
+      "type": "Intervention",
+      "synonyms": [
+        "TNF inhibitors",
+        "adalimumab",
+        "etanercept",
+        "thuốc sinh học"
+      ]
+    },
+    {
+      "id": "C050",
+      "name": "Bisphosphonate",
+      "type": "Intervention",
+      "synonyms": [
+        "alendronate",
+        "zoledronic acid",
+        "risedronate",
+        "thuốc chống hủy xương"
+      ]
+    },
+    {
+      "id": "C051",
+      "name": "AnabolicBoneTherapy",
+      "type": "Intervention",
+      "synonyms": [
+        "teriparatide",
+        "PTH analog",
+        "romosozumab",
+        "thuốc tăng tạo xương"
+      ]
+    },
+    {
+      "id": "C052",
+      "name": "UrateLoweringTherapy",
+      "type": "Intervention",
+      "synonyms": [
+        "allopurinol",
+        "febuxostat",
+        "probenecid",
+        "thuốc hạ axit uric"
+      ]
+    },
+    {
+      "id": "C053",
+      "name": "Colchicine",
+      "type": "Intervention",
+      "synonyms": [
+        "colchicine tablet",
+        "colcrys",
+        "thuốc đặc trị gút cấp"
+      ]
+    },
+    {
+      "id": "C054",
+      "name": "AntibioticTherapy",
+      "type": "Intervention",
+      "synonyms": [
+        "iv antibiotics",
+        "vancomycin",
+        "cefazolin",
+        "kháng sinh phổ rộng"
+      ]
+    },
+    {
+      "id": "C055",
+      "name": "Surgery",
+      "type": "Intervention",
+      "synonyms": [
+        "surgical intervention",
+        "arthroplasty",
+        "sequestrectomy",
+        "synovectomy",
+        "phẫu thuật"
+      ]
+    },
+    {
+      "id": "C056",
+      "name": "Nutrition",
+      "type": "Intervention",
+      "synonyms": [
+        "dietary management",
+        "calcium",
+        "vitamin d",
+        "protein intake",
+        "dinh dưỡng"
+      ]
+    },
+    {
+      "id": "C057",
+      "name": "PurineRichFood",
+      "type": "Intervention",
+      "synonyms": [
+        "red meat",
+        "organ meats",
+        "beer",
+        "seafood",
+        "thịt đỏ",
+        "hải sản"
+      ]
+    },
+    {
+      "id": "C058",
+      "name": "HeavyResistance",
+      "type": "Intervention",
+      "synonyms": [
+        "powerlifting",
+        "heavy weights",
+        "squat",
+        "gánh tạ nặng"
+      ]
+    },
+    {
+      "id": "C059",
+      "name": "CalciumIntake",
+      "type": "Intervention",
+      "synonyms": [
+        "calcium carbonate",
+        "calcium citrate",
+        "bổ sung canxi"
+      ]
+    },
+    {
+      "id": "C060",
+      "name": "VitaminD",
+      "type": "Intervention",
+      "synonyms": [
+        "cholecalciferol",
+        "ergocalciferol",
+        "vitamin D3"
+      ]
+    },
+    {
+      "id": "C070",
+      "name": "Rehabilitation",
+      "type": "Intent",
+      "synonyms": [
+        "exercise guideline",
+        "physiotherapy",
+        "tập phục hồi"
+      ]
+    },
+    {
+      "id": "C071",
+      "name": "Safety",
+      "type": "Intent",
+      "synonyms": [
+        "contraindications",
+        "warnings",
+        "cảnh báo an toàn"
+      ]
+    },
+    {
+      "id": "C072",
+      "name": "Treatment",
+      "type": "Intent",
+      "synonyms": [
+        "medication therapy",
+        "management",
+        "phương pháp điều trị"
+      ]
+    },
+    {
+      "id": "C073",
+      "name": "Diagnosis",
+      "type": "Intent",
+      "synonyms": [
+        "symptoms",
+        "markers",
+        "x-ray",
+        "chẩn đoán"
+      ]
+    },
+    {
+      "id": "C074",
+      "name": "AbstainIntent",
+      "type": "Intent",
+      "synonyms": [
+        "unclear",
+        "insufficient details",
+        "cần hỏi thêm"
+      ]
     }
   ],
   "relations": [
@@ -171,8 +630,13 @@
     },
     {
       "subject": "VertebralFracture",
-      "relation": "hasLocation",
-      "object": "Vertebra"
+      "relation": "isPartOf",
+      "object": "Spine"
+    },
+    {
+      "subject": "HipFracture",
+      "relation": "isPartOf",
+      "object": "Hip"
     },
     {
       "subject": "AcutePostFracture",
@@ -183,11 +647,6 @@
       "subject": "AcutePostFracture",
       "relation": "recommendedFor",
       "object": "Rest"
-    },
-    {
-      "subject": "Osteoporosis",
-      "relation": "recommendedFor",
-      "object": "LowImpactExercise"
     },
     {
       "subject": "FlareUp",
@@ -216,8 +675,8 @@
     },
     {
       "subject": "AcuteGoutAttack",
-      "relation": "recommendedFor",
-      "object": "Hydration"
+      "relation": "contraindicatedFor",
+      "object": "UrateLoweringTherapy"
     },
     {
       "subject": "ActiveInfection",
@@ -228,6 +687,71 @@
       "subject": "ActiveInfection",
       "relation": "recommendedFor",
       "object": "AntibioticTherapy"
+    },
+    {
+      "subject": "AnkylosingSpondylitis",
+      "relation": "contraindicatedFor",
+      "object": "HighImpactExercise"
+    },
+    {
+      "subject": "AnkylosingSpondylitis",
+      "relation": "contraindicatedFor",
+      "object": "HeavyResistance"
+    },
+    {
+      "subject": "PepticUlcerDisease",
+      "relation": "contraindicatedFor",
+      "object": "NSAID"
+    },
+    {
+      "subject": "ChronicKidneyDisease",
+      "relation": "contraindicatedFor",
+      "object": "NSAID"
+    },
+    {
+      "subject": "ChronicKidneyDisease",
+      "relation": "contraindicatedFor",
+      "object": "Colchicine"
+    },
+    {
+      "subject": "ChronicKidneyDisease",
+      "relation": "contraindicatedFor",
+      "object": "Bisphosphonate"
+    },
+    {
+      "subject": "Stable",
+      "relation": "recommendedFor",
+      "object": "LowImpactExercise"
+    },
+    {
+      "subject": "Stable",
+      "relation": "recommendedFor",
+      "object": "WeightBearing"
+    },
+    {
+      "subject": "Stable",
+      "relation": "recommendedFor",
+      "object": "Rehabilitation"
+    },
+    {
+      "subject": "Remission",
+      "relation": "recommendedFor",
+      "object": "LowImpactExercise"
+    },
+    {
+      "subject": "Osteoporosis",
+      "relation": "recommendedFor",
+      "object": "LowImpactExercise"
+    },
+    {
+      "subject": "Osteoporosis",
+      "relation": "recommendedFor",
+      "object": "WeightBearing"
+    },
+    {
+      "subject": "Sarcopenia",
+      "relation": "recommendedFor",
+      "object": "Nutrition"
     }
   ]
 }

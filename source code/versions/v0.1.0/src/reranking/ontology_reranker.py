@@ -24,51 +24,70 @@ class OntologyReranker(BaseReranker):
         boost = 0.0
         penalty = 0.0
 
-        # Nếu chunk truyền vào là Pydantic Object (Chunk class)
         chunk_concepts = getattr(chunk, "concepts", [])
-        chunk_id = getattr(chunk, "id", "")
+        chunk_contras = getattr(chunk, "contraindications", []) or []
 
         query_disease = structured_query.disease
         query_anatomy = structured_query.anatomy
         query_state = structured_query.clinical_state.phase
         query_intent = structured_query.intent.primary
+        query_secondary_intents = structured_query.intent.secondary or []
 
-        # 1. Chống chỉ định
+        # 1. Cơ chế Chống chỉ định (Contraindication Penalty)
         contraindicated_concepts = []
         for rel in self.relations:
-            if rel["subject"] == query_state and rel["relation"] == "contraindicatedFor":
-                contraindicated_concepts.append(rel["object"])
+            if rel["relation"] == "contraindicatedFor":
+                if rel["subject"] == query_state or rel["subject"] in query_disease:
+                    contraindicated_concepts.append(rel["object"])
 
         for concept in chunk_concepts:
             if concept in contraindicated_concepts:
-                penalty += 5.0
+                # Nếu chunk chứa concept bị cấm nhưng KHÔNG nằm trong danh sách cảnh báo cấm của chunk
+                # (tức là tài liệu khuyến khích hành vi nguy hiểm)
+                if concept not in chunk_contras:
+                    penalty += 5.0
 
-        # 2. Khớp bệnh lý
-        for d in query_disease:
-            if d in chunk_concepts:
-                boost += 0.3
+        # 2. Khớp Bệnh lý (Disease Match) - Có trọng số tin cậy
+        if query_disease:
+            disease_matched = any(d in chunk_concepts for d in query_disease)
+            if disease_matched:
+                boost += 0.60 * structured_query.disease_confidence
+            else:
+                all_diseases = [name for name, c in self.concepts.items() if c.get("type") == "Disease"]
+                if any(d in chunk_concepts for d in all_diseases):
+                    penalty += 0.80 * structured_query.disease_confidence
 
-        # 3. Khớp giải phẫu
+        # 3. Khớp Giải phẫu & Quan hệ phân cấp (Anatomy & isPartOf)
         for a in query_anatomy:
             if a in chunk_concepts:
-                boost += 0.2
+                boost += 0.25 * structured_query.anatomy_confidence
             else:
                 for rel in self.relations:
                     if rel["relation"] == "isPartOf" and rel["subject"] in chunk_concepts and rel["object"] == a:
-                        boost += 0.15
+                        boost += 0.20 * structured_query.anatomy_confidence
 
-        # 4. Khớp trạng thái lâm sàng
-        if query_state in chunk_concepts:
-            boost += 0.4
+        # 4. Khớp Trạng thái lâm sàng (Clinical State Match)
+        if query_state != "unknown" and query_state in chunk_concepts:
+            boost += 0.40 * structured_query.clinical_state.confidence
         
-        if query_state == "AcutePostFracture" and "Rest" in chunk_concepts:
-            boost += 0.3
+        # Hỗ trợ các khuyến nghị đặc thù theo Ontology
+        for rel in self.relations:
+            if rel["relation"] == "recommendedFor" and rel["subject"] == query_state:
+                if rel["object"] in chunk_concepts:
+                    boost += 0.30 * structured_query.clinical_state.confidence
 
-        # 5. Khớp ý định
-        if query_intent == "rehabilitation" and "Rehabilitation" in chunk_concepts:
-            boost += 0.2
-        elif query_intent == "safety" and "Safety" in chunk_concepts:
-            boost += 0.3
+        # 5. Khớp Ý định người dùng (Intent Match)
+        all_intents = [query_intent] + query_secondary_intents
+        if "rehabilitation" in all_intents and any(c in chunk_concepts for c in ["Rehabilitation", "LowImpactExercise", "ROMStretching", "WaterExercise"]):
+            boost += 0.25 * structured_query.intent.confidence
+        if "safety" in all_intents and "Safety" in chunk_concepts:
+            boost += 0.30 * structured_query.intent.confidence
+        if "medication" in all_intents and any(c in chunk_concepts for c in ["Medication", "AntibioticTherapy", "CalciumIntake"]):
+            boost += 0.30 * structured_query.intent.confidence
+        if "surgery" in all_intents and "Surgery" in chunk_concepts:
+            boost += 0.30 * structured_query.intent.confidence
+        if "nutrition" in all_intents and any(c in chunk_concepts for c in ["Nutrition", "CalciumIntake", "Hydration"]):
+            boost += 0.25 * structured_query.intent.confidence
 
         return boost, penalty
 

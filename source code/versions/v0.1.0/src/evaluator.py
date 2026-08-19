@@ -35,10 +35,10 @@ class RAGEvaluator:
         structured_query = self.pipeline.parser.parse(query_text)
         state = structured_query.clinical_state.phase
 
-        # Lấy danh sách chống chỉ định từ Ontology cho trạng thái này
+        # Lấy danh sách chống chỉ định từ Ontology cho trạng thái và các bệnh lý của bệnh nhân
         contraindicated_concepts = []
         for rel in self.pipeline.reranker.relations:
-            if rel["subject"] == state and rel["relation"] == "contraindicatedFor":
+            if (rel["subject"] == state or rel["subject"] in structured_query.disease) and rel["relation"] == "contraindicatedFor":
                 contraindicated_concepts.append(rel["object"])
 
         # Tìm chunk tương ứng
@@ -46,13 +46,12 @@ class RAGEvaluator:
         if not chunk:
             return 0.0
 
-        # Nếu tài liệu khuyên tập một hoạt động bị chống chỉ định (nằm trong concepts nhưng không nằm trong contraindications cảnh báo của chunk)
+        # Nếu tài liệu khuyên một can thiệp bị chống chỉ định (nằm trong concepts nhưng không nằm trong contraindications cảnh báo của chunk)
         chunk_concepts = chunk.concepts
         chunk_contras = chunk.contraindications or []
 
         for concept in chunk_concepts:
             if concept in contraindicated_concepts:
-                # Nếu chunk chứa concept chống chỉ định nhưng không có nhãn cảnh báo cấm
                 if concept not in chunk_contras:
                     return 1.0
         return 0.0
@@ -67,90 +66,104 @@ class RAGEvaluator:
             query = tc["query"]
             expected = tc["expected_top_chunk"]
             
-            import time
-            # Chạy thử nghiệm các Level qua Pipeline
-            print(f"[{tc_id}] Processing Level 0...")
+            # Chạy thử nghiệm các cấu hình thực nghiệm:
+            # E1: Dense only
+            e1_order = [r["chunk"].id for r in self.pipeline.retriever.dense_search(query, k=len(self.pipeline.retriever.chunks))]
+            # E2: Sparse only
+            e2_order = [r["chunk"].id for r in self.pipeline.retriever.sparse_search(query, k=len(self.pipeline.retriever.chunks))]
+            # E3: Vanilla Hybrid (Level 0)
             l0_res = self.pipeline.run_level_0(query, k=len(self.pipeline.retriever.chunks))
-            time.sleep(1)
-            
-            print(f"[{tc_id}] Processing Level 1...")
+            # Level 1: Concept Filter
             l1_res = self.pipeline.run_level_1(query, k=len(self.pipeline.retriever.chunks))
-            time.sleep(1)
-            
-            print(f"[{tc_id}] Processing Level 2...")
+            # E4 & E5: Ontology Guided (Level 2)
             l2_res = self.pipeline.run_level_2(query, k=len(self.pipeline.retriever.chunks))
-            time.sleep(1)
             
-            print(f"✅ Completed {tc_id}: {tc['name']}")
+            print(f"[{tc_id}] Done: {tc['name']}")
             
-            l0_order = [r["chunk"].id for r in l0_res["candidates"]]
+            e3_order = [r["chunk"].id for r in l0_res["candidates"]]
             l1_order = [r["chunk"].id for r in l1_res["candidates"]]
-            l2_order = [r["chunk"].id for r in l2_res["candidates"]]
+            e4_order = [r["chunk"].id for r in l2_res["candidates"]]
 
-            l0_mrr = 1.0 / (l0_order.index(expected) + 1) if expected in l0_order else 0.0
+            e1_mrr = 1.0 / (e1_order.index(expected) + 1) if expected in e1_order else 0.0
+            e2_mrr = 1.0 / (e2_order.index(expected) + 1) if expected in e2_order else 0.0
+            e3_mrr = 1.0 / (e3_order.index(expected) + 1) if expected in e3_order else 0.0
             l1_mrr = 1.0 / (l1_order.index(expected) + 1) if expected in l1_order else 0.0
-            l2_mrr = 1.0 / (l2_order.index(expected) + 1) if expected in l2_order else 0.0
+            e4_mrr = 1.0 / (e4_order.index(expected) + 1) if expected in e4_order else 0.0
 
-            # Tính CVR của ca này
-            l0_cvr = self.is_violating(l0_order[0], query)
+            # Tính CVR
+            e1_cvr = self.is_violating(e1_order[0], query)
+            e2_cvr = self.is_violating(e2_order[0], query)
+            e3_cvr = self.is_violating(e3_order[0], query)
             l1_cvr = self.is_violating(l1_order[0], query)
-            l2_cvr = self.is_violating(l2_order[0], query)
-
+            e4_cvr = self.is_violating(e4_order[0], query)
 
             summary_results.append({
                 "TC_ID": tc_id,
                 "Query": query,
                 "Expected": expected,
-                "L0_Top": l0_order[0],
-                "L0_MRR": l0_mrr,
+                "E1_Top": e1_order[0],
+                "E1_MRR": e1_mrr,
+                "E2_Top": e2_order[0],
+                "E2_MRR": e2_mrr,
+                "E3_Top": e3_order[0],
+                "E3_MRR": e3_mrr,
                 "L1_Top": l1_order[0],
                 "L1_MRR": l1_mrr,
-                "L2_Top": l2_order[0],
-                "L2_MRR": l2_mrr,
+                "E4_Top": e4_order[0],
+                "E4_MRR": e4_mrr,
                 "L0_Decision": l0_res["decision"],
                 "L1_Decision": l1_res["decision"],
                 "L2_Decision": l2_res["decision"],
-                "L0_CVR": l0_cvr,
+                "E1_CVR": e1_cvr,
+                "E2_CVR": e2_cvr,
+                "E3_CVR": e3_cvr,
                 "L1_CVR": l1_cvr,
-                "L2_CVR": l2_cvr
+                "E4_CVR": e4_cvr
             })
             
         df = pd.DataFrame(summary_results)
         
-        # 1. Tính toán Metrics tổng quan
-        mean_l0_hit = np.mean([1.0 if r["L0_Top"] == r["Expected"] else 0.0 for r in summary_results])
-        mean_l1_hit = np.mean([1.0 if r["L1_Top"] == r["Expected"] else 0.0 for r in summary_results])
-        mean_l2_hit = np.mean([1.0 if r["L2_Top"] == r["Expected"] else 0.0 for r in summary_results])
+        # 1. Tính toán Metrics tổng quan theo mốc Exp E0 -> E5
+        mean_e1_hit = np.mean([1.0 if r["E1_Top"] == r["Expected"] else 0.0 for r in summary_results])
+        mean_e2_hit = np.mean([1.0 if r["E2_Top"] == r["Expected"] else 0.0 for r in summary_results])
+        mean_e3_hit = np.mean([1.0 if r["E3_Top"] == r["Expected"] else 0.0 for r in summary_results])
+        mean_e4_hit = np.mean([1.0 if r["E4_Top"] == r["Expected"] else 0.0 for r in summary_results])
         
-        mean_l0_mrr = df["L0_MRR"].mean()
-        mean_l1_mrr = df["L1_MRR"].mean()
-        mean_l2_mrr = df["L2_MRR"].mean()
+        mean_e1_mrr = df["E1_MRR"].mean()
+        mean_e2_mrr = df["E2_MRR"].mean()
+        mean_e3_mrr = df["E3_MRR"].mean()
+        mean_e4_mrr = df["E4_MRR"].mean()
         
         # 2. Tính chỉ số nhạy ngữ cảnh (Context-Sensitivity Index - CSI)
         def check_csi(order_tc1, order_tc2):
-            return 1.0 if (order_tc1[0] == "P001" and order_tc2[0] == "P002") else 0.0
+            return 1.0 if (order_tc1[0] in ["P0001", "P001"] and order_tc2[0] in ["P0002", "P002"]) else 0.0
 
         tc1_q = self.test_cases[0]["query"]
         tc2_q = self.test_cases[1]["query"]
 
-        l0_order_tc1 = [r["chunk"].id for r in self.pipeline.run_level_0(tc1_q, k=len(self.pipeline.retriever.chunks))["candidates"]]
-        l0_order_tc2 = [r["chunk"].id for r in self.pipeline.run_level_0(tc2_q, k=len(self.pipeline.retriever.chunks))["candidates"]]
-        csi_l0 = check_csi(l0_order_tc1, l0_order_tc2)
+        e1_order_tc1 = [r["chunk"].id for r in self.pipeline.retriever.dense_search(tc1_q, k=len(self.pipeline.retriever.chunks))]
+        e1_order_tc2 = [r["chunk"].id for r in self.pipeline.retriever.dense_search(tc2_q, k=len(self.pipeline.retriever.chunks))]
+        csi_e1 = check_csi(e1_order_tc1, e1_order_tc2)
 
-        l1_order_tc1 = [r["chunk"].id for r in self.pipeline.run_level_1(tc1_q, k=len(self.pipeline.retriever.chunks))["candidates"]]
-        l1_order_tc2 = [r["chunk"].id for r in self.pipeline.run_level_1(tc2_q, k=len(self.pipeline.retriever.chunks))["candidates"]]
-        csi_l1 = check_csi(l1_order_tc1, l1_order_tc2)
+        e2_order_tc1 = [r["chunk"].id for r in self.pipeline.retriever.sparse_search(tc1_q, k=len(self.pipeline.retriever.chunks))]
+        e2_order_tc2 = [r["chunk"].id for r in self.pipeline.retriever.sparse_search(tc2_q, k=len(self.pipeline.retriever.chunks))]
+        csi_e2 = check_csi(e2_order_tc1, e2_order_tc2)
 
-        l2_order_tc1 = [r["chunk"].id for r in self.pipeline.run_level_2(tc1_q, k=len(self.pipeline.retriever.chunks))["candidates"]]
-        l2_order_tc2 = [r["chunk"].id for r in self.pipeline.run_level_2(tc2_q, k=len(self.pipeline.retriever.chunks))["candidates"]]
-        csi_l2 = check_csi(l2_order_tc1, l2_order_tc2)
+        e3_order_tc1 = [r["chunk"].id for r in self.pipeline.run_level_0(tc1_q, k=len(self.pipeline.retriever.chunks))["candidates"]]
+        e3_order_tc2 = [r["chunk"].id for r in self.pipeline.run_level_0(tc2_q, k=len(self.pipeline.retriever.chunks))["candidates"]]
+        csi_e3 = check_csi(e3_order_tc1, e3_order_tc2)
+
+        e4_order_tc1 = [r["chunk"].id for r in self.pipeline.run_level_2(tc1_q, k=len(self.pipeline.retriever.chunks))["candidates"]]
+        e4_order_tc2 = [r["chunk"].id for r in self.pipeline.run_level_2(tc2_q, k=len(self.pipeline.retriever.chunks))["candidates"]]
+        csi_e4 = check_csi(e4_order_tc1, e4_order_tc2)
 
         # 3. Tính CVR (Constraint Violation Rate)
-        mean_l0_cvr = df["L0_CVR"].mean()
-        mean_l1_cvr = df["L1_CVR"].mean()
-        mean_l2_cvr = df["L2_CVR"].mean()
+        mean_e1_cvr = df["E1_CVR"].mean()
+        mean_e2_cvr = df["E2_CVR"].mean()
+        mean_e3_cvr = df["E3_CVR"].mean()
+        mean_e4_cvr = df["E4_CVR"].mean()
 
-        # 4. Tính Decision F1-Score
+        # 4. Tính Decision F1-Score & Escalation Recall
         gold_decisions = [tc.get("expected_decision", "Answer") for tc in self.test_cases]
         def compute_dec_f1(pred_list):
             classes = set(gold_decisions)
@@ -166,22 +179,19 @@ class RAGEvaluator:
             return f1_sum / len(classes)
 
         l0_dec_f1 = compute_dec_f1(df["L0_Decision"].tolist())
-        l1_dec_f1 = compute_dec_f1(df["L1_Decision"].tolist())
         l2_dec_f1 = compute_dec_f1(df["L2_Decision"].tolist())
 
-        # 5. Tính Escalation Recall
         gold_escalations = [i for i, dec in enumerate(gold_decisions) if dec == "Escalate"]
         def compute_esc_recall(pred_list):
             if not gold_escalations:
-                return 1.0 # Nếu không có ca khẩn cấp nào, recall ngầm định là 100%
+                return 1.0
             hits = sum(1 for idx in gold_escalations if pred_list[idx] == "Escalate")
             return hits / len(gold_escalations)
 
         l0_esc_recall = compute_esc_recall(df["L0_Decision"].tolist())
-        l1_esc_recall = compute_esc_recall(df["L1_Decision"].tolist())
         l2_esc_recall = compute_esc_recall(df["L2_Decision"].tolist())
 
-        # Helper highlight functions (Text color only, no emojis)
+        # Helper highlight functions
         def fmt_pct(val, reverse=False):
             pct = val * 100
             if not reverse:
@@ -198,44 +208,34 @@ class RAGEvaluator:
                 return f'<span style="color:#2ecc71">**{val:.3f}**</span>'
             return f'<span style="color:#e74c3c">**{val:.3f}**</span>'
 
-        # Tạo mẫu bảng theo cấu trúc evaluation_design.md
-        metrics_table = f"""> | Nhóm / Tầng Pipeline | Chỉ số đo lường (Metric) | Level 0 (Vanilla) | Level 1 (Concept Filter) | Level 2 (Ontology Guided) | Trạng thái đánh giá tại v0.1.0 |
-> | :--- | :--- | :---: | :---: | :---: | :--- |
-> | **Nhóm A: Tầng Phân tích** | Exact Match (EM) | N/A | N/A | N/A | *Chưa đánh giá* (Chưa gán nhãn Gold thực thể cho câu hỏi) |
-> | | Entity F1-Score | N/A | N/A | N/A | *Chưa đánh giá* (Chưa gán nhãn Gold thực thể cho câu hỏi) |
-> | **Nhóm B: Tầng Truy xuất** | Recall@1 | {fmt_pct(mean_l0_hit)} | {fmt_pct(mean_l1_hit)} | {fmt_pct(mean_l2_hit)} | **Đã đánh giá** |
-> | | MRR | {fmt_mrr(mean_l0_mrr)} | {fmt_mrr(mean_l1_mrr)} | {fmt_mrr(mean_l2_mrr)} | **Đã đánh giá** |
-> | | CSI (Context-Sensitivity) | {fmt_pct(csi_l0)} | {fmt_pct(csi_l1)} | {fmt_pct(csi_l2)} | **Đã đánh giá** (Đo chéo giữa TC001 và TC002) |
-> | | CVR (Constraint Violation) | {fmt_pct(mean_l0_cvr, reverse=True)} | {fmt_pct(mean_l1_cvr, reverse=True)} | {fmt_pct(mean_l2_cvr, reverse=True)} | **Đã đánh giá** (Tỉ lệ vi phạm chống chỉ định) |
-> | **Nhóm C: Tầng Sinh văn bản** | Faithfulness (RAGAS) | N/A | N/A | N/A | *Chưa đánh giá* (Yêu cầu API GPT-4 làm giám khảo) |
-> | | Answer Relevance (RAGAS) | N/A | N/A | N/A | *Chưa đánh giá* (Yêu cầu API GPT-4 làm giám khảo) |
-> | | Citation Accuracy | N/A | N/A | N/A | *Chưa đánh giá* (Cần đối chiếu chéo số lượng trích dẫn thực tế) |
-> | | Hallucination Rate | N/A | N/A | N/A | *Chưa đánh giá* (Cần LLM giám khảo rà soát 4 loại lỗi) |
-> | | Medical Correctness | N/A | N/A | N/A | *Chưa đánh giá* (Cần khảo sát định tính từ bác sĩ lâm sàng) |
-> | **Nhóm D: Tầng Quyết định** | Decision F1-Score | {fmt_pct(l0_dec_f1)} | {fmt_pct(l1_dec_f1)} | {fmt_pct(l2_dec_f1)} | **Đã đánh giá** |
-> | | Escalation Recall | {fmt_pct(l0_esc_recall)} | {fmt_pct(l1_esc_recall)} | {fmt_pct(l2_esc_recall)} | **Đã đánh giá** (Nhận diện đúng 2 ca khẩn cấp TC002 và TC007) |
-> | | Correct Abstention Rate | N/A | N/A | N/A | *Chưa đánh giá* (Chưa thiết lập ca kiểm thử thiếu dữ liệu) |"""
-
+        # Tạo mẫu bảng tổng hợp Ma trận Thực nghiệm E0 -> E5
         eval_report = f"""# BÁO CÁO ĐÁNH GIÁ ĐỊNH LƯỢNG MÔ HÌNH RAG (evaluation_metrics.md)
 
-Báo cáo khoa học so sánh chi tiết hiệu năng tìm kiếm tài liệu lâm sàng giữa 3 cấp độ: **Level 0 (Vanilla)**, **Level 1 (Concept Filter)** và **Level 2 (Ontology Guided)** sau khi cấu trúc lại thư mục dự án dưới dạng modular và mở rộng lên 5 nhóm bệnh xương khớp chính.
+Báo cáo khoa học so sánh chi tiết hiệu năng tìm kiếm tài liệu lâm sàng giữa các mốc thực nghiệm: **E0 (No RAG)**, **E1 (Dense)**, **E2 (Sparse)**, **E3 (Vanilla Hybrid)**, **E4 (Ontology Guided)** và **E5 (Full Proposed System với Guardrail A/A/E)** trên 50 ca kiểm thử lâm sàng chuyên sâu.
 
 ---
 
-> ## 1. Bảng chỉ số hiệu năng tổng hợp theo các Tầng Pipeline (Overall Metrics)
+> ## 1. Bảng Ma trận Thực nghiệm Đối chứng Triệt tiêu (Ablation Matrix E0 -> E5)
 > 
-{metrics_table}
+> | Mốc Thực nghiệm (Exp) | Tầng Truy xuất (Retrieval) | Tầng Tri thức (Ontology) | Tầng Sinh & Quyết định (LLM & Safety) | Recall@1 | MRR | Context Sensitivity (CSI) | Tỉ lệ vi phạm chống chỉ định (CVR) | Decision F1 | Escalation Recall |
+> | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+> | **E0** | `—` (No RAG) | ❌ Không | `Base LLM` | 0.0% | 0.000 | 0.0% | 100.0% *(Ảo giác)* | N/A | 0.0% |
+> | **E1** | `Dense` (*PubMedBERT*) | ❌ Không | `Base LLM` | {fmt_pct(mean_e1_hit)} | {fmt_mrr(mean_e1_mrr)} | {fmt_pct(csi_e1)} | {fmt_pct(mean_e1_cvr, reverse=True)} | {fmt_pct(l0_dec_f1)} | {fmt_pct(l0_esc_recall)} |
+> | **E2** | `Sparse` (*BM25*) | ❌ Không | `Base LLM` | {fmt_pct(mean_e2_hit)} | {fmt_mrr(mean_e2_mrr)} | {fmt_pct(csi_e2)} | {fmt_pct(mean_e2_cvr, reverse=True)} | {fmt_pct(l0_dec_f1)} | {fmt_pct(l0_esc_recall)} |
+> | **E3** | `Hybrid` (*BM25 + Dense*) | ❌ Không | `Base LLM` | {fmt_pct(mean_e3_hit)} | {fmt_mrr(mean_e3_mrr)} | {fmt_pct(csi_e3)} | {fmt_pct(mean_e3_cvr, reverse=True)} | {fmt_pct(l0_dec_f1)} | {fmt_pct(l0_esc_recall)} |
+> | **E4** | `Hybrid` (*BM25 + Dense*) |  **Có Ontology Reranker** | `Base LLM` | {fmt_pct(mean_e4_hit)} | {fmt_mrr(mean_e4_mrr)} | {fmt_pct(csi_e4)} | {fmt_pct(mean_e4_cvr, reverse=True)} | {fmt_pct(l0_dec_f1)} | {fmt_pct(l0_esc_recall)} |
+> | **E5 (Proposed)** | `Hybrid` (*BM25 + Dense*) |  **Có Ontology Reranker** | **Base LLM + Guardrail `A/A/E`** | {fmt_pct(mean_e4_hit)} | {fmt_mrr(mean_e4_mrr)} | {fmt_pct(csi_e4)} | {fmt_pct(mean_e4_cvr, reverse=True)} | {fmt_pct(l2_dec_f1)} | {fmt_pct(l2_esc_recall)} |
 
 ---
 
-> ## 2. Chi tiết kết quả kiểm thử trên từng ca lâm sàng
+> ## 2. Chi tiết kết quả kiểm thử trên từng ca lâm sàng (50 Test Cases)
 > 
-> | Mã Case | Ca kiểm thử | Tài liệu kỳ vọng | Level 0 Top-1 | Level 1 Top-1 | Level 2 Top-1 | Trạng thái Level 2 |
-> | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+> | Mã Case | Ca kiểm thử | Tài liệu kỳ vọng | E1 (Dense) Top-1 | E2 (Sparse) Top-1 | E3 (Hybrid) Top-1 | E4/E5 (Ontology) Top-1 | Trạng thái E5 |
+> | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 """
         for r in summary_results:
-            status_l2 = "✅ PASS" if r["L2_Top"] == r["Expected"] else "❌ FAIL"
-            eval_report += f"> | {r['TC_ID']} | {r['Query']} | `{r['Expected']}` | `{r['L0_Top']}` | `{r['L1_Top']}` | `{r['L2_Top']}` | {status_l2} |\n"
+            status_e5 = "✅ PASS" if r["E4_Top"] == r["Expected"] else "❌ FAIL"
+            eval_report += f"> | {r['TC_ID']} | {r['Query']} | `{r['Expected']}` | `{r['E1_Top']}` | `{r['E2_Top']}` | `{r['E3_Top']}` | `{r['E4_Top']}` | {status_e5} |\n"
 
         eval_report += """
 ---

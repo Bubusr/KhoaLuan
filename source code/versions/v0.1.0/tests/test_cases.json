@@ -1,402 +1,1817 @@
 [
   {
     "id": "TC001",
-    "name": "Generated TC001",
-    "query": "I have osteoporosis. What exercises should I perform to stay active?",
-    "expected_top_chunk": "P001",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q001",
+    "parent_query_id": null,
+    "name": "Osteoporosis General Exercise",
+    "query": "I am a 70-year-old woman with osteoporosis and no fractures. What exercises should I perform to stay active?",
+    "raw_query": "I am a 70-year-old woman with osteoporosis and no fractures. What exercises should I perform to stay active?",
+    "intent": {
+      "primary": "rehabilitation",
+      "secondary": [
+        "mobility_safety"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoporosis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Spine"
+      ],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0001"
+    ],
+    "hard_negative_passage_ids": [
+      "P0002"
+    ],
+    "expected_top_chunk": "P0001",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC002",
-    "name": "Generated TC002",
-    "query": "I have osteoporosis and had a vertebral fracture 2 weeks ago. What exercises should I perform to stay active?",
-    "expected_top_chunk": "P002",
-    "expected_decision": "Escalate",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q002",
+    "parent_query_id": "Q001",
+    "name": "Osteoporosis Acute Fracture Counterfactual",
+    "query": "I am a 70-year-old woman with osteoporosis and sustained a vertebral compression fracture 2 weeks ago. What exercises should I perform to stay active?",
+    "raw_query": "I am a 70-year-old woman with osteoporosis and sustained a vertebral compression fracture 2 weeks ago. What exercises should I perform to stay active?",
+    "intent": {
+      "primary": "rehabilitation",
+      "secondary": [
+        "mobility_safety"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoporosis"
+      ],
+      "condition": [
+        "VertebralFracture"
+      ],
+      "anatomy": [
+        "Spine",
+        "Vertebra"
+      ],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "AcutePostFracture"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0002"
+    ],
+    "hard_negative_passage_ids": [
+      "P0001"
+    ],
+    "expected_top_chunk": "P0002",
+    "changed_constraint": {
+      "field": "clinical_state",
+      "from": "Stable",
+      "to": "AcutePostFracture"
+    },
+    "expected_decision": "Escalate"
   },
   {
     "id": "TC003",
-    "name": "Generated TC003",
-    "query": "I have osteoporosis. What medications are recommended to improve my condition?",
-    "expected_top_chunk": "P003",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q003",
+    "parent_query_id": null,
+    "name": "Knee Osteoarthritis Stable Exercise",
+    "query": "I have knee osteoarthritis and my joints are stable. What low-impact aerobic exercises are recommended?",
+    "raw_query": "I have knee osteoarthritis and my joints are stable. What low-impact aerobic exercises are recommended?",
+    "intent": {
+      "primary": "rehabilitation",
+      "secondary": [
+        "joint_mobility"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoarthritis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Knee"
+      ],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0009"
+    ],
+    "hard_negative_passage_ids": [
+      "P0010"
+    ],
+    "expected_top_chunk": "P0009",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC004",
-    "name": "Generated TC004",
-    "query": "I have knee osteoarthritis and my joints are swelling today. Can I do jumping exercises?",
-    "expected_top_chunk": "P011",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q004",
+    "parent_query_id": "Q003",
+    "name": "Knee Osteoarthritis Flare-up Counterfactual",
+    "query": "I have knee osteoarthritis and my joints are swelling today with an acute flare-up. Can I do jumping exercises?",
+    "raw_query": "I have knee osteoarthritis and my joints are swelling today with an acute flare-up. Can I do jumping exercises?",
+    "intent": {
+      "primary": "safety",
+      "secondary": [
+        "rehabilitation"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoarthritis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Knee"
+      ],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "FlareUp"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0010"
+    ],
+    "hard_negative_passage_ids": [
+      "P0009"
+    ],
+    "expected_top_chunk": "P0010",
+    "changed_constraint": {
+      "field": "clinical_state",
+      "from": "Stable",
+      "to": "FlareUp"
+    },
+    "expected_decision": "Answer"
   },
   {
     "id": "TC005",
-    "name": "Generated TC005",
-    "query": "My rheumatoid arthritis is active and joints are inflamed. Should I perform heavy weightlifting?",
-    "expected_top_chunk": "P021",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q005",
+    "parent_query_id": null,
+    "name": "Rheumatoid Arthritis Remission Exercise",
+    "query": "I have rheumatoid arthritis in stable remission. Can I do low-impact walking and cycling?",
+    "raw_query": "I have rheumatoid arthritis in stable remission. Can I do low-impact walking and cycling?",
+    "intent": {
+      "primary": "rehabilitation",
+      "secondary": [
+        "joint_mobility"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "RheumatoidArthritis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "HandJoints"
+      ],
+      "age_group": "adult",
+      "clinical_state": [
+        "Remission",
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0015"
+    ],
+    "hard_negative_passage_ids": [
+      "P0016"
+    ],
+    "expected_top_chunk": "P0015",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC006",
-    "name": "Generated TC006",
-    "query": "I am experiencing an acute gout attack. Is it okay to eat red meat or steak?",
-    "expected_top_chunk": "P031",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q006",
+    "parent_query_id": "Q005",
+    "name": "Rheumatoid Arthritis Active Inflammation Counterfactual",
+    "query": "My rheumatoid arthritis is active and joints are inflamed with severe synovitis. Should I perform heavy weightlifting?",
+    "raw_query": "My rheumatoid arthritis is active and joints are inflamed with severe synovitis. Should I perform heavy weightlifting?",
+    "intent": {
+      "primary": "safety",
+      "secondary": [
+        "rehabilitation"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "RheumatoidArthritis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "HandJoints"
+      ],
+      "age_group": "adult",
+      "clinical_state": [
+        "JointInflammation"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0016"
+    ],
+    "hard_negative_passage_ids": [
+      "P0015"
+    ],
+    "expected_top_chunk": "P0016",
+    "changed_constraint": {
+      "field": "clinical_state",
+      "from": "Remission",
+      "to": "JointInflammation"
+    },
+    "expected_decision": "Answer"
   },
   {
     "id": "TC007",
-    "name": "Generated TC007",
-    "query": "I have active osteomyelitis bone infection. Can I stand and walk on my leg?",
-    "expected_top_chunk": "P041",
-    "expected_decision": "Escalate",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q007",
+    "parent_query_id": null,
+    "name": "Osteomyelitis Chronic Management",
+    "query": "I am looking for surgical options and sequestrectomy for chronic osteomyelitis bone infection.",
+    "raw_query": "I am looking for surgical options and sequestrectomy for chronic osteomyelitis bone infection.",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "surgery"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteomyelitis"
+      ],
+      "condition": [],
+      "anatomy": [],
+      "age_group": "adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0030"
+    ],
+    "hard_negative_passage_ids": [
+      "P0028"
+    ],
+    "expected_top_chunk": "P0030",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC008",
-    "name": "Generated TC008",
-    "query": "I am 75 years old with osteoporosis and I want to prevent falling at home.",
-    "expected_top_chunk": "P007",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q008",
+    "parent_query_id": "Q007",
+    "name": "Osteomyelitis Active Infection Counterfactual",
+    "query": "I have active osteomyelitis bone infection with bone suppuration. Can I stand and walk on my leg?",
+    "raw_query": "I have active osteomyelitis bone infection with bone suppuration. Can I stand and walk on my leg?",
+    "intent": {
+      "primary": "safety",
+      "secondary": [
+        "rehabilitation"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteomyelitis"
+      ],
+      "condition": [],
+      "anatomy": [],
+      "age_group": "adult",
+      "clinical_state": [
+        "ActiveInfection"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0028"
+    ],
+    "hard_negative_passage_ids": [
+      "P0030"
+    ],
+    "expected_top_chunk": "P0028",
+    "changed_constraint": {
+      "field": "clinical_state",
+      "from": "Stable",
+      "to": "ActiveInfection"
+    },
+    "expected_decision": "Escalate"
   },
   {
     "id": "TC009",
-    "name": "Generated TC009",
-    "query": "Can I practice Tai Chi to improve my stability and prevent falls with osteoporosis?",
-    "expected_top_chunk": "P008",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q009",
+    "parent_query_id": null,
+    "name": "Ankylosing Spondylitis Daily Stretching",
+    "query": "How can I prevent my spine from fusing in ankylosing spondylitis with daily stretching?",
+    "raw_query": "How can I prevent my spine from fusing in ankylosing spondylitis with daily stretching?",
+    "intent": {
+      "primary": "rehabilitation",
+      "secondary": [
+        "mobility_safety"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "AnkylosingSpondylitis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Spine"
+      ],
+      "age_group": "young_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0034"
+    ],
+    "hard_negative_passage_ids": [
+      "P0035"
+    ],
+    "expected_top_chunk": "P0034",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC010",
-    "name": "Generated TC010",
-    "query": "I am starting alendronate bisphosphonates. Do I need to take calcium or Vitamin D?",
-    "expected_top_chunk": "P004",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q010",
+    "parent_query_id": "Q009",
+    "name": "Ankylosing Spondylitis Advanced Weightlifting Counterfactual",
+    "query": "Why is heavy weightlifting and contact sports contraindicated in advanced ankylosing spondylitis with bamboo spine?",
+    "raw_query": "Why is heavy weightlifting and contact sports contraindicated in advanced ankylosing spondylitis with bamboo spine?",
+    "intent": {
+      "primary": "safety",
+      "secondary": [
+        "rehabilitation"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "AnkylosingSpondylitis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Spine"
+      ],
+      "age_group": "adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0035"
+    ],
+    "hard_negative_passage_ids": [
+      "P0034"
+    ],
+    "expected_top_chunk": "P0035",
+    "changed_constraint": {
+      "field": "disease_stage",
+      "from": "early_stage",
+      "to": "bamboo_spine_fused"
+    },
+    "expected_decision": "Answer"
   },
   {
     "id": "TC011",
-    "name": "Generated TC011",
-    "query": "I have severe osteoporosis with multiple spine fractures. Is Teriparatide suitable?",
-    "expected_top_chunk": "P006",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q011",
+    "parent_query_id": null,
+    "name": "Osteoporosis Medication Intent",
+    "query": "I am a 72-year-old woman with osteoporosis. What pharmacological bisphosphonate medications should I take?",
+    "raw_query": "I am a 72-year-old woman with osteoporosis. What pharmacological bisphosphonate medications should I take?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "medication"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoporosis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Spine"
+      ],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0003"
+    ],
+    "hard_negative_passage_ids": [
+      "P0001"
+    ],
+    "expected_top_chunk": "P0003",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC012",
-    "name": "Generated TC012",
-    "query": "Does Paget's disease increase my risk of developing osteosarcoma or bone cancer?",
-    "expected_top_chunk": "P088",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q012",
+    "parent_query_id": "Q011",
+    "name": "Osteoporosis Fall Prevention Intent Counterfactual",
+    "query": "I am a 72-year-old woman with osteoporosis. How can I modify my home environment to prevent falls?",
+    "raw_query": "I am a 72-year-old woman with osteoporosis. How can I modify my home environment to prevent falls?",
+    "intent": {
+      "primary": "safety",
+      "secondary": [
+        "prevention"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoporosis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Spine"
+      ],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0006"
+    ],
+    "hard_negative_passage_ids": [
+      "P0003"
+    ],
+    "expected_top_chunk": "P0006",
+    "changed_constraint": {
+      "field": "intent",
+      "from": "treatment/medication",
+      "to": "safety/fall_prevention"
+    },
+    "expected_decision": "Answer"
   },
   {
     "id": "TC013",
-    "name": "Generated TC013",
-    "query": "What are the common symptoms and diagnostic markers for adult osteomalacia?",
-    "expected_top_chunk": "P075",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q013",
+    "parent_query_id": null,
+    "name": "Knee OA Oral Medication Intent",
+    "query": "I have knee osteoarthritis. What oral NSAID medications are recommended to manage joint inflammation and pain?",
+    "raw_query": "I have knee osteoarthritis. What oral NSAID medications are recommended to manage joint inflammation and pain?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "medication"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoarthritis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Knee"
+      ],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0011"
+    ],
+    "hard_negative_passage_ids": [
+      "P0013"
+    ],
+    "expected_top_chunk": "P0011",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC014",
-    "name": "Generated TC014",
-    "query": "My child has active rickets and bowed legs. Should we encourage running and playing?",
-    "expected_top_chunk": "P073",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q014",
+    "parent_query_id": "Q013",
+    "name": "Knee OA Arthroplasty Surgery Intent Counterfactual",
+    "query": "I have knee osteoarthritis. When is total knee replacement arthroplasty surgery indicated?",
+    "raw_query": "I have knee osteoarthritis. When is total knee replacement arthroplasty surgery indicated?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "surgery"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoarthritis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Knee"
+      ],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0013"
+    ],
+    "hard_negative_passage_ids": [
+      "P0011"
+    ],
+    "expected_top_chunk": "P0013",
+    "changed_constraint": {
+      "field": "intent",
+      "from": "medication",
+      "to": "surgery"
+    },
+    "expected_decision": "Answer"
   },
   {
     "id": "TC015",
-    "name": "Generated TC015",
-    "query": "What is the target serum urate level for long-term gout management?",
-    "expected_top_chunk": "P040",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q015",
+    "parent_query_id": null,
+    "name": "RA Anchor DMARD Intent",
+    "query": "What is the first-line immunosuppressant DMARD medication used for rheumatoid arthritis?",
+    "raw_query": "What is the first-line immunosuppressant DMARD medication used for rheumatoid arthritis?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "medication"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "RheumatoidArthritis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "HandJoints"
+      ],
+      "age_group": "adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0017"
+    ],
+    "hard_negative_passage_ids": [
+      "P0021"
+    ],
+    "expected_top_chunk": "P0017",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC016",
-    "name": "Generated TC016",
-    "query": "How can I prevent my spine from fusing in ankylosing spondylitis?",
-    "expected_top_chunk": "P051",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q016",
+    "parent_query_id": "Q015",
+    "name": "RA Synovectomy Surgery Intent Counterfactual",
+    "query": "What are the indications for surgical synovectomy joint lining removal in rheumatoid arthritis?",
+    "raw_query": "What are the indications for surgical synovectomy joint lining removal in rheumatoid arthritis?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "surgery"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "RheumatoidArthritis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "HandJoints"
+      ],
+      "age_group": "adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0021"
+    ],
+    "hard_negative_passage_ids": [
+      "P0017"
+    ],
+    "expected_top_chunk": "P0021",
+    "changed_constraint": {
+      "field": "intent",
+      "from": "medication",
+      "to": "surgery"
+    },
+    "expected_decision": "Answer"
   },
   {
     "id": "TC017",
-    "name": "Generated TC017",
-    "query": "What is the recommended daily protein intake for older adults to treat sarcopenia?",
-    "expected_top_chunk": "P061",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q017",
+    "parent_query_id": null,
+    "name": "Acute Gout Purine Diet Restriction",
+    "query": "I am experiencing an acute gout attack. Is it okay to eat red meat, organ meats, or seafood?",
+    "raw_query": "I am experiencing an acute gout attack. Is it okay to eat red meat, organ meats, or seafood?",
+    "intent": {
+      "primary": "safety",
+      "secondary": [
+        "nutrition"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Gout"
+      ],
+      "condition": [],
+      "anatomy": [
+        "FirstMTP"
+      ],
+      "age_group": "adult",
+      "clinical_state": [
+        "AcuteGoutAttack"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0022"
+    ],
+    "hard_negative_passage_ids": [
+      "P0024"
+    ],
+    "expected_top_chunk": "P0022",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC018",
-    "name": "Generated TC018",
-    "query": "I have fibrous dysplasia and my hip bone is bending like a crook. What is this?",
-    "expected_top_chunk": "P097",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q018",
+    "parent_query_id": "Q017",
+    "name": "Chronic Gout Allopurinol Intent Counterfactual",
+    "query": "Can I start allopurinol urate-lowering medication therapy during an active gout flare up?",
+    "raw_query": "Can I start allopurinol urate-lowering medication therapy during an active gout flare up?",
+    "intent": {
+      "primary": "safety",
+      "secondary": [
+        "medication"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Gout"
+      ],
+      "condition": [],
+      "anatomy": [
+        "FirstMTP"
+      ],
+      "age_group": "adult",
+      "clinical_state": [
+        "AcuteGoutAttack"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0024"
+    ],
+    "hard_negative_passage_ids": [
+      "P0022"
+    ],
+    "expected_top_chunk": "P0024",
+    "changed_constraint": {
+      "field": "intent",
+      "from": "dietary_safety",
+      "to": "medication_timing"
+    },
+    "expected_decision": "Answer"
   },
   {
     "id": "TC019",
-    "name": "Generated TC019",
-    "query": "My father has a diabetic foot ulcer and bone infection. What should we evaluate?",
-    "expected_top_chunk": "P050",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q019",
+    "parent_query_id": null,
+    "name": "Sarcopenia Dietary Protein Nutrition",
+    "query": "What is the recommended daily protein intake for older adults to treat sarcopenia?",
+    "raw_query": "What is the recommended daily protein intake for older adults to treat sarcopenia?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "nutrition"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Sarcopenia"
+      ],
+      "condition": [],
+      "anatomy": [],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0039"
+    ],
+    "hard_negative_passage_ids": [
+      "P0040"
+    ],
+    "expected_top_chunk": "P0039",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC020",
-    "name": "Generated TC020",
-    "query": "Can I take prednisone as a bridge before my rheumatoid arthritis methotrexate works?",
-    "expected_top_chunk": "P027",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q020",
+    "parent_query_id": "Q019",
+    "name": "Sarcopenia Resistance Training Counterfactual",
+    "query": "What progressive resistance training exercises help build muscle mass in sarcopenia?",
+    "raw_query": "What progressive resistance training exercises help build muscle mass in sarcopenia?",
+    "intent": {
+      "primary": "rehabilitation",
+      "secondary": [
+        "strength"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Sarcopenia"
+      ],
+      "condition": [],
+      "anatomy": [],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0040"
+    ],
+    "hard_negative_passage_ids": [
+      "P0039"
+    ],
+    "expected_top_chunk": "P0040",
+    "changed_constraint": {
+      "field": "intent",
+      "from": "nutrition",
+      "to": "exercise"
+    },
+    "expected_decision": "Answer"
   },
   {
     "id": "TC021",
-    "name": "Generated TC021",
-    "query": "I have knee osteoarthritis. Is total knee replacement arthroplasty recommended?",
-    "expected_top_chunk": "P019",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q021",
+    "parent_query_id": null,
+    "name": "Knee OA and Peptic Ulcer Disease Drug Conflict",
+    "query": "I have knee osteoarthritis and active peptic ulcer disease. Can I take oral NSAID painkillers?",
+    "raw_query": "I have knee osteoarthritis and active peptic ulcer disease. Can I take oral NSAID painkillers?",
+    "intent": {
+      "primary": "safety",
+      "secondary": [
+        "medication"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoarthritis",
+        "PepticUlcerDisease"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Knee"
+      ],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0051"
+    ],
+    "hard_negative_passage_ids": [
+      "P0011"
+    ],
+    "expected_top_chunk": "P0051",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC022",
-    "name": "Generated TC022",
-    "query": "What is the first-line immunosuppressant DMARD used for rheumatoid arthritis?",
-    "expected_top_chunk": "P023",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q022",
+    "parent_query_id": null,
+    "name": "Knee OA and CKD Stage 4 Analgesia",
+    "query": "I have knee osteoarthritis and stage 4 chronic kidney disease. What pain relief is safe without oral NSAIDs?",
+    "raw_query": "I have knee osteoarthritis and stage 4 chronic kidney disease. What pain relief is safe without oral NSAIDs?",
+    "intent": {
+      "primary": "safety",
+      "secondary": [
+        "medication"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoarthritis",
+        "ChronicKidneyDisease"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Knee"
+      ],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0052"
+    ],
+    "hard_negative_passage_ids": [
+      "P0011"
+    ],
+    "expected_top_chunk": "P0052",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC023",
-    "name": "Generated TC023",
-    "query": "Can I start allopurinol therapy during an active gout flare up?",
-    "expected_top_chunk": "P034",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q023",
+    "parent_query_id": null,
+    "name": "Acute Gout in Severe CKD Renal Impairment",
+    "query": "I am having an acute gout attack and have chronic kidney disease. Why are colchicine and NSAIDs contraindicated?",
+    "raw_query": "I am having an acute gout attack and have chronic kidney disease. Why are colchicine and NSAIDs contraindicated?",
+    "intent": {
+      "primary": "safety",
+      "secondary": [
+        "medication"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Gout",
+        "ChronicKidneyDisease"
+      ],
+      "condition": [],
+      "anatomy": [
+        "FirstMTP"
+      ],
+      "age_group": "adult",
+      "clinical_state": [
+        "AcuteGoutAttack"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0053"
+    ],
+    "hard_negative_passage_ids": [
+      "P0023"
+    ],
+    "expected_top_chunk": "P0053",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC024",
-    "name": "Generated TC024",
-    "query": "I have ankylosing spondylitis. Is swimming a good exercise for my spine stiffness?",
-    "expected_top_chunk": "P055",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q024",
+    "parent_query_id": null,
+    "name": "Osteoporosis and Severe CKD Stage 5 Antiresorptive",
+    "query": "I have severe osteoporosis and stage 5 renal failure. Why are bisphosphonates contraindicated?",
+    "raw_query": "I have severe osteoporosis and stage 5 renal failure. Why are bisphosphonates contraindicated?",
+    "intent": {
+      "primary": "safety",
+      "secondary": [
+        "medication"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoporosis",
+        "ChronicKidneyDisease"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Spine"
+      ],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0054"
+    ],
+    "hard_negative_passage_ids": [
+      "P0003"
+    ],
+    "expected_top_chunk": "P0054",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC025",
-    "name": "Generated TC025",
-    "query": "I am looking for surgical options for chronic osteomyelitis bone infection.",
-    "expected_top_chunk": "P043",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q025",
+    "parent_query_id": null,
+    "name": "Osteoporosis with Severe Hip OA Exercise Conflict",
+    "query": "I have osteoporosis and end-stage hip osteoarthritis. How can I exercise without high impact loading?",
+    "raw_query": "I have osteoporosis and end-stage hip osteoarthritis. How can I exercise without high impact loading?",
+    "intent": {
+      "primary": "rehabilitation",
+      "secondary": [
+        "mobility_safety"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoporosis",
+        "Osteoarthritis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Hip"
+      ],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0055"
+    ],
+    "hard_negative_passage_ids": [
+      "P0001"
+    ],
+    "expected_top_chunk": "P0055",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC026",
-    "name": "Generated TC026",
-    "query": "I have knee osteoarthritis. Is total knee replacement arthroplasty recommended?",
-    "expected_top_chunk": "P019",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q026",
+    "parent_query_id": null,
+    "name": "Ambiguous Joint Pain Query (Abstain)",
+    "query": "I have joint pain. What medicine should I take?",
+    "raw_query": "I have joint pain. What medicine should I take?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": []
+    },
+    "clinical_context": {
+      "disease": [],
+      "condition": [],
+      "anatomy": [],
+      "age_group": "unknown",
+      "clinical_state": [
+        "unknown"
+      ]
+    },
+    "positive_passage_ids": [],
+    "hard_negative_passage_ids": [
+      "P0011",
+      "P0003"
+    ],
+    "expected_top_chunk": "P0011",
+    "changed_constraint": null,
+    "expected_decision": "Abstain"
   },
   {
     "id": "TC027",
-    "name": "Generated TC027",
-    "query": "What is the first-line immunosuppressant DMARD used for rheumatoid arthritis?",
-    "expected_top_chunk": "P023",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q027",
+    "parent_query_id": null,
+    "name": "Ambiguous Swelling Query (Abstain)",
+    "query": "My leg is swollen and hurts today. Can I exercise?",
+    "raw_query": "My leg is swollen and hurts today. Can I exercise?",
+    "intent": {
+      "primary": "rehabilitation",
+      "secondary": []
+    },
+    "clinical_context": {
+      "disease": [],
+      "condition": [],
+      "anatomy": [],
+      "age_group": "unknown",
+      "clinical_state": [
+        "unknown"
+      ]
+    },
+    "positive_passage_ids": [],
+    "hard_negative_passage_ids": [
+      "P0001",
+      "P0010"
+    ],
+    "expected_top_chunk": "P0010",
+    "changed_constraint": null,
+    "expected_decision": "Abstain"
   },
   {
     "id": "TC028",
-    "name": "Generated TC028",
-    "query": "Can I start allopurinol therapy during an active gout flare up?",
-    "expected_top_chunk": "P034",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q028",
+    "parent_query_id": null,
+    "name": "Ambiguous Back Pain Query (Abstain)",
+    "query": "I have severe back pain. Should I have surgery or take pills?",
+    "raw_query": "I have severe back pain. Should I have surgery or take pills?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": []
+    },
+    "clinical_context": {
+      "disease": [],
+      "condition": [],
+      "anatomy": [
+        "Spine"
+      ],
+      "age_group": "unknown",
+      "clinical_state": [
+        "unknown"
+      ]
+    },
+    "positive_passage_ids": [],
+    "hard_negative_passage_ids": [
+      "P0002",
+      "P0032"
+    ],
+    "expected_top_chunk": "P0002",
+    "changed_constraint": null,
+    "expected_decision": "Abstain"
   },
   {
     "id": "TC029",
-    "name": "Generated TC029",
-    "query": "I have ankylosing spondylitis. Is swimming a good exercise for my spine stiffness?",
-    "expected_top_chunk": "P055",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q029",
+    "parent_query_id": null,
+    "name": "Severe Osteoporosis Teriparatide Anabolic",
+    "query": "I have severe osteoporosis with multiple spine fractures. Is Teriparatide suitable?",
+    "raw_query": "I have severe osteoporosis with multiple spine fractures. Is Teriparatide suitable?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "medication"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoporosis",
+        "VertebralFracture"
+      ],
+      "condition": [
+        "VertebralFracture"
+      ],
+      "anatomy": [
+        "Spine"
+      ],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0005"
+    ],
+    "hard_negative_passage_ids": [
+      "P0001"
+    ],
+    "expected_top_chunk": "P0005",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC030",
-    "name": "Generated TC030",
-    "query": "I am looking for surgical options for chronic osteomyelitis bone infection.",
-    "expected_top_chunk": "P043",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q030",
+    "parent_query_id": null,
+    "name": "Osteoporosis Tai Chi Balance",
+    "query": "Can I practice Tai Chi to improve my stability and prevent falls with osteoporosis?",
+    "raw_query": "Can I practice Tai Chi to improve my stability and prevent falls with osteoporosis?",
+    "intent": {
+      "primary": "rehabilitation",
+      "secondary": [
+        "safety"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoporosis"
+      ],
+      "condition": [],
+      "anatomy": [],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0007"
+    ],
+    "hard_negative_passage_ids": [
+      "P0001"
+    ],
+    "expected_top_chunk": "P0007",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC031",
-    "name": "Generated TC031",
-    "query": "I have knee osteoarthritis. Is total knee replacement arthroplasty recommended?",
-    "expected_top_chunk": "P019",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q031",
+    "parent_query_id": null,
+    "name": "Osteoporosis Calcium and Vitamin D",
+    "query": "I am starting alendronate bisphosphonates. Do I need to take calcium or Vitamin D?",
+    "raw_query": "I am starting alendronate bisphosphonates. Do I need to take calcium or Vitamin D?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "nutrition"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoporosis"
+      ],
+      "condition": [],
+      "anatomy": [],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0004"
+    ],
+    "hard_negative_passage_ids": [
+      "P0003"
+    ],
+    "expected_top_chunk": "P0004",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC032",
-    "name": "Generated TC032",
-    "query": "What is the first-line immunosuppressant DMARD used for rheumatoid arthritis?",
-    "expected_top_chunk": "P023",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q032",
+    "parent_query_id": null,
+    "name": "Postmenopausal Osteoporosis HRT",
+    "query": "Can estrogen hormone replacement therapy prevent bone loss in postmenopausal osteoporosis?",
+    "raw_query": "Can estrogen hormone replacement therapy prevent bone loss in postmenopausal osteoporosis?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "medication"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoporosis"
+      ],
+      "condition": [],
+      "anatomy": [],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0008"
+    ],
+    "hard_negative_passage_ids": [
+      "P0003"
+    ],
+    "expected_top_chunk": "P0008",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC033",
-    "name": "Generated TC033",
-    "query": "Can I start allopurinol therapy during an active gout flare up?",
-    "expected_top_chunk": "P034",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q033",
+    "parent_query_id": null,
+    "name": "Knee OA Corticosteroid Injection",
+    "query": "Are intra-articular corticosteroid injections effective for rapid knee osteoarthritis pain relief?",
+    "raw_query": "Are intra-articular corticosteroid injections effective for rapid knee osteoarthritis pain relief?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "medication"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoarthritis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Knee"
+      ],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "FlareUp"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0012"
+    ],
+    "hard_negative_passage_ids": [
+      "P0009"
+    ],
+    "expected_top_chunk": "P0012",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC034",
-    "name": "Generated TC034",
-    "query": "I have ankylosing spondylitis. Is swimming a good exercise for my spine stiffness?",
-    "expected_top_chunk": "P055",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q034",
+    "parent_query_id": null,
+    "name": "Knee OA Weight Reduction Unloading",
+    "query": "How much does weight loss reduce mechanical joint load in knee osteoarthritis?",
+    "raw_query": "How much does weight loss reduce mechanical joint load in knee osteoarthritis?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "safety"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteoarthritis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Knee"
+      ],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0014"
+    ],
+    "hard_negative_passage_ids": [
+      "P0009"
+    ],
+    "expected_top_chunk": "P0014",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC035",
-    "name": "Generated TC035",
-    "query": "I am looking for surgical options for chronic osteomyelitis bone infection.",
-    "expected_top_chunk": "P043",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q035",
+    "parent_query_id": null,
+    "name": "RA Methotrexate Folic Acid Co-therapy",
+    "query": "Why do I need to take folic acid together with methotrexate for rheumatoid arthritis?",
+    "raw_query": "Why do I need to take folic acid together with methotrexate for rheumatoid arthritis?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "medication",
+        "nutrition"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "RheumatoidArthritis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "HandJoints"
+      ],
+      "age_group": "adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0018"
+    ],
+    "hard_negative_passage_ids": [
+      "P0017"
+    ],
+    "expected_top_chunk": "P0018",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC036",
-    "name": "Generated TC036",
-    "query": "I have knee osteoarthritis. Is total knee replacement arthroplasty recommended?",
-    "expected_top_chunk": "P019",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q036",
+    "parent_query_id": null,
+    "name": "RA Corticosteroid Bridge Therapy",
+    "query": "Can I take prednisone as a bridge before my rheumatoid arthritis methotrexate works?",
+    "raw_query": "Can I take prednisone as a bridge before my rheumatoid arthritis methotrexate works?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "medication"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "RheumatoidArthritis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "HandJoints"
+      ],
+      "age_group": "adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0019"
+    ],
+    "hard_negative_passage_ids": [
+      "P0017"
+    ],
+    "expected_top_chunk": "P0019",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC037",
-    "name": "Generated TC037",
-    "query": "What is the first-line immunosuppressant DMARD used for rheumatoid arthritis?",
-    "expected_top_chunk": "P023",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q037",
+    "parent_query_id": null,
+    "name": "RA Targeted JAK Inhibitor Therapy",
+    "query": "Are JAK inhibitors like tofacitinib effective for moderate to severe rheumatoid arthritis?",
+    "raw_query": "Are JAK inhibitors like tofacitinib effective for moderate to severe rheumatoid arthritis?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "medication"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "RheumatoidArthritis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "HandJoints"
+      ],
+      "age_group": "adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0020"
+    ],
+    "hard_negative_passage_ids": [
+      "P0017"
+    ],
+    "expected_top_chunk": "P0020",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC038",
-    "name": "Generated TC038",
-    "query": "Can I start allopurinol therapy during an active gout flare up?",
-    "expected_top_chunk": "P034",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q038",
+    "parent_query_id": null,
+    "name": "Acute Gout Colchicine Window",
+    "query": "How quickly should colchicine be taken after an acute gout attack starts?",
+    "raw_query": "How quickly should colchicine be taken after an acute gout attack starts?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "medication"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Gout"
+      ],
+      "condition": [],
+      "anatomy": [
+        "FirstMTP"
+      ],
+      "age_group": "adult",
+      "clinical_state": [
+        "AcuteGoutAttack"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0023"
+    ],
+    "hard_negative_passage_ids": [
+      "P0024"
+    ],
+    "expected_top_chunk": "P0023",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC039",
-    "name": "Generated TC039",
-    "query": "I have ankylosing spondylitis. Is swimming a good exercise for my spine stiffness?",
-    "expected_top_chunk": "P055",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q039",
+    "parent_query_id": null,
+    "name": "Chronic Gout Target Urate",
+    "query": "What is the target serum urate level for long-term gout management?",
+    "raw_query": "What is the target serum urate level for long-term gout management?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "medication"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Gout"
+      ],
+      "condition": [],
+      "anatomy": [
+        "FirstMTP"
+      ],
+      "age_group": "adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0025"
+    ],
+    "hard_negative_passage_ids": [
+      "P0022"
+    ],
+    "expected_top_chunk": "P0025",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC040",
-    "name": "Generated TC040",
-    "query": "I am looking for surgical options for chronic osteomyelitis bone infection.",
-    "expected_top_chunk": "P043",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q040",
+    "parent_query_id": null,
+    "name": "Gout Probenecid Uricosuric Agent",
+    "query": "Can probenecid uricosuric medication help lower uric acid in chronic gout?",
+    "raw_query": "Can probenecid uricosuric medication help lower uric acid in chronic gout?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "medication"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Gout"
+      ],
+      "condition": [],
+      "anatomy": [
+        "FirstMTP"
+      ],
+      "age_group": "adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0026"
+    ],
+    "hard_negative_passage_ids": [
+      "P0022"
+    ],
+    "expected_top_chunk": "P0026",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC041",
-    "name": "Generated TC041",
-    "query": "I have knee osteoarthritis. Is total knee replacement arthroplasty recommended?",
-    "expected_top_chunk": "P019",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q041",
+    "parent_query_id": null,
+    "name": "Gouty Tophi Surgical Debridement",
+    "query": "What are the indications for surgical removal of gouty tophi?",
+    "raw_query": "What are the indications for surgical removal of gouty tophi?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "surgery"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Gout"
+      ],
+      "condition": [],
+      "anatomy": [
+        "FirstMTP"
+      ],
+      "age_group": "adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0027"
+    ],
+    "hard_negative_passage_ids": [
+      "P0025"
+    ],
+    "expected_top_chunk": "P0027",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC042",
-    "name": "Generated TC042",
-    "query": "What is the first-line immunosuppressant DMARD used for rheumatoid arthritis?",
-    "expected_top_chunk": "P023",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q042",
+    "parent_query_id": null,
+    "name": "Osteomyelitis Hyperbaric Oxygen",
+    "query": "Why is hyperbaric oxygen therapy used as an adjunctive treatment for osteomyelitis?",
+    "raw_query": "Why is hyperbaric oxygen therapy used as an adjunctive treatment for osteomyelitis?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "adjunctive"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteomyelitis"
+      ],
+      "condition": [],
+      "anatomy": [],
+      "age_group": "adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0031"
+    ],
+    "hard_negative_passage_ids": [
+      "P0029"
+    ],
+    "expected_top_chunk": "P0031",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC043",
-    "name": "Generated TC043",
-    "query": "Can I start allopurinol therapy during an active gout flare up?",
-    "expected_top_chunk": "P034",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q043",
+    "parent_query_id": null,
+    "name": "Vertebral Osteomyelitis Immobilization",
+    "query": "What care is required for vertebral osteomyelitis spinal infection?",
+    "raw_query": "What care is required for vertebral osteomyelitis spinal infection?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "rest"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteomyelitis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Spine",
+        "Vertebra"
+      ],
+      "age_group": "adult",
+      "clinical_state": [
+        "ActiveInfection"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0032"
+    ],
+    "hard_negative_passage_ids": [
+      "P0029"
+    ],
+    "expected_top_chunk": "P0032",
+    "changed_constraint": null,
+    "expected_decision": "Escalate"
   },
   {
     "id": "TC044",
-    "name": "Generated TC044",
-    "query": "I have ankylosing spondylitis. Is swimming a good exercise for my spine stiffness?",
-    "expected_top_chunk": "P055",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q044",
+    "parent_query_id": null,
+    "name": "Diabetic Foot Osteomyelitis Care",
+    "query": "My father has a diabetic foot ulcer and bone infection. What should we evaluate?",
+    "raw_query": "My father has a diabetic foot ulcer and bone infection. What should we evaluate?",
+    "intent": {
+      "primary": "diagnosis",
+      "secondary": [
+        "safety"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Osteomyelitis",
+        "DiabetesMellitus"
+      ],
+      "condition": [],
+      "anatomy": [],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "ActiveInfection"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0033"
+    ],
+    "hard_negative_passage_ids": [
+      "P0029"
+    ],
+    "expected_top_chunk": "P0033",
+    "changed_constraint": null,
+    "expected_decision": "Escalate"
   },
   {
     "id": "TC045",
-    "name": "Generated TC045",
-    "query": "I am looking for surgical options for chronic osteomyelitis bone infection.",
-    "expected_top_chunk": "P043",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q045",
+    "parent_query_id": null,
+    "name": "Ankylosing Spondylitis TNF Biologics",
+    "query": "Are TNF inhibitor biologics like adalimumab effective for ankylosing spondylitis spine stiffness?",
+    "raw_query": "Are TNF inhibitor biologics like adalimumab effective for ankylosing spondylitis spine stiffness?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "medication"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "AnkylosingSpondylitis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Spine"
+      ],
+      "age_group": "young_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0036"
+    ],
+    "hard_negative_passage_ids": [
+      "P0034"
+    ],
+    "expected_top_chunk": "P0036",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC046",
-    "name": "Generated TC046",
-    "query": "I have knee osteoarthritis. Is total knee replacement arthroplasty recommended?",
-    "expected_top_chunk": "P019",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q046",
+    "parent_query_id": null,
+    "name": "Ankylosing Spondylitis Swimming Exercise",
+    "query": "I have ankylosing spondylitis. Is swimming a good exercise for my spine stiffness?",
+    "raw_query": "I have ankylosing spondylitis. Is swimming a good exercise for my spine stiffness?",
+    "intent": {
+      "primary": "rehabilitation",
+      "secondary": [
+        "exercise"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "AnkylosingSpondylitis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Spine"
+      ],
+      "age_group": "young_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0037"
+    ],
+    "hard_negative_passage_ids": [
+      "P0035"
+    ],
+    "expected_top_chunk": "P0037",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC047",
-    "name": "Generated TC047",
-    "query": "What is the first-line immunosuppressant DMARD used for rheumatoid arthritis?",
-    "expected_top_chunk": "P023",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q047",
+    "parent_query_id": null,
+    "name": "Ankylosing Spondylitis Sleeping Posture",
+    "query": "What sleeping position and mattress is recommended for ankylosing spondylitis postural alignment?",
+    "raw_query": "What sleeping position and mattress is recommended for ankylosing spondylitis postural alignment?",
+    "intent": {
+      "primary": "safety",
+      "secondary": [
+        "posture"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "AnkylosingSpondylitis"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Spine"
+      ],
+      "age_group": "young_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0038"
+    ],
+    "hard_negative_passage_ids": [
+      "P0035"
+    ],
+    "expected_top_chunk": "P0038",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC048",
-    "name": "Generated TC048",
-    "query": "Can I start allopurinol therapy during an active gout flare up?",
-    "expected_top_chunk": "P034",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q048",
+    "parent_query_id": null,
+    "name": "Sarcopenia Creatine Supplementation",
+    "query": "Can creatine supplementation combined with exercise improve muscle gains in sarcopenia?",
+    "raw_query": "Can creatine supplementation combined with exercise improve muscle gains in sarcopenia?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "nutrition"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Sarcopenia"
+      ],
+      "condition": [],
+      "anatomy": [],
+      "age_group": "older_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0041"
+    ],
+    "hard_negative_passage_ids": [
+      "P0039"
+    ],
+    "expected_top_chunk": "P0041",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC049",
-    "name": "Generated TC049",
-    "query": "I have ankylosing spondylitis. Is swimming a good exercise for my spine stiffness?",
-    "expected_top_chunk": "P055",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q049",
+    "parent_query_id": null,
+    "name": "Pediatric Rickets Vitamin D Therapy",
+    "query": "How is nutritional rickets in children treated with high-dose Vitamin D therapy?",
+    "raw_query": "How is nutritional rickets in children treated with high-dose Vitamin D therapy?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "medication",
+        "nutrition"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "Rickets"
+      ],
+      "condition": [],
+      "anatomy": [],
+      "age_group": "pediatric",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0042"
+    ],
+    "hard_negative_passage_ids": [
+      "P0043"
+    ],
+    "expected_top_chunk": "P0042",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   },
   {
     "id": "TC050",
-    "name": "Generated TC050",
-    "query": "I am looking for surgical options for chronic osteomyelitis bone infection.",
-    "expected_top_chunk": "P043",
-    "expected_decision": "Answer",
-    "description": "Auto-generated from experiment_report.md"
+    "query_id": "Q050",
+    "parent_query_id": null,
+    "name": "Fibrous Dysplasia Shepherd Crook Deformity",
+    "query": "I have fibrous dysplasia and my hip bone is bending like a shepherd crook. What surgical management is needed?",
+    "raw_query": "I have fibrous dysplasia and my hip bone is bending like a shepherd crook. What surgical management is needed?",
+    "intent": {
+      "primary": "treatment",
+      "secondary": [
+        "surgery"
+      ]
+    },
+    "clinical_context": {
+      "disease": [
+        "FibrousDysplasia"
+      ],
+      "condition": [],
+      "anatomy": [
+        "Hip"
+      ],
+      "age_group": "young_adult",
+      "clinical_state": [
+        "Stable"
+      ]
+    },
+    "positive_passage_ids": [
+      "P0050"
+    ],
+    "hard_negative_passage_ids": [
+      "P0047"
+    ],
+    "expected_top_chunk": "P0050",
+    "changed_constraint": null,
+    "expected_decision": "Answer"
   }
 ]
