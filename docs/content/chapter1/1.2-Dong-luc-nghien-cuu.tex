@@ -4,12 +4,12 @@ Việc phát triển một giải pháp hỏi--đáp y khoa tin cậy mang ý ng
 
 \subsection{Ý nghĩa khoa học}
 
-Về phương diện khoa học, đề tài thiết lập một khung thực nghiệm đầu cuối để khảo sát cách RAG vận hành trên ngữ liệu chuyên ngành về các bệnh lý về xương. Khung này cho phép so sánh RAG cơ sở với các cải tiến về truy xuất lai, tinh chỉnh mô hình bằng bằng chứng và kiểm soát phản hồi an toàn. Thay vì chỉ đo câu trả lời cuối cùng, việc đánh giá riêng ba tầng truy xuất, sinh nội dung và hỏi--đáp đầu cuối giúp xác định lỗi thuộc về kho tri thức, bộ truy xuất, mô hình sinh hay lớp bảo đảm chất lượng \cite{xiong2024mirage, medrag2024}.
+Về phương diện khoa học, đề tài thiết lập một khung thực nghiệm đầu cuối để khảo sát cách kiến trúc truy xuất tăng cường sinh nội dung vận hành trên ngữ liệu chuyên ngành về các bệnh lý về xương. Khung này cho phép so sánh hệ thống cơ sở với các cải tiến về truy xuất lai, tinh chỉnh mô hình bằng bằng chứng và kiểm soát phản hồi an toàn. Thay vì chỉ đo câu trả lời cuối cùng, việc đánh giá riêng ba tầng truy xuất, sinh nội dung và hỏi--đáp đầu cuối giúp xác định lỗi thuộc về kho tri thức, bộ truy xuất, mô hình sinh hay lớp bảo đảm chất lượng \cite{xiong2024mirage, medrag2024}.
 
 Kết quả thực nghiệm có thể cung cấp mốc so sánh cho các nghiên cứu tiếp theo về hỏi--đáp y khoa tiếng Việt, đặc biệt trong việc cân bằng giữa khả năng trả lời, độ bám sát nguồn và hành vi từ chối hợp lý.
 
 \subsection{Ý nghĩa thực tiễn}
 
-Về phương diện ứng dụng, hệ thống hướng đến việc rút ngắn thời gian tra cứu tài liệu chuyên khoa cho nhân viên y tế và sinh viên, đồng thời cung cấp cho người bệnh một kênh tham khảo ban đầu có nguồn bằng chứng rõ ràng \cite{ortho_rag_13}. Cơ chế Answer--Abstain--Escalate giúp biểu đạt giới hạn của hệ thống: chỉ trả lời khi đủ căn cứ, từ chối khi chưa chắc chắn và khuyến nghị gặp chuyên gia khi có nguy cơ.
+Về phương diện ứng dụng, hệ thống hướng đến việc rút ngắn thời gian tra cứu tài liệu chuyên khoa cho nhân viên y tế và sinh viên, đồng thời cung cấp cho người bệnh một kênh tham khảo ban đầu có nguồn bằng chứng rõ ràng \cite{ortho_rag_13}. Cơ chế Trả lời -- Từ chối -- Chuyển chuyên gia giúp biểu đạt giới hạn của hệ thống: chỉ trả lời khi đủ căn cứ, từ chối khi chưa chắc chắn và khuyến nghị gặp chuyên gia khi có nguy cơ.
 
-Giá trị thực tiễn của giải pháp còn nằm ở khả năng cập nhật kho tri thức mà không phải huấn luyện lại toàn bộ LLM, cũng như việc đặt bảo vệ dữ liệu cá nhân và giám sát của con người thành điều kiện vận hành. Hệ thống vì thế đóng vai trò hỗ trợ tra cứu và giáo dục sức khỏe, không thay thế quyết định lâm sàng của bác sĩ.
+Giá trị thực tiễn của giải pháp còn nằm ở khả năng cập nhật kho tri thức mà không phải huấn luyện lại toàn bộ mô hình ngôn ngữ lớn, cũng như việc đặt bảo vệ dữ liệu cá nhân và giám sát của con người thành điều kiện vận hành. Hệ thống vì thế đóng vai trò hỗ trợ tra cứu và giáo dục sức khỏe, không thay thế quyết định lâm sàng của bác sĩ.

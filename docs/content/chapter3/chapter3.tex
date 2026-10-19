@@ -1,0 +1,507 @@
+\chapter{Phương pháp đề xuất: Hệ thống hỏi--đáp bệnh lý xương tin cậy đa tầng kiểm chứng}
+
+\section{Sơ đồ khối tổng thể của hệ thống}
+Để giải quyết triệt để các khoảng trống nghiên cứu đã được chỉ ra tại Chương 2, hệ thống đề xuất (kí hiệu là \textbf{Bone-MSK QA}) được xây dựng theo kiến trúc phân tách rõ ràng giữa hai pha: pha xây dựng tri thức ngoại tuyến (\emph{Offline Knowledge Construction}) và pha xử lý suy diễn trực tuyến (\emph{Online Inference Processing}).
+
+Toàn bộ kiến trúc tổng thể được biểu diễn tại Hình~\ref{fig:system_architecture}.
+
+\begin{figure}[h!]
+\centering
+\begin{forest}
+  for tree={
+    rectangle,
+    rounded corners,
+    draw=black,
+    top color=white,
+    bottom color=gray!10,
+    very thick,
+    font=\footnotesize\bfseries,
+    text centered,
+    edge={-latex, thick},
+    parent anchor=south,
+    child anchor=north,
+    align=center,
+    l sep=0.9cm,
+    s sep=0.3cm
+  }
+  [{Dữ liệu ca lâm sàng + Câu hỏi ($CaseInput$)}
+    [{Định vị quy trình lâm sàng ($P_1$ / $P_3$)}
+      [{Cổng sàng lọc cờ đỏ}
+        [{Truy xuất lai định hướng đồ thị (Hybrid + KG)}
+          [{Đánh giá bằng chứng hai chiều (Rel \& Appl)}
+            [{Vòng lặp xác minh và lấp khoảng trống ($T_{\max} = 3$)}
+              [{Sinh phản hồi có trích dẫn và điều kiện}
+                [{Hiệu chuẩn độ tin cậy cấp bước (PRM)}
+                  [{Thẩm định tính nhất quán sau sinh}
+                    [{Cổng quyết định lâm sàng}
+                      [{\texttt{ANSWER\_CLEAN} /\\ \texttt{WARNING}}]
+                      [{\texttt{ASK\_MORE}}]
+                      [{\texttt{ABSTAIN}}]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+        [{Cảnh báo u xương}, edge label={node[midway,right,font=\scriptsize\color{red}]{Dương tính}}]
+      ]
+    ]
+  ]
+\end{forest}
+\caption{Sơ đồ luồng xử lý dữ liệu tổng thể của hệ thống Bone-MSK QA}
+\label{fig:system_architecture}
+\end{figure}
+
+\subsection{Mối liên hệ với khung làm việc cơ bản ở Mục 1.4}
+Khung kiến trúc đề xuất được thiết kế nhằm cụ thể hóa và nâng cấp toàn diện các công đoạn xử lý được định nghĩa trong Pipeline Suy diễn tổng quát ở Mục 1.4, chuyển từ mô hình truy xuất văn bản cơ sở sang một hệ thống hỗ trợ quyết định lâm sàng có kiểm chứng. Mối quan hệ kế thừa và phát triển cụ thể giữa các khối chức năng được tổng hợp tại Bảng~\ref{tab:mapping_pipeline}:
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4.2cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Công đoạn cơ bản (Mục 1.4)} & \textbf{Khối chức năng đề xuất} & \textbf{Đóng góp cải tiến \& mở rộng} \\
+\hline
+\textbf{Khởi tạo kho tri thức} & Xây dựng đồ thị tri thức dựa trên ontology & Mở rộng từ chỉ mục văn bản phẳng thành đồ thị tri thức 6 tầng phân lớp chuẩn hóa bằng cơ chế 3 LLM. \\
+\hline
+\textbf{Bước 1:} Hiểu và tiền xử lý truy vấn & Định vị quy trình lâm sàng và cổng sàng lọc cờ đỏ & Mở rộng nhận diện giai đoạn khám ($P_1 / P_3$), phân tích truy vấn đa diện ($Q_c$) và tích hợp thêm bộ lọc phát hiện sớm nguy cơ gãy xương do u xương. \\
+\hline
+\textbf{Bước 2:} Truy xuất bằng chứng & Truy xuất lai định hướng bởi đồ thị tri thức & Kế thừa truy xuất lai (Dense + Sparse), mở rộng thêm bước điều hướng đồ thị tri thức và tăng cường mềm theo vùng giải phẫu. \\
+\hline
+\textbf{Bước 3:} Xây dựng câu lệnh & Đánh giá bằng chứng hai chiều và vòng lặp xác minh & Mở rộng đánh giá hai chiều (độ liên quan và tính áp dụng thực tế trên bệnh nhân); lặp lại truy xuất nếu thiếu thông tin trước khi tạo câu lệnh. \\
+\hline
+\textbf{Bước 4:} Sinh câu trả lời nháp & Sinh phản hồi có trích dẫn và ràng buộc điều kiện & Bổ sung cơ chế neo trích dẫn cấp câu có điều kiện áp dụng cụ thể. \\
+\hline
+\textbf{Bước 5:} Kiểm tra chất lượng và ra quyết định & Thẩm định tính nhất quán và cổng quyết định lâm sàng & Bổ sung lớp kiểm tra sau sinh, tích hợp luật suy luận chống chỉ định (quy tắc dạng SWRL), phát hiện ảo giác và phát khẳng định tri thức phủ định khi từ chối. \\
+\hline
+\end{tabularx}
+\caption{Mối quan hệ kế thừa và phát triển từ các công đoạn cơ bản ở Mục 1.4}
+\label{tab:mapping_pipeline}
+\end{table}
+
+\section{Nguyên lý hoạt động nền tảng}
+Hệ thống được thiết kế dựa trên ba nguyên lý khoa học cốt lõi:
+
+\begin{definition}[Dấu hiệu cờ đỏ lâm sàng - Clinical Red Flags]
+Trong thực hành cơ xương khớp, dấu hiệu cờ đỏ là tập hợp các triệu chứng hoặc yếu tố bệnh sử đặc biệt cảnh báo nguy cơ bệnh lý ác tính (như u xương nguyên phát hoặc di căn ung thư) hoặc nhiễm trùng cấp tính tiềm ẩn sau một triệu chứng tưởng chừng thông thường (như đau nhức kéo dài hoặc gãy xương sau chấn thương nhẹ). Sự xuất hiện của cờ đỏ đòi hỏi hệ thống phải ưu tiên kích hoạt cảnh báo loại trừ trước khi can thiệp điều trị cơ học.
+\end{definition}
+
+\begin{definition}[Nguyên lý an toàn trên hết]
+Trong môi trường y tế, việc thừa nhận chưa đủ thông tin hoặc cảnh báo rủi ro luôn được ưu tiên cao hơn việc tạo ra một câu trả lời mang tính phỏng đoán. Hệ thống không bao giờ ép buộc sinh câu trả lời khẳng định nếu độ bao phủ bằng chứng hoặc độ tin cậy chưa đạt ngưỡng an toàn.
+\end{definition}
+
+\begin{definition}[Nguyên lý đánh giá bằng chứng hai chiều]
+Một đơn vị bằng chứng y khoa $e_i$ chỉ được phép sử dụng để sinh câu trả lời khi thỏa mãn đồng thời hai tiêu chuẩn độc lập:
+\begin{enumerate}
+    \item \textbf{Tính liên quan ngữ nghĩa ($p_{\mathrm{rel}}$):} Bằng chứng trả lời đúng trọng tâm câu hỏi chuyên môn đặt ra.
+    \item \textbf{Tính áp dụng lâm sàng ($s_{\mathrm{appl}}$):} Bằng chứng phù hợp với đặc điểm nhân khẩu học, bệnh nền, mức độ nặng và không vi phạm bất kỳ chống chỉ định nào của bệnh nhân cụ thể.
+\end{enumerate}
+\end{definition}
+
+\section{Phương pháp chi tiết từng khối chức năng}
+
+\subsection{Cụ thể hóa không gian bài toán và dữ liệu lâm sàng}
+Các thành phần dữ liệu trong bài toán được chi tiết hóa từ các biểu diễn tổng quát ở Chương 1 thành các cấu trúc dữ liệu y khoa cụ thể:
+\begin{itemize}
+    \item \textbf{Bối cảnh bệnh nhân ($u$):} Được cấu trúc hóa thành bộ bốn thành phần:
+    \begin{equation}
+        u = (\mathcal{P}, \mathcal{M}_{\mathrm{clin}}, \mathcal{M}_{\mathrm{img}}, \mathcal{L}),
+    \end{equation}
+    trong đó:
+    \begin{itemize}
+        \item $\mathcal{P}$ biểu thị các thuộc tính bệnh nhân (tuổi, giới tính, tiền sử bệnh, tiền sử dị ứng);
+        \item $\mathcal{M}_{\mathrm{clin}}$ là văn bản ghi chép diễn tiến khám lâm sàng;
+        \item $\mathcal{M}_{\mathrm{img}}$ là bản tường trình kết quả chẩn đoán hình ảnh (X-quang, CT, MRI);
+        \item $\mathcal{L}$ là bảng kết quả xét nghiệm sinh hóa và huyết học.
+    \end{itemize}
+
+    \item \textbf{Biểu diễn truy vấn đa diện ($Q_c$):} Thay vì chỉ biểu diễn câu hỏi $q$ bằng một vector nhúng phẳng duy nhất, hệ thống phân tích câu hỏi thành 5 khía cạnh ngữ nghĩa (Facets) gắn liền với ontology:
+    \begin{equation}
+        Q_c = (\mathrm{Disease}, \mathrm{Anatomy}, \mathrm{PatientFactor}, \mathrm{ClinicalState}, \mathrm{Intent}),
+    \end{equation}
+    trong đó:
+    \begin{itemize}
+        \item $\mathrm{Disease}$: tập thực thể bệnh được nhắc đến hoặc nghi ngờ;
+        \item $\mathrm{Anatomy}$: vùng giải phẫu tổn thương đích;
+        \item $\mathrm{PatientFactor}$: các ràng buộc cụ thể của bệnh nhân (ví dụ: tuổi cao, suy thận);
+        \item $\mathrm{ClinicalState}$: giai đoạn tiến triển lâm sàng (cấp tính, sau mổ, mạn tính);
+        \item $\mathrm{Intent}$: ý định chuyên môn của câu hỏi ($\mathrm{qtype} \in \{\text{dx, tx, px, comp, anat, rf}\}$).
+    \end{itemize}
+
+    \item \textbf{Chỉ mục tri thức lai ($I$):} Được xây dựng kết hợp giữa kho dữ liệu văn bản và đồ thị tri thức:
+    \begin{equation}
+        I = (I_{\mathrm{text}}, \mathcal{G}),
+    \end{equation}
+    trong đó:
+    \begin{itemize}
+        \item $I_{\mathrm{text}}$ chứa các đoạn văn bản hướng dẫn chẩn đoán và điều trị đã phân đoạn;
+        \item $\mathcal{G}$ là đồ thị tri thức y sinh được xây dựng dựa trên ontology đa tầng.
+    \end{itemize}
+
+    \item \textbf{Tập bằng chứng đa nguồn ($C^*$):} Được chuẩn hóa thành tập các đơn vị bằng chứng $\mathcal{E}_{\mathrm{pool}} = \{e_1, e_2, \ldots, e_m\} \subseteq C^*$, bao gồm cả đoạn trích dẫn văn bản $c_j$ và bộ ba quan hệ tri thức $t_k = \langle h, r, t \rangle$.
+
+    \item \textbf{Không gian hành động quyết định ($\Delta$):} Được định nghĩa chuẩn mực theo 4 trạng thái quyết định lâm sàng:
+    \begin{equation}
+        \Delta = \{\text{ANSWER\_CLEAN}, \text{ANSWER\_WITH\_WARNING}, \text{ASK\_MORE}, \text{ABSTAIN}\},
+    \end{equation}
+    trong đó:
+    \begin{itemize}
+        \item \texttt{ANSWER\_CLEAN} (Trả lời đầy đủ): Áp dụng khi toàn bộ bằng chứng đạt độ tin cậy và tính áp dụng cao;
+        \item \texttt{ANSWER\_WITH\_WARNING} (Trả lời kèm cảnh báo): Cung cấp khuyến nghị nhưng kèm cờ cảnh báo an toàn lâm sàng;
+        \item \texttt{ASK\_MORE} (Hỏi thêm thông tin): Chủ động yêu cầu bác sĩ bổ sung thông tin cận lâm sàng còn thiếu khi bằng chứng chưa đủ để khẳng định;
+        \item \texttt{ABSTAIN} (Từ chối trả lời): Từ chối suy diễn phỏng đoán khi phát hiện rủi ro nghiêm trọng hoặc y văn không có dữ liệu, đồng thời phát ra khẳng định tri thức phủ định.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Cơ chế suy diễn thích ứng theo quy trình lâm sàng}
+Nhằm đảm bảo tính thực tiễn trong môi trường bệnh viện chấn thương chỉnh hình, quy trình suy diễn của hệ thống không áp dụng một kịch bản cứng nhắc mà tự động điều chỉnh linh hoạt theo hai giai đoạn lâm sàng trọng tâm:
+\begin{itemize}
+    \item \textbf{Giai đoạn 1 ($P_1$ - Trong khi khám lâm sàng ban đầu):}
+    \begin{itemize}
+        \item \emph{Dữ liệu sẵn có:} Chỉ bao gồm lời kể của bệnh nhân, triệu chứng cơ năng, bệnh sử, tiền sử bệnh nền và ghi chép khám sơ bộ; hoàn toàn chưa có kết quả chẩn đoán hình ảnh và xét nghiệm chuyên sâu.
+        \item \emph{Hành vi hệ thống:} Trọng tâm tập trung vào chẩn đoán phân biệt ($\mathrm{dx}$), nhận diện triệu chứng giải phẫu và kích hoạt sàng lọc sớm dấu hiệu cờ đỏ nhằm loại trừ nguy cơ gãy xương bệnh lý do u xương. Do thiếu dữ liệu cận lâm sàng, hàm đánh giá mức độ tổn thương $\mathcal{M}_{\mathrm{severity}}$ chưa thể xác định, điểm áp dụng lâm sàng đạt tối đa mức một phần. Nếu kho bằng chứng chưa đủ để đưa ra kết luận an toàn, hệ thống chủ động chuyển sang nhánh \emph{Hỏi thêm thông tin}, khuyến nghị bác sĩ các chỉ định chụp chiếu hoặc xét nghiệm cần bổ sung thay vì phỏng đoán.
+    \end{itemize}
+
+    \item \textbf{Giai đoạn 3 ($P_3$ - Sau khi có kết quả cận lâm sàng và chẩn đoán):}
+    \begin{itemize}
+        \item \emph{Dữ liệu sẵn có:} Đầy đủ hồ sơ khám, phim chụp (X-quang, CT, MRI), bản tường trình chẩn đoán hình ảnh và kết quả sinh hóa máu.
+        \item \emph{Hành vi hệ thống:} Kích hoạt toàn diện chu trình suy diễn đa tầng. Trọng tâm chuyển sang tra cứu phác đồ điều trị ngoại khoa/nội khoa ($\mathrm{tx}$), tiên lượng hồi phục ($\mathrm{px}$), quản lý biến chứng ($\mathrm{comp}$) và đối soát nghiêm ngặt các chống chỉ định y khoa giữa can thiệp dự kiến với bệnh nền của bệnh nhân.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Xây dựng đồ thị tri thức y khoa dựa trên ontology}
+Để hỗ trợ việc suy luận lâm sàng chính xác và khắc phục hiện tượng đứt gãy liên kết trong văn bản tự do, đồ thị tri thức $\mathcal{G}$ được thiết kế theo cấu trúc định hướng ontology chuyên sâu cho miền bệnh lý cơ xương khớp, kế thừa và phát triển từ mô hình biểu diễn tri thức ontology của Dao \& Ly (2025) \cite{dao2025ontology}.
+
+\paragraph{a) Cấu trúc ontology 6 tầng phân lớp}
+Khác với các hệ thống phân loại tuyến tính đơn điệu, ontology của hệ thống được cấu trúc thành 6 tầng ngữ nghĩa song song:
+\begin{itemize}
+    \item \textbf{Tầng giải phẫu (Anatomy):} Phân cấp vị trí tổn thương từ mức đại thể đến chi tiết (Chi dưới $\rightarrow$ Khớp gối, Xương đùi, Cổ xương đùi; Chi trên $\rightarrow$ Khớp vai, Cánh tay; Thân mình $\rightarrow$ Cột sống, Xương chậu).
+    \item \textbf{Tầng nhóm bệnh lý (Pathology Class):} Phân loại thành ba nhóm bệnh lý cốt lõi trong dữ liệu lâm sàng: Chấn thương (Traumatic), U bướu (Neoplastic), và Viêm nhiễm (Inflammatory).
+    \item \textbf{Tầng thực thể bệnh (Disease Entity):} Định danh các bệnh lý và dạng tổn thương cụ thể (ví dụ: gãy thân xương đùi, thoái hóa khớp gối, u nguyên bào tạo xương, u xương ác tính).
+    \item \textbf{Tầng hình thái tổn thương (Morphology):} Đóng vai trò cầu nối then chốt giữa mô tả chẩn đoán hình ảnh và bệnh lý. Bao gồm: đường gãy (chéo, xoắn, nhiều mảnh), đặc điểm ổ tổn thương u (tiêu xương, tạo xương, hủy vỏ xương, phản ứng màng xương).
+    \item \textbf{Tầng cơ chế bệnh sinh (Pathophysiology):} Mô tả bản chất sinh học tiềm ẩn như mất cân bằng tiêu xương - tạo xương, thoái hóa mô sụn, hoặc viêm mủ phá hủy tủy xương.
+    \item \textbf{Tầng kiểu hình lâm sàng (Clinical Phenotype):} Tập hợp các triệu chứng cơ năng (đau nhức, sưng phù, hạn chế vận động), các yếu tố nguy cơ, phương pháp can thiệp và chỉ định điều trị.
+\end{itemize}
+
+\paragraph{b) Từ vựng quan hệ chuẩn mực}
+Các cạnh trong đồ thị tri thức $\mathcal{G}$ được chuẩn hóa thông qua tập từ vựng quan hệ y sinh có hướng:
+\begin{itemize}
+    \item \texttt{located\_in}: Liên kết thực thể bệnh $\rightarrow$ vùng giải phẫu (ví dụ: Gãy xương đùi $\xrightarrow{\text{located\_in}}$ Xương đùi);
+    \item \texttt{is\_a}: Quan hệ phân cấp phân loại (ví dụ: U xương ác tính $\xrightarrow{\text{is\_a}}$ Nhóm u bướu);
+    \item \texttt{has\_morphology}: Liên kết bệnh $\rightarrow$ hình thái hình ảnh (ví dụ: U di căn $\xrightarrow{\text{has\_morphology}}$ Ổ tiêu xương);
+    \item \texttt{treated\_by}: Liên kết bệnh $\rightarrow$ phương pháp điều trị chỉ định (ví dụ: Gãy kín thân xương đùi $\xrightarrow{\text{treated\_by}}$ Đóng đinh nội tủy);
+    \item \texttt{contraindicated\_in}: Quan hệ chống chỉ định y khoa (ví dụ: Đóng đinh nội tủy $\xrightarrow{\text{chống chỉ định}}$ Ổ tiêu xương ác tính);
+    \item \texttt{requires\_imaging}: Liên kết bệnh $\rightarrow$ phương tiện chẩn đoán hình ảnh bắt buộc (ví dụ: U xương nghi ngờ $\xrightarrow{\text{requires\_imaging}}$ Chụp CT/MRI).
+\end{itemize}
+
+\paragraph{c) Quy trình trích xuất và ánh xạ tự động bằng cơ chế 3 LLM}
+Hệ thống kết hợp mô hình Multi-LLMs từ Das et al. (2026) \cite{das2025clinicalkg} với khung đối sánh ontology và kiểm chứng độ tin cậy được đề xuất bởi Dao \& Ly (2025) \cite{dao2025ontology} để chuyển đổi văn bản lâm sàng thành đồ thị tri thức thông qua ba tác nhân độc lập:
+\begin{enumerate}
+    \item \textbf{Mô hình trích xuất (Extractor):} Đọc từng đoạn văn bản $x_i$ để rút trích danh sách các bộ ba thuộc tính $T_i = \{(e_j, a_j, v_j)\}$, trong đó $e_j$ là thực thể, $a_j$ là thuộc tính, và $v_j$ là giá trị.
+    \item \textbf{Mô hình ánh xạ (Mapper):} Chuẩn hóa các thực thể trích xuất tự do vào các nút của ontology thông qua điểm số kết hợp từ vựng và ngữ nghĩa (kế thừa công thức ánh xạ ontology từ Dao \& Ly \cite{dao2025ontology}):
+    \begin{equation}
+        \mathrm{Score}(c, o) = \alpha \cdot \mathrm{sim}_{\mathrm{lex}}(c, o) + \beta \cdot \mathrm{sim}_{\mathrm{sem}}(c, o), \qquad \alpha + \beta = 1,
+    \end{equation}
+    trong đó:
+    \begin{itemize}
+        \item $\mathrm{sim}_{\mathrm{lex}}(c, o)$ đo độ trùng khớp xâu ký tự và từ đồng nghĩa;
+        \item $\mathrm{sim}_{\mathrm{sem}}(c, o)$ đo độ tương đồng cosine trong không gian vector nhúng y sinh;
+        \item $\alpha, \beta$ là trọng số cân bằng $(\alpha = 0.4, \beta = 0.6)$.
+    \end{itemize}
+    \item \textbf{Mô hình thẩm định (Validator):} Đánh giá tính nhất quán và độ tin cậy tổng hợp $T$ của từng bộ ba theo công thức đánh giá độ tin cậy tri thức của Dao \& Ly \cite{dao2025ontology}:
+    \begin{equation}
+        T = \lambda_1 R + \lambda_2 C + \lambda_3 J,
+    \end{equation}
+    trong đó:
+    \begin{itemize}
+        \item $R$ là độ bám sát tài liệu nguồn gốc;
+        \item $C$ là tính nhất quán với các tri thức y khoa đã xác thực;
+        \item $J$ là mức độ đồng thuận giữa các mô hình thẩm định;
+        \item $\lambda_1, \lambda_2, \lambda_3$ là các hệ số thành phần thỏa mãn $\sum \lambda_i = 1$.
+    \end{itemize}
+\end{enumerate}
+
+Đặc biệt, hệ thống áp dụng chính sách an toàn nghiêm ngặt cho nhóm bệnh lý U bướu (Neoplastic): tất cả các bộ ba thuộc nhóm này đều bắt buộc phải có sự xác nhận của bác sĩ chuyên khoa (\texttt{reviewed\_by\_md = True}) mới được cấp quyền gắn nhãn áp dụng trong khâu suy luận. Đồng thời, toàn bộ dữ liệu 1,247 ca lâm sàng được phân tách thành các tập huấn luyện, phát triển và thử nghiệm trước khi trích xuất tri thức nhằm triệt tiêu hoàn toàn nguy cơ rò rỉ dữ liệu qua nguồn gốc tài liệu.
+
+\subsection{Cổng sàng lọc dấu hiệu cờ đỏ}
+Khối chức năng này được xây dựng dựa trên các nguyên tắc phân loại nguy cơ trong y văn chấn thương chỉnh hình và ung bướu cơ xương khớp, nhằm phát hiện sớm các trường hợp gãy xương bệnh lý trên nền u xương tiềm ẩn. Điểm số cờ đỏ $\mathrm{RF\_Score}$ được xác định bởi hàm kết hợp trọng số các yếu tố cảnh báo:
+\begin{equation}
+    \mathrm{RF\_Score} = w_{\mathrm{mech}} \cdot \mathbb{I}_{\mathrm{low\_energy}} + w_{\mathrm{age}} \cdot \mathbb{I}_{(\mathrm{age} > 50)} + w_{\mathrm{hx}} \cdot \mathbb{I}_{\mathrm{cancer\_history}} + w_{\mathrm{sym}} \cdot \mathbb{I}_{\mathrm{night\_pain}},
+\end{equation}
+trong đó:
+\begin{itemize}
+    \item $\mathbb{I}_{(\cdot)}$ là hàm chỉ thị, nhận giá trị $1$ nếu thỏa mãn điều kiện và $0$ nếu ngược lại;
+    \item $\mathbb{I}_{\mathrm{low\_energy}}$ ghi nhận cơ chế chấn thương năng lượng thấp (như trượt chân, xoay người nhẹ);
+    \item $\mathbb{I}_{(\mathrm{age} > 50)}$ cảnh báo nhóm tuổi có nguy cơ loãng xương nặng hoặc thoái hóa thứ phát;
+    \item $\mathbb{I}_{\mathrm{cancer\_history}}$ phản ánh tiền sử từng mắc các bệnh lý ung thư có xu hướng di căn xương;
+    \item $\mathbb{I}_{\mathrm{night\_pain}}$ ghi nhận triệu chứng đau nhức xương liên tục về đêm hoặc sụt cân không rõ nguyên nhân;
+    \item $w_{\mathrm{mech}}, w_{\mathrm{age}}, w_{\mathrm{hx}}, w_{\mathrm{sym}}$ là các trọng số thành phần được hiệu chỉnh cùng chuyên gia lâm sàng.
+\end{itemize}
+Nếu $\mathrm{RF\_Score} \ge \tau_{\mathrm{RF}}$, hệ thống ngay lập tức kích hoạt cờ cảnh báo nguy cơ gãy xương bệnh lý và khuyến nghị chụp chiếu toàn diện trước khi thực hiện bất kỳ phẫu thuật kết hợp xương nào.
+
+\subsection{Truy xuất lai định hướng bởi đồ thị tri thức}
+Kế thừa cơ chế truy xuất lai giữa văn bản thưa và đặc trong mô hình DPR \cite{karpukhin2020} và CLI-RAG \cite{clirag2024}, hệ thống mở rộng bằng cách tích hợp thêm điểm định hướng từ đồ thị tri thức theo phương pháp của KnowGuard \cite{knowguard2024}. Điểm truy xuất tổng hợp cho mỗi đơn vị bằng chứng $e_i$ được chuẩn hóa theo từng nhóm bệnh lý $C \in \{\text{Chấn thương}, \text{U bướu}, \text{Viêm nhiễm}\}$:
+\begin{equation}
+    S_{\mathrm{retrieval}}(q, e_i) = \alpha_C \cdot S_{\mathrm{dense}}(q, e_i) + \beta_C \cdot S_{\mathrm{BM25}}(q, e_i) + \gamma_C \cdot S_{\mathrm{graph}}(e_i, \mathcal{G}_{\mathrm{sub}}) + \delta_C \cdot \mathrm{HintBoost}(e_i),
+\end{equation}
+trong đó:
+\begin{itemize}
+    \item $S_{\mathrm{dense}}(q, e_i)$ là độ tương đồng cosine giữa vector nhúng của câu hỏi kèm ngữ cảnh ca bệnh rút gọn với vector nhúng của bằng chứng $\mathbf{z}_{e_i}$;
+    \item $S_{\mathrm{BM25}}(q, e_i)$ là điểm số khớp từ khóa bề mặt trích xuất từ chỉ mục thưa;
+    \item $S_{\mathrm{graph}}(e_i, \mathcal{G}_{\mathrm{sub}})$ phản ánh độ gần gũi trên đồ thị tri thức, đo bằng nghịch đảo độ dài đường đi ngắn nhất giữa các thực thể trong truy vấn và nút bằng chứng trên đồ thị con $\mathcal{G}_{\mathrm{sub}}$;
+    \item $\mathrm{HintBoost}(e_i)$ là hệ số tăng cường mềm, nhận giá trị dương khi vùng giải phẫu của tài liệu trùng khớp với vùng giải phẫu tổn thương của ca bệnh;
+    \item $\alpha_C, \beta_C, \gamma_C, \delta_C$ là các hệ số cân bằng được tối ưu hóa riêng cho từng nhóm bệnh lý $C$.
+\end{itemize}
+
+Hệ thống phân định chặt chẽ hai mức độ liên kết giữa văn bản và đồ thị tri thức:
+\begin{itemize}
+    \item \textbf{Gắn mạnh (Strong Binding):} Đoạn văn bản nằm trong danh sách nguồn gốc trực tiếp tạo ra bộ ba tri thức ($\mathrm{source\_chunks}$); chỉ nhóm này mới được phép dùng làm căn cứ trích dẫn nguồn ở khâu sinh câu trả lời.
+    \item \textbf{Gắn yếu (Weak Binding):} Đoạn văn bản chỉ có sự giao thoa về mặt thực thể ngữ nghĩa mà không phải nguồn trích trực tiếp; nhóm này chỉ phục vụ tính điểm mạch lạc, tuyệt đối không dùng để gán nguồn trích dẫn.
+\end{itemize}
+
+\subsection{Đánh giá bằng chứng hai chiều và vòng lặp xác minh}
+Mỗi đơn vị bằng chứng ứng viên $e_i$ được thẩm định độc lập qua hai chỉ số định lượng:
+
+\textbf{1. Xác suất liên quan ngữ nghĩa ($p_{\mathrm{rel}}$):}
+\begin{equation}
+    p_{\mathrm{rel}}(e_i) = \sigma\left(\mathbf{W}_{\mathrm{rel}} [\mathbf{z}_q; \mathbf{z}_{e_i}; |\mathbf{z}_q - \mathbf{z}_{e_i}|] + b_{\mathrm{rel}}\right),
+\end{equation}
+trong đó:
+\begin{itemize}
+    \item $\sigma(\cdot)$ là hàm sigmoid chuẩn hóa xác suất về đoạn $[0, 1]$;
+    \item $[\mathbf{z}_q; \mathbf{z}_{e_i}; |\mathbf{z}_q - \mathbf{z}_{e_i}|]$ là vector ghép nối thể hiện tương quan không gian biểu diễn;
+    \item $\mathbf{W}_{\mathrm{rel}}$ và $b_{\mathrm{rel}}$ là ma trận trọng số và độ lệch của mạng nơ-ron phân loại liên quan.
+\end{itemize}
+
+\textbf{2. Điểm áp dụng lâm sàng ($s_{\mathrm{appl}}$):}
+Được tổng hợp từ bốn hàm so khớp điều kiện thực tế của bệnh nhân:
+\begin{equation}
+    s_{\mathrm{appl}}(e_i) = \frac{\mu_1 \mathcal{M}_{\mathrm{age}}(e_i, \mathcal{P}) + \mu_2 \mathcal{M}_{\mathrm{sex}}(e_i, \mathcal{P}) + \mu_3 \mathcal{M}_{\mathrm{severity}}(e_i, \mathcal{M}_{\mathrm{img}}) + \mu_4 \mathcal{M}_{\mathrm{contra}}(e_i, \mathcal{P})}{\sum_{j=1}^4 \mu_j},
+\end{equation}
+trong đó:
+\begin{itemize}
+    \item $\mathcal{M}_{\mathrm{age}}$ đánh giá độ phù hợp về nhóm tuổi chỉ định của phác đồ;
+    \item $\mathcal{M}_{\mathrm{sex}}$ kiểm tra sự tương thích về giới tính bệnh nhân;
+    \item $\mathcal{M}_{\mathrm{severity}}$ đo lường mức độ nghiêm trọng của tổn thương trên phim chụp so với phạm vi tài liệu;
+    \item $\mathcal{M}_{\mathrm{contra}}$ kiểm tra các chống chỉ định y khoa (nhận giá trị $0.0$ nếu phát hiện vi phạm tuyệt đối);
+    \item $\mu_1, \mu_2, \mu_3, \mu_4$ là các trọng số chuẩn hóa của từng tiêu chí lâm sàng.
+\end{itemize}
+
+Bằng chứng được phân loại thành ba mức độ áp dụng lâm sàng: \texttt{Applicable} (Áp dụng được) nếu $s_{\mathrm{appl}} \ge 0.8$; \texttt{Partial} (Áp dụng một phần) nếu $0.5 \le s_{\mathrm{appl}} < 0.8$; và \texttt{NotApplicable} (Không áp dụng được) nếu $s_{\mathrm{appl}} < 0.5$.
+
+\textbf{3. Vòng lặp phân tích khoảng trống và bổ sung bằng chứng:}
+Tại mỗi vòng lặp $t$, bộ phân tích khoảng trống ($\mathrm{Gap Analysis}$) xác định các thành phần thông tin cốt lõi còn thiếu:
+\begin{equation}
+    \mathrm{Gap}_t = (\mathrm{MissingEntities}, \mathrm{MissingSeverity}, \mathrm{UnverifiedContraindications}).
+\end{equation}
+Nếu $\mathrm{Gap}_t \neq \emptyset$ và số vòng lặp chưa vượt quá $T_{\max} = 3$, hệ thống tự động tái tạo truy vấn mở rộng $q_{t+1} \leftarrow \Call{RewriteQuery}{q_t, \mathrm{Gap}_t}$ để truy xuất bổ sung từ chỉ mục và đồ thị tri thức.
+
+\subsection{Sinh phản hồi có trích dẫn và ràng buộc điều kiện}
+Kế thừa cơ chế trích dẫn có cấu trúc từ MedTrust-RAG \cite{medtrustrag}, câu trả lời y khoa $\hat{y}$ được hợp thành từ tập hợp các phát biểu ($\mathrm{statement}$), trong đó mỗi phát biểu bắt buộc phải được gắn kèm định danh trích dẫn duy nhất:
+\begin{equation}
+    \hat{y} = \sum_{j} \mathrm{statement}_j\, [\mathrm{Doc}_j],
+\end{equation}
+trong đó khóa trích dẫn $[\mathrm{Doc}_j]$ được quy chuẩn thành $\mathrm{DOC}\!:\!\mathrm{chunk\_id}$ đối với đoạn văn bản hoặc $\mathrm{KG}\!:\!\mathrm{triple\_id}$ đối với bộ ba quan hệ tri thức. 
+
+Hệ thống thiết lập các nguyên tắc ràng buộc điều kiện hóa nghiêm ngặt theo từng mức độ áp dụng:
+\begin{itemize}
+    \item Bằng chứng đạt mức \texttt{Applicable} ($s_{\mathrm{appl}} \ge 0.8$): Được phép sử dụng trực tiếp làm căn cứ cho các khẳng định phác đồ chính trong câu trả lời.
+    \item Bằng chứng chỉ đạt mức \texttt{Partial} ($0.5 \le s_{\mathrm{appl}} < 0.8$): Bắt buộc phải đi kèm câu dẫn điều kiện hóa rõ ràng (ví dụ: \textit{"Khuyến cáo này chỉ áp dụng trong trường hợp ổ gãy không có tổn thương mạch máu thần kinh kèm theo"}).
+    \item Bằng chứng rơi vào mức \texttt{NotApplicable} ($s_{\mathrm{appl}} < 0.5$): Tuyệt đối không được dùng làm cơ sở đưa ra khuyến cáo điều trị; nếu mang tính liên quan cao về mặt từ vựng, hệ thống nêu rõ lý do bị loại trừ ("bằng chứng này không áp dụng cho bệnh nhân vì...") nhằm giúp bác sĩ chủ động đối chiếu.
+    \item Kiểm soát bốn dạng ảo giác nguy hại: (1) suy luận lỗi, (2) bỏ sót điều kiện bắt buộc, (3) từ chối quá mức, và (4) gán sai nguồn trích dẫn.
+\end{itemize}
+
+\subsection{Hiệu chuẩn độ tin cậy cấp bước bằng Process Reward Model}
+Thay vì chỉ đánh giá độ tin cậy bằng một con số vô hướng cho toàn bộ văn bản sau sinh, hệ thống ứng dụng mô hình phần thưởng tiến trình (Med-PRM \cite{medprm2024}) để chấm điểm độc lập từng bước lập luận y khoa:
+\begin{equation}
+    r_j = \mathrm{softmax}(\mathrm{logit}_{\mathrm{correct}}, \mathrm{logit}_{\mathrm{incorrect}}), \qquad r_{\mathrm{total}} = \min_{j=1}^K r_j.
+\end{equation}
+Công thức tính $r_{\mathrm{total}} = \min_{j=1}^K r_j$ kế thừa từ nguyên lý tích lũy độ tin cậy bảo thủ theo cận dưới trong mô hình phần thưởng tiến trình Med-PRM \cite{medprm2024}: độ tin cậy tổng thể của chuỗi suy diễn lâm sàng bị chặn dưới bởi bước suy luận có điểm số thấp nhất.
+
+Điểm số thô $r_{\mathrm{total}}$ sau đó được hiệu chuẩn xác suất hậu kỳ thông qua mô hình hồi quy đẳng trương (Isotonic Regression) tối ưu riêng theo từng nhóm bệnh lý $C$ nhằm thu được độ tin cậy suy luận của mô hình ngôn ngữ lớn ($S_{\mathrm{LLM}}$):
+\begin{equation}
+    S_{\mathrm{LLM}} = P(\mathrm{Correct} \mid r_{\mathrm{total}}) = f_{\mathrm{iso}, C}(r_{\mathrm{total}}),
+\end{equation}
+được định lượng thông qua sai số hiệu chuẩn kỳ vọng ($ECE$) và điểm Brier:
+\begin{equation}
+    ECE = \sum_{b=1}^B \frac{|S_b|}{N} \big| \mathrm{acc}(S_b) - \mathrm{conf}(S_b) \big|, \qquad \mathrm{Brier} = \frac{1}{N}\sum_{i=1}^N (p_i - y_i)^2.
+\end{equation}
+Hệ thống đồng thời phân tích đường cong đánh đổi giữa tỷ lệ đáp ứng và mức độ rủi ro lâm sàng ($\mathrm{Risk\text{--}Coverage}$) để lựa chọn ngưỡng an toàn tối ưu.
+
+\paragraph{Cơ chế tổng hợp điểm tin cậy đầu ra đa trụ cột:}
+Nhằm đảm bảo điểm tin cậy đầu ra không chỉ phản ánh xác suất nội tại của mô hình sinh mà còn gắn chặt với chất lượng bằng chứng trích dẫn và tính nhất quán lâm sàng, hệ thống tích hợp ba nguồn định lượng độc lập:
+\begin{enumerate}
+    \item \textbf{Độ tin cậy của tài liệu trích dẫn ($S_{\mathrm{doc}}$):} Được đo lường dựa trên trung bình có trọng số giữa xác suất liên quan ngữ nghĩa $p_{\mathrm{rel}}$ và điểm áp dụng thực tế trên bệnh nhân $s_{\mathrm{appl}}$ trên toàn bộ tập trích dẫn $\mathcal{C}$:
+    \begin{equation}
+        S_{\mathrm{doc}}(\mathcal{C}) = \frac{1}{|\mathcal{C}|} \sum_{e_i \in \mathcal{C}} \left( \lambda_{\mathrm{rel}} \cdot p_{\mathrm{rel}}(e_i) + \lambda_{\mathrm{appl}} \cdot s_{\mathrm{appl}}(e_i) \right),
+    \end{equation}
+    với $\lambda_{\mathrm{rel}} = 0.4$ và $\lambda_{\mathrm{appl}} = 0.6$. Nếu bằng chứng trích dẫn vi phạm chống chỉ định ($s_{\mathrm{appl}} = 0$), $S_{\mathrm{doc}}$ sẽ suy giảm mạnh.
+
+    \item \textbf{Độ tin cậy suy luận của LLM ($S_{\mathrm{LLM}}$):} Xác suất hiệu chuẩn bước suy luận yếu nhất thu được từ Med-PRM và hồi quy đẳng trương $S_{\mathrm{LLM}} = f_{\mathrm{iso}, C}(r_{\mathrm{total}})$.
+
+    \item \textbf{Hệ số kiểm chứng tính nhất quán sau sinh ($V_{\mathrm{consistency}}$):} Được xác định trực tiếp từ kết quả định tuyến 3 nhánh (Mục 3.3.9):
+    \begin{equation}
+        V_{\mathrm{consistency}} = \begin{cases}
+            1.0, & \text{khi } \mathrm{Verdict} = \mathbf{PASS}, \\
+            0.85, & \text{khi } \mathrm{Verdict} = \mathbf{REVISE}, \\
+            0.0, & \text{khi } \mathrm{Verdict} = \mathbf{INSUFFICIENT}.
+        \end{cases}
+    \end{equation}
+\end{enumerate}
+Điểm tin cậy tổng thể của phản hồi ở đầu ra ($\mathrm{Conf}_{\mathrm{output}}$) được xác định theo nguyên tắc nhân tử an toàn (multiplicative safety gating):
+\begin{equation}
+    \mathrm{Conf}_{\mathrm{output}} = V_{\mathrm{consistency}} \cdot \left( w_{\mathrm{doc}} \cdot S_{\mathrm{doc}} + w_{\mathrm{LLM}} \cdot S_{\mathrm{LLM}} \right), \qquad w_{\mathrm{doc}} + w_{\mathrm{LLM}} = 1,
+\end{equation}
+với $w_{\mathrm{doc}} = 0.5, w_{\mathrm{LLM}} = 0.5$. Nguyên tắc này đảm bảo: chỉ cần phát hiện vi phạm quan hệ chống chỉ định hoặc thiếu hụt bằng chứng cốt lõi ($V_{\mathrm{consistency}} = 0.0$), điểm tin cậy đầu ra lập tức bị triệt tiêu về $0.0$, ngăn ngừa tuyệt đối việc đưa ra phác đồ nguy hiểm dù LLM có tự tin đến đâu.
+
+\subsection{Thẩm định tính nhất quán sau sinh và cổng quyết định lâm sàng}
+Khác với các hệ thống RAG thông thường vốn chỉ đánh giá độ tin cậy bằng một con số vô hướng, hệ thống bổ sung lớp kiểm tra sau sinh nhằm đối soát chặt chẽ từng phát biểu trước khi đưa ra phản hồi:
+\begin{enumerate}
+    \item \textbf{Phân loại 6 trạng thái mệnh đề y khoa:} Mỗi khẳng định trong câu trả lời nháp được phân loại thành:
+    \begin{itemize}
+        \item \emph{Supported:} Mệnh đề có căn cứ đầy đủ từ tài liệu trích dẫn và phù hợp ca bệnh;
+        \item \emph{Miscited:} Mệnh đề đúng về kiến thức nhưng gán sai đoạn tài liệu làm bằng chứng;
+        \item \emph{Under-qualified:} Mệnh đề kết luận nhưng bỏ sót các điều kiện biên của tài liệu gốc;
+        \item \emph{Unsupported:} Mệnh đề không tìm thấy căn cứ trong kho tài liệu truy xuất;
+        \item \emph{Out-of-scope:} Mệnh đề vượt ngoài phạm vi câu hỏi và ngữ cảnh lâm sàng;
+        \item \emph{Contradicted:} Mệnh đề mâu thuẫn trực tiếp với bằng chứng hoặc vi phạm quan hệ chống chỉ định.
+    \end{itemize}
+
+    \item \textbf{Luật suy luận vị từ hình thức dựa trên ontology (dạng quy tắc SWRL):} Nhằm đảm bảo câu trả lời không đưa ra phác đồ gây nguy hại tính mạng, hệ thống áp dụng các luật suy luận vị từ tương thích chuẩn Semantic Web Rule Language (SWRL):
+    \begin{itemize}
+        \item \emph{Quy tắc phát hiện chống chỉ định điều trị:}
+        \begin{equation}
+        \begin{aligned}
+            \mathrm{Patient}(u) &\wedge \mathrm{hasCondition}(u, c) \wedge \mathrm{ProposedIntervention}(\widetilde{y}, t) \\
+            &\wedge \mathrm{contraindicated\_in}(t, c) \longrightarrow \mathrm{ContradictedClaim}(t),
+        \end{aligned}
+        \end{equation}
+        trong đó nếu phát hiện bất kỳ vị từ chống chỉ định nào thỏa mãn, mệnh đề can thiệp $t$ lập tức bị đánh dấu là \emph{Contradicted}.
+        \item \emph{Quy tắc nhận diện thiếu hụt bằng chứng cận lâm sàng:}
+        \begin{equation}
+        \begin{aligned}
+            \mathrm{SuspectedPathology}(u, p) &\wedge \mathrm{requires\_imaging}(p, m) \\
+            &\wedge \neg\mathrm{HasReport}(u, m) \longrightarrow \mathrm{MissingEvidence}(m),
+        \end{aligned}
+        \end{equation}
+        giúp tự động kích hoạt yêu cầu bổ sung hình ảnh học khi nghi ngờ tổn thương u hoặc nhiễm trùng.
+    \end{itemize}
+
+    \item \textbf{Cơ chế định tuyến 3 nhánh và khẳng định tri thức phủ định:}
+    \begin{itemize}
+        \item \textbf{Chấp thuận (PASS):} Toàn bộ các mệnh đề cốt lõi đều được hỗ trợ đầy đủ $\rightarrow$ Cho phép chuyển sang phản hồi cho bác sĩ qua quyết định \texttt{ANSWER\_CLEAN} (Trả lời đầy đủ) hoặc \texttt{ANSWER\_WITH\_WARNING} (Trả lời kèm cảnh báo).
+        \item \textbf{Chỉnh sửa (REVISE):} Tồn tại lỗi trích dẫn (\emph{Miscited}) hoặc thiếu điều kiện hạn chế (\emph{Under-qualified}) nhưng thông tin đã có sẵn trong kho bằng chứng truy xuất $\rightarrow$ Yêu cầu mô hình viết lại câu trả lời kèm chỉ dẫn sửa đổi (tối đa 1 lần).
+        \item \textbf{Không đủ điều kiện (INSUFFICIENT):} Phát hiện mâu thuẫn (\emph{Contradicted}) hoặc thiếu thông tin cốt lõi $\rightarrow$ Định tuyến quay lại vòng lặp truy xuất mở rộng hoặc chuyển sang nhánh \texttt{ASK\_MORE} (Hỏi thêm thông tin) hoặc \texttt{ABSTAIN} (Từ chối trả lời). Khi rơi vào \texttt{ABSTAIN}, hệ thống không im lặng mà phát ra \textbf{khẳng định tri thức phủ định (Negative Knowledge Assertion)} với điểm tin cậy bác bỏ $\mathrm{Conf}_{\mathrm{output}} = 0.0$, nêu rõ phạm vi tri thức y khoa hiện tại chưa có bằng chứng xác thực cho tình huống ca bệnh kèm danh sách thông tin cận lâm sàng còn thiếu.
+    \end{itemize}
+\end{enumerate}
+
+Dựa trên điểm tin cậy tổng thể $\mathrm{Conf}_{\mathrm{output}}$ và khoảng trống bằng chứng $\mathrm{Gap}_t$, Cổng quyết định lâm sàng ($\Delta$) phân định 4 trạng thái hành động:
+\begin{itemize}
+    \item \texttt{ANSWER\_CLEAN}: Được kích hoạt khi $\mathrm{Conf}_{\mathrm{output}} \ge \tau_{\mathrm{ans}}$ và toàn bộ bằng chứng đạt mức áp dụng cao ($s_{\mathrm{appl}} \ge 0.8$);
+    \item \texttt{ANSWER\_WITH\_WARNING}: Được kích hoạt khi $\mathrm{Conf}_{\mathrm{output}} \ge \tau_{\mathrm{ans}}$ nhưng có bằng chứng áp dụng một phần ($0.5 \le s_{\mathrm{appl}} < 0.8$) hoặc vừa trải qua bước \textbf{REVISE} ($V_{\mathrm{consistency}} = 0.85$);
+    \item \texttt{ASK\_MORE}: Được kích hoạt khi $\tau_{\mathrm{abstain}} \le \mathrm{Conf}_{\mathrm{output}} < \tau_{\mathrm{ans}}$ hoặc phát hiện thiếu cận lâm sàng $\mathrm{MissingEvidence}(m)$ ở giai đoạn $P_1$, chủ động yêu cầu bác sĩ bổ sung thông tin;
+    \item \texttt{ABSTAIN}: Được kích hoạt khi $\mathrm{Conf}_{\mathrm{output}} < \tau_{\mathrm{abstain}}$ hoặc có vi phạm chống chỉ định ($V_{\mathrm{consistency}} = 0.0$), phát ra khẳng định tri thức phủ định để ngăn ngừa tai biến.
+\end{itemize}
+
+\section{Giải thuật thực thi hệ thống}
+Quy trình thực thi toàn diện của chu trình hỏi--đáp và suy luận lặp được mô tả chi tiết trong Thuật toán~\ref{alg:bone_msk_inference}.
+
+\begin{algorithm}[h!]
+\footnotesize
+\caption{Multi-Stage Clinical Verification and Inference Workflow (Bone-MSK QA)}
+\label{alg:bone_msk_inference}
+\begin{algorithmic}[1]
+\Require Clinical case input $X = (\mathrm{phase}, q, \mathcal{P}, \mathcal{M}_{\mathrm{clin}}, \mathcal{M}_{\mathrm{img}}, \mathcal{L})$, Knowledge Graph $\mathcal{G}$, Text Index $I_{\mathrm{text}}$, Safety thresholds $\tau_{\mathrm{RF}}, \tau_{\mathrm{ans}}, \tau_{\mathrm{abstain}}$, Maximum retrieval rounds $T_{\max} = 3$.
+\Ensure Final answer $\hat{y}$, Attributed citation list $\mathcal{C}$, Output confidence $\mathrm{Conf}_{\mathrm{output}}$, Decision action $\mathrm{Decision}$.
+
+\State $(\mathrm{is\_RF}, \mathrm{RF\_Reason}) \leftarrow \Call{ScreenRedFlags}{X, \tau_{\mathrm{RF}}}$
+\If{$\mathrm{is\_RF} == \mathbf{True}$ \textbf{and} $\Call{RequiresImmediateReferral}{X}$}
+    \State $\hat{y} \leftarrow \Call{EmitEmergencyWarning}{\text{"Pathologic fracture risk"}, \mathrm{RF\_Reason}}$
+    \State \Return $(\hat{y}, \emptyset, 0.0, \mathbf{ABSTAIN})$
+\EndIf
+
+\State $t \leftarrow 0$; \quad $\mathcal{E}_{\mathrm{pool}} \leftarrow \emptyset$; \quad $q_t \leftarrow q$
+\While{$t < T_{\max}$}
+    \State $\mathcal{E}_t \leftarrow \Call{HybridRetrieve}{q_t, X, \mathcal{G}, I_{\mathrm{text}}}$
+    \State $(\mathcal{E}_{\mathrm{verified}}, \mathrm{Gap}_t) \leftarrow \Call{EvaluateDualAxis}{\mathcal{E}_t, X}$
+    \State $\mathcal{E}_{\mathrm{pool}} \leftarrow \mathcal{E}_{\mathrm{pool}} \cup \mathcal{E}_{\mathrm{verified}}$
+    \If{$\mathrm{Gap}_t == \emptyset$ \textbf{or} $t == T_{\max} - 1$} \textbf{break} \EndIf
+    \State $q_{t+1} \leftarrow \Call{RewriteQuery}{q_t, \mathrm{Gap}_t}$; \quad $t \leftarrow t + 1$
+\EndWhile
+
+\State $(\widetilde{y}, \mathcal{C}) \leftarrow \Call{GenerateAttributedAnswer}{X, q, \mathcal{E}_{\mathrm{pool}}}$
+\State $\mathrm{Verdict} \leftarrow \Call{VerifyConsistencyPostGen}{\widetilde{y}, \mathcal{E}_{\mathrm{pool}}, \mathcal{G}, X}$
+
+\If{$\mathrm{Verdict} == \mathbf{REVISE}$}
+    \State $(\widetilde{y}, \mathcal{C}) \leftarrow \Call{ReviseWithGuidance}{\widetilde{y}, \mathcal{E}_{\mathrm{pool}}}$; \quad $V_{\mathrm{consistency}} \leftarrow 0.85$
+\ElsIf{$\mathrm{Verdict} == \mathbf{INSUFFICIENT}$}
+    \State $V_{\mathrm{consistency}} \leftarrow 0.0$; \quad $\mathrm{Conf}_{\mathrm{output}} \leftarrow 0.0$
+    \If{$\Call{HasContradiction}{\widetilde{y}, \mathcal{G}, X}$}
+        \State $\mathrm{Decision} \leftarrow \mathbf{ABSTAIN}$; \quad $\hat{y} \leftarrow \Call{EmitNegativeKnowledgeAssertion}{\mathrm{Gap}_t}$
+    \Else
+        \State $\mathrm{Decision} \leftarrow \mathbf{ASK\_MORE}$; \quad $\hat{y} \leftarrow \Call{GenerateClarificationRequest}{\widetilde{y}, \mathrm{Gap}_t}$
+    \EndIf
+    \If{$\mathrm{is\_RF} == \mathbf{True}$} $\hat{y} \leftarrow \Call{AppendRedFlagWarning}{\hat{y}, \mathrm{RF\_Reason}}$ \EndIf
+    \State \Return $(\hat{y}, \mathcal{C}, \mathrm{Conf}_{\mathrm{output}}, \mathrm{Decision})$
+\Else
+    \State $V_{\mathrm{consistency}} \leftarrow 1.0$
+\EndIf
+
+\State $S_{\mathrm{doc}} \leftarrow \Call{ComputeEvidenceScore}{\mathcal{C}}$; \quad $S_{\mathrm{LLM}} \leftarrow \Call{CalibrateConfidencePRM}{\widetilde{y}, \mathcal{E}_{\mathrm{pool}}}$
+\State $\mathrm{Conf}_{\mathrm{output}} \leftarrow V_{\mathrm{consistency}} \cdot (w_{\mathrm{doc}} S_{\mathrm{doc}} + w_{\mathrm{LLM}} S_{\mathrm{LLM}})$
+\State $\mathrm{Decision} \leftarrow \Call{ClinicalDecisionGate}{\mathrm{Conf}_{\mathrm{output}}, \mathrm{Gap}_t, \tau_{\mathrm{ans}}, \tau_{\mathrm{abstain}}}$
+
+\If{$\mathrm{Decision} == \mathbf{ASK\_MORE}$}
+    \State $\hat{y} \leftarrow \Call{GenerateClarificationRequest}{\widetilde{y}, \mathrm{Gap}_t}$
+\ElsIf{$\mathrm{Decision} == \mathbf{ABSTAIN}$}
+    \State $\hat{y} \leftarrow \Call{EmitNegativeKnowledgeAssertion}{\mathrm{Gap}_t}$
+\Else
+    \State $\hat{y} \leftarrow \widetilde{y}$
+\EndIf
+
+\If{$\mathrm{is\_RF} == \mathbf{True}$}
+    \State $\hat{y} \leftarrow \Call{AppendRedFlagWarning}{\hat{y}, \mathrm{RF\_Reason}}$
+\EndIf
+
+\State \Return $(\hat{y}, \mathcal{C}, \mathrm{Conf}_{\mathrm{output}}, \mathrm{Decision})$
+\end{algorithmic}
+\end{algorithm}
+
+\section{Minh họa thực tế qua ca lâm sàng điển hình}
+Để làm rõ giá trị thực tiễn và tính nhất quán với không gian biểu diễn dữ liệu đã thiết lập, một tình huống lâm sàng thực tế được mô phỏng chi tiết:
+
+\textbf{Dữ liệu đầu vào của ca bệnh ($X$ theo định dạng Mục 3.3.1 và Mục 3.3.2):}
+\begin{itemize}
+    \item \textbf{Giai đoạn lâm sàng ($\mathrm{phase}$):} $\mathrm{phase} = P_1$ (giai đoạn khám lâm sàng ban đầu tại phòng cấp cứu);
+    \item \textbf{Thuộc tính nhân khẩu và tiền sử ($\mathcal{P}$):} Bệnh nhân nữ, 65 tuổi; tiền sử phẫu thuật và hóa trị ung thư vú cách đây 4 năm; không có tiền sử dị ứng thuốc;
+    \item \textbf{Ghi chép diễn tiến khám lâm sàng ($\mathcal{M}_{\mathrm{clin}}$):} Đau dữ dội vùng đùi phải sau một động tác xoay người nhẹ khi bước xuống giường (chấn thương năng lượng cực thấp); ghi nhận đau nhức âm ỉ vùng đùi về đêm trong 2 tháng gần đây;
+    \item \textbf{Báo cáo chẩn đoán hình ảnh sơ bộ ($\mathcal{M}_{\mathrm{img}}$):} Phim X-quang tại buồng cấp cứu ghi nhận đường gãy ngang thân xương đùi phải; chưa có kết quả chụp CT độ phân giải cao hoặc MRI đánh giá tính toàn vẹn của vỏ xương và ổ tiêu xương;
+    \item \textbf{Bảng kết quả xét nghiệm ($\mathcal{L}$):} $\mathcal{L} = \emptyset$ (Chưa thực hiện các xét nghiệm sinh hóa máu chuyên sâu);
+    \item \textbf{Câu hỏi truy vấn của bác sĩ ($q$):} \textit{"Chỉ định phẫu thuật đóng đinh nội tủy cho ca gãy kín thân xương đùi này có phù hợp không?"}.
+\end{itemize}
+
+\textbf{Quá trình hệ thống xử lý:}
+\begin{enumerate}
+    \item \textbf{Tại cổng sàng lọc cờ đỏ:} Cơ chế chấn thương vấp ngã nhẹ kết hợp tiền sử ung thư vú, lứa tuổi 65 và đau về đêm làm $\mathrm{RF\_Score} = 3.5 > \tau_{\mathrm{RF}} = 2.0$. Cổng an toàn kích hoạt cờ cảnh báo \texttt{flag\_pathological\_fracture\_risk = True}. Hệ thống ghi nhận đây là trường hợp nghi ngờ gãy xương bệnh lý do di căn xương.
+    \item \textbf{Tại bước truy xuất và đánh giá hai chiều:}
+    \begin{itemize}
+        \item Đoạn tài liệu số 1 (Phác đồ gãy xương chấn thương chung): Nêu khuyến nghị đóng đinh nội tủy kín có chốt. Bằng chứng này đạt độ liên quan cao ($p_{\mathrm{rel}} = 0.94$), nhưng điểm áp dụng $s_{\mathrm{appl}} = 0.35$ (\texttt{NotApplicable} -- Không áp dụng được) vì chống chỉ định khi có ổ tiêu xương di căn chưa kiểm soát.
+        \item Đoạn tài liệu số 2 (Hướng dẫn điều trị u xương di căn): Khuyến cáo cần làm sinh thiết tức thì và cân nhắc phẫu thuật thay đoạn xương khớp hoặc kết hợp xương mở rộng có bơm xi măng sinh học. Điểm áp dụng đạt $s_{\mathrm{appl}} = 0.88$ (\texttt{Applicable} -- Áp dụng được).
+    \end{itemize}
+    \item \textbf{Tại bước thẩm định tính nhất quán và cổng quyết định:} Bản nháp ban đầu đề xuất phẫu thuật đóng đinh nội tủy bị luật suy luận vị từ phát hiện vi phạm quan hệ $\mathrm{contraindicated\_in}$ với tiền sử u xương di căn trong ontology $\mathcal{G}$, do đó mệnh đề bị gán nhãn \emph{Contradicted}. Đồng thời, do ca bệnh đang ở giai đoạn khám ban đầu ($P_1$) và thiếu phim chụp CT/MRI đánh giá mức độ phá hủy vỏ xương, luật yêu cầu cận lâm sàng phát hiện $\mathrm{MissingEvidence}(\text{CT/MRI})$. Hệ thống ghi nhận lỗ hổng dữ liệu cốt lõi và định tuyến sang quyết định \texttt{ASK\_MORE} (Hỏi thêm thông tin).
+    \item \textbf{Kết quả phản hồi cho bác sĩ:}
+    \begin{itemize}
+        \item \textbf{Khuyến nghị chuyên môn:} \textit{"Đóng đinh nội tủy tiêu chuẩn chưa an toàn cho trường hợp này do nguy cơ cao đây là gãy xương bệnh lý trên nền di căn ung thư vú [Trích dẫn Hướng dẫn Chẩn đoán \& Điều trị U xương]. Phẫu thuật đóng đinh mù có thể làm lan tràn tế bào u dọc ống tủy."}
+        \item \textbf{Thông tin cần bổ sung:} \textit{"Hệ thống khuyến nghị bác sĩ chỉ định thêm chụp CT độ phân giải cao hoặc MRI vùng đùi để đánh giá mức độ phá hủy vỏ xương trước khi đưa ra y lệnh phẫu thuật dứt điểm."}
+        \item \textbf{Cảnh báo an toàn:} Hiển thị biểu tượng cờ đỏ mức độ cảnh báo cao nhất (nguy cơ gãy xương bệnh lý trên nền u xương).
+        \item \textbf{Đánh giá điểm tin cậy và quyết định hệ thống:}
+        \begin{itemize}
+            \item \emph{Điểm tin cậy cho phác đồ đóng đinh nội tủy tiêu chuẩn:} $\mathrm{Conf}_{\mathrm{output}} = 0.0$ (do vi phạm chống chỉ định tuyệt đối với ổ tiêu xương ác tính, hệ số nhất quán bị triệt tiêu $V_{\mathrm{consistency}} = 0.0$, điểm áp dụng tài liệu $s_{\mathrm{appl}} = 0.35$);
+            \item \emph{Điểm tin cậy cho khuyến nghị bổ sung cận lâm sàng:} $\mathrm{Conf}_{\mathrm{output}} = 0.91$ ($S_{\mathrm{doc}} = 0.88, S_{\mathrm{LLM}} = 0.94, V_{\mathrm{consistency}} = 1.0$);
+            \item \emph{Quyết định lâm sàng cuối cùng:} \texttt{ASK\_MORE} (Hỏi thêm thông tin cận lâm sàng, từ chối y lệnh phẫu thuật mù khi chưa có phim CT/MRI).
+        \end{itemize}
+    \end{itemize}
+\end{enumerate}
+
+Qua ví dụ minh họa trên, hệ thống chứng minh được tính ưu việt rõ rệt so với các mô hình RAG thông thường: không chỉ trả lời câu hỏi mà còn chủ động phát hiện rủi ro chết người, ngăn ngừa sai sót y khoa và định hướng bác sĩ bổ sung thông tin cận lâm sàng cần thiết.

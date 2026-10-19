@@ -1,6 +1,94 @@
 \chapter{Các công trình nghiên cứu liên quan}
 
-\include{content/chapter2/2.1-overview}
-\include{content/chapter2/2.2-sota}
-\include{content/chapter2/2.3-summary}
-\include{content/chapter2/2.4-gap}
+\section{Tổng quan các hướng tiếp cận hỏi--đáp y khoa và RAG}
+Hỏi--đáp trong lĩnh vực y sinh và hỗ trợ quyết định lâm sàng là một trong những bài toán phức tạp nhất của Trí tuệ Nhân tạo. Do tính chất đặc thù liên quan trực tiếp đến sức khỏe và tính mạng người bệnh, các hệ thống AI y tế đòi hỏi độ chính xác tuyệt đối, khả năng kiểm chứng nguồn gốc, và sự thận trọng tối đa trước các rủi ro lâm sàng.
+
+Lịch sử phát triển của các hệ thống hỏi--đáp y khoa trải qua ba thế hệ tiếp cận chính:
+\begin{enumerate}[label=(\arabic*)]
+    \item \textbf{Hệ thống dựa trên luật và tri thức chuyên gia:} Tiêu biểu như MYCIN \cite{rule_based_1} hoặc các cây quyết định phân loại lâm sàng \cite{rule_based_2}. Ưu điểm tuyệt đối là tính minh bạch và suy luận xác định. Tuy nhiên, hệ thống này vô cùng cứng nhắc, chi phí duy trì cơ sở tri thức tăng theo hàm mũ và hoàn toàn bất lực trước văn bản phi cấu trúc trong hồ sơ bệnh án điện tử.
+    \item \textbf{Mô hình ngôn ngữ lớn độc lập:} Sự phát triển vượt bậc của kiến trúc Transformer \cite{vaswani2017} và các mô hình nền tảng như Med-PaLM \cite{singhal2023medpalm}, LLaMA \cite{touvron2023llama} đã đạt điểm số ấn tượng trong các kỳ thi cấp chứng chỉ y khoa. Mặc dù vậy, tri thức được nén cố định trong trọng số tham số mô hình bộc lộ ba điểm yếu cốt tử trong thực hành lâm sàng: (i) Hiện tượng ảo giác tạo ra các thông tin nghe có vẻ khoa học nhưng sai sự thật; (ii) Tri thức nhanh chóng lỗi thời khi các phác đồ y khoa cập nhật; và (iii) Hoàn toàn thiếu khả năng trích dẫn tài liệu tham khảo chính xác để bác sĩ đối soát.
+    \item \textbf{Kiến trúc Truy xuất Tăng cường Sinh nội dung:} Sự kết hợp giữa bộ truy xuất dữ liệu ngoài và bộ sinh ngôn ngữ \cite{lewis2020, karpukhin2020} được coi là giải pháp tiêu chuẩn để khắc phục ảo giác. Bằng cách neo câu trả lời vào các đoạn văn bản từ tài liệu hướng dẫn điều trị đã kiểm chứng, kiến trúc này cho phép hệ thống cập nhật tri thức động và cung cấp trích dẫn nguồn cho người dùng \cite{gao2023, cheng2025knowledge}.
+\end{enumerate}
+
+\section{Phân loại các nghiên cứu tiêu biểu theo Mô hình Nền tảng và Kỹ thuật}
+
+Để cung cấp một cái nhìn toàn diện và có hệ thống theo chuẩn mực nghiên cứu khoa học, các công trình liên quan được phân tích thành hai trục chính: (1) \textbf{Các mô hình nền tảng y khoa}; và (2) \textbf{Các kỹ thuật truy xuất và kiểm chứng chuyên sâu}.
+
+\subsection{Các Mô hình Nền tảng trong Y tế}
+Mô hình nền tảng đóng vai trò là hạt nhân hiểu ngữ cảnh ca bệnh, trích xuất thực thể và tổng hợp câu trả lời y khoa:
+\begin{itemize}
+    \item \textbf{Mô hình độc quyền tiên tiến:} Tiêu biểu là Med-PaLM / Med-PaLM 2 \cite{singhal2023medpalm} từ Google Research. Med-PaLM là hệ thống đầu tiên đạt điểm chuẩn cấp chuyên gia trong bài thi USMLE nhờ áp dụng kỹ thuật tinh chỉnh chỉ thị với bác sĩ chuyên khoa. Tuy nhiên, rào cản lớn nhất của các mô hình này là mã nguồn đóng, chi phí suy diễn cao và rủi ro rò rỉ dữ liệu y tế nhạy cảm khi gửi qua dịch vụ đám mây công cộng.
+    \item \textbf{Mô hình nguồn mở thích ứng y sinh:} Dựa trên nền tảng LLaMA-2 / LLaMA-3 \cite{touvron2023llama}, các biến thể như Meditron, PMC-LLaMA được huấn luyện tiếp biến trên hàng triệu bài báo y sinh và tài liệu lâm sàng. Ưu điểm nổi bật là có thể triển khai tại chỗ trong mạng nội bộ bệnh viện để bảo vệ quyền riêng tư bệnh nhân, đóng vai trò là bộ sinh lý tưởng cho hệ thống hỏi--đáp nội bộ.
+    \item \textbf{Mô hình biểu diễn nhúng y khoa chuyên biệt:} Thay vì sử dụng các bộ nhúng ngôn ngữ chung, các mô hình nhúng chuyên sâu như MedCPT \cite{jin2023medcpt} được huấn luyện tương phản trên nhật ký tìm kiếm y sinh quy mô lớn. MedCPT cung cấp không gian vector nhúng có khả năng phân biệt rất tốt các thuật ngữ giải phẫu và bệnh học cơ xương khớp.
+\end{itemize}
+
+\subsection{Các Kỹ thuật Truy xuất và Kiểm chứng Bằng chứng Chuyên sâu}
+
+\paragraph{a) Xây dựng Đồ thị tri thức y khoa bằng Đa mô hình ngôn ngữ lớn (Das et al., 2025)}
+Phương pháp tiếp cận truyền thống trong việc trích xuất tri thức từ bệnh án phi cấu trúc thường phụ thuộc vào các mô hình trích xuất thực thể rời rạc. Công trình của Das et al. (2025) \cite{das2025clinicalkg} đề xuất khung kiến trúc khai thác sự phối hợp giữa nhiều mô hình ngôn ngữ lớn kết hợp với các hệ thống phân loại y học tiêu chuẩn (UMLS, SNOMED CT) để tự động xây dựng Đồ thị tri thức lâm sàng.
+
+Ưu điểm nổi bật của công trình này là chuẩn hóa được các thực thể bệnh lý, triệu chứng và giải phẫu thành các bộ ba ngữ nghĩa $\langle \text{Thực thể đầu, Quan hệ, Thực thể cuối} \rangle$ có độ chính xác cao. Tuy nhiên, hạn chế lớn khi ứng dụng vào hệ thống lâm sàng thực tế là: đồ thị sinh ra vẫn chứa các bộ ba chưa được bác sĩ chuyên khoa duyệt, đồng thời chưa liên kết ngược trở lại với các đoạn văn bản bệnh án gốc để đối chiếu khi có nghi vấn.
+
+\paragraph{b) Khung truy xuất có cấu trúc và ngữ cảnh lâm sàng (CLI-RAG)}
+Phần lớn các hệ thống thông thường phân mảnh văn bản dựa trên độ dài ký tự cố định, phá vỡ cấu trúc tự nhiên của hồ sơ bệnh án. Khung kiến trúc CLI-RAG \cite{clirag2024} đề xuất cơ chế phân đoạn tài liệu dựa trên ngữ cảnh cấu trúc bệnh án, phân tách rõ ràng giữa các phần: Bệnh sử, Khám lâm sàng, Kết quả chẩn đoán hình ảnh và Xét nghiệm.
+
+CLI-RAG chứng minh rằng việc gắn siêu dữ liệu phân cấp vào từng đoạn tài liệu giúp tăng vọt độ chính xác trong truy xuất văn bản y khoa. Mặc dù vậy, CLI-RAG chỉ mới dừng lại ở việc đánh giá độ liên quan ngữ nghĩa bề mặt giữa câu hỏi và đoạn tài liệu, mà hoàn toàn chưa đánh giá xem đoạn tài liệu đó có điều kiện áp dụng phù hợp trên ca bệnh cụ thể hay không.
+
+\paragraph{c) Xác minh bằng chứng và căn chỉnh tin cậy (MedTrust-RAG)}
+Ning et al. (2024) giới thiệu MedTrust-RAG \cite{medtrustrag}, một bước tiến trong việc kiểm soát ảo giác y sinh. Thay vì tin tưởng tuyệt đối vào kết quả của bộ truy xuất, MedTrust-RAG áp dụng vòng lặp kiểm chứng bằng chứng. Một mô hình thẩm định chuyên biệt sẽ đánh giá chéo giữa câu truy vấn và các đoạn trích dẫn, phát hiện các mâu thuẫn thông tin và yêu cầu truy xuất bổ sung nếu phát hiện bằng chứng chưa đủ bao phủ câu hỏi.
+
+Đóng góp lớn nhất của MedTrust-RAG là thiết lập cơ chế trích dẫn cấp câu có thể kiểm chứng. Tuy nhiên, MedTrust-RAG chủ yếu giải quyết các câu hỏi sinh học tổng quát trên PubMed, chưa tính đến các ràng buộc an toàn cấp thiết của bác sĩ ngoại khoa như: chống chỉ định phẫu thuật, tiền sử dị ứng thuốc và tương tác bệnh nền.
+
+\paragraph{d) Cơ chế từ chối trả lời dựa trên sự không chắc chắn lâm sàng (KnowGuard \& Machcha et al.)}
+Trong môi trường lâm sàng, một câu trả lời sai nguy hiểm hơn rất nhiều so với một lời thừa nhận "hệ thống chưa đủ thông tin". KnowGuard \cite{knowguard2024} và nghiên cứu của Machcha et al. (2026) \cite{knowing_when_abstain_2026} đề xuất cơ chế định lượng sự không chắc chắn lâm sàng để quyết định từ chối trả lời. Khi độ bao phủ của bằng chứng không vượt qua ngưỡng an toàn, hệ thống chủ động từ chối sinh câu trả lời.
+
+Hạn chế của các phương pháp này là cách tiếp cận nhị phân cứng nhắc: việc chỉ có 2 nhánh "Trả lời" hoặc "Từ chối" khiến hệ thống trở nên thiếu hữu ích với bác sĩ. Trong thực tế, khi gặp một ca lâm sàng thiếu thông tin, bác sĩ không cần một câu từ chối im lặng, mà cần hệ thống chỉ rõ thông tin cận lâm sàng đang còn thiếu.
+
+\paragraph{e) Mô hình phần thưởng tiến trình cấp bước suy luận (Med-PRM)}
+Yun et al. (2025) đề xuất Med-PRM \cite{medprm2024}, áp dụng mô hình phần thưởng tiến trình thay vì chỉ đánh giá kết quả cuối cùng. Med-PRM giám sát từng bước lập luận logic của mô hình y khoa, đối chiếu từng câu khẳng định với tài liệu hướng dẫn điều trị để chấm điểm độ tin cậy và ngăn chặn sai sót logic lan truyền.
+
+\section{Bảng so sánh tổng hợp các giải pháp hiện nay}
+
+Bảng~\ref{tab:related_work_comparison} tổng hợp sự so sánh đối đầu giữa các giải pháp nền tảng tiêu biểu với các tiêu chí cần thiết cho một hệ thống hỏi--đáp bệnh lý xương chuẩn mực.
+
+\begin{table}[h!]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}p{2.3cm}|>{\centering\arraybackslash}p{1.2cm}|>{\raggedright\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{1.4cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Phương pháp} & \textbf{Biểu diễn tri thức} & \textbf{Sàng lọc Cờ đỏ} & \textbf{Đánh giá Bằng chứng} & \textbf{Quyết định} & \textbf{Hạn chế chính} \\
+\hline
+Truy xuất cơ sở \cite{lewis2020} & Đoạn văn bản phẳng & \ding{55} & Độ tương đồng Cosine & Chỉ trả lời & Ảo giác cao, đứt gãy cấu trúc bệnh án. \\
+\hline
+Das et al. \cite{das2025clinicalkg} & Đồ thị tri thức (UMLS) & \ding{55} & Duyệt đồ thị & Sinh tự do & Đồ thị còn nhiễu, thiếu văn bản gốc đối soát. \\
+\hline
+CLI-RAG \cite{clirag2024} & Đoạn văn có cấu trúc & \ding{55} & Độ liên quan ngữ nghĩa & Chỉ trả lời & Bỏ qua điều kiện áp dụng thực tế trên bệnh nhân. \\
+\hline
+KnowGuard \cite{knowguard2024} & Văn bản + Đồ thị neo & \ding{55} & Độ liên quan + Bao phủ & 2 Nhánh & Ngưỡng cứng, không hỗ trợ hỏi thêm thông tin thiếu. \\
+\hline
+MedTrust-RAG \cite{medtrustrag} & Văn bản + Trích dẫn & \ding{55} & Xác minh đa vòng lặp & Có trích dẫn & Không phân hóa rủi ro theo lớp bệnh lý hiếm/nặng. \\
+\hline
+Med-PRM \cite{medprm2024} & Chuỗi lập luận & \ding{55} & Phần thưởng tiến trình & Chấm điểm & Tập trung vào lập luận, chưa tối ưu truy xuất lai. \\
+\hline
+\textbf{Hệ thống Đề xuất} & \textbf{Lai Đồ thị + Văn bản} & \textbf{\ding{51}} & \textbf{Liên quan + Tính áp dụng} & \textbf{3 Nhánh} & Cần chuẩn hóa dữ liệu đầu vào ca bệnh chặt chẽ. \\
+\hline
+\end{tabularx}
+\caption{Bảng so sánh tổng hợp các giải pháp hỏi--đáp y khoa hiện đại}
+\label{tab:related_work_comparison}
+\end{table}
+
+\section{Khoảng trống nghiên cứu và mục tiêu của khóa luận}
+
+Từ việc khảo sát và phân tích đối sánh ở trên, khóa luận xác định ba khoảng trống nghiên cứu cốt tử mà các giải pháp hiện hữu chưa giải quyết trọn vẹn:
+
+\paragraph{Khoảng trống 1: Sự tách rời giữa Độ liên quan ngữ nghĩa và Tính áp dụng lâm sàng.}
+Hầu hết các hệ thống hiện tại đánh giá một tài liệu chỉ dựa trên điểm tương đồng ngữ nghĩa câu chữ với câu hỏi. Tuy nhiên, trong thực hành y khoa, một hướng dẫn điều trị phẫu thuật có thể rất liên quan đến gãy xương đùi, nhưng lại hoàn toàn \emph{chống chỉ định} nếu bệnh nhân có bệnh nền suy thận nặng, loãng xương nghiêm trọng hoặc tuổi quá cao. Việc thiếu lớp thẩm định tính áp dụng lâm sàng dẫn đến nguy cơ đưa ra khuyến nghị nguy hiểm cho người bệnh.
+
+\paragraph{Khoảng trống 2: Bỏ qua hiện tượng mất cân bằng dữ liệu và thiếu cơ chế cảnh báo cờ đỏ.}
+Trong các tập dữ liệu chấn thương chỉnh hình thực tế, số ca gãy xương do chấn thương thông thường chiếm đa số áp đảo (hơn 70\%), trong khi các ca gãy xương bệnh lý do u xương ác tính chỉ chiếm tỷ lệ nhỏ (khoảng 19.3\%). Khi áp dụng các mô hình thông thường, các ca u xương rất dễ bị hệ thống "lầm tưởng" và xử trí như chấn thương kín cơ học thông thường. Cần có cơ chế cổng an toàn nhận diện sớm dấu hiệu cờ đỏ trước khi bước vào quy trình truy xuất.
+
+\paragraph{Khoảng trống 3: Sự cứng nhắc của cơ chế ra quyết định đầu ra.}
+Các nghiên cứu hiện tại chỉ dừng ở việc "ép trả lời" hoặc "từ chối". Trong quy trình làm việc thực tế của bác sĩ, câu trả lời hữu ích nhất khi chưa đủ bằng chứng là chỉ ra chính xác lỗ hổng thông tin (thiếu xét nghiệm hay phim chụp nào) để bác sĩ chỉ định cận lâm sàng bổ sung một cách chủ động.
+
+\vspace{1em}
+Để lấp đầy các khoảng trống trên, Chương 3 sẽ trình bày chi tiết về phương pháp đề xuất: \textbf{Hệ thống hỏi--đáp bệnh lý xương tin cậy với kiến trúc đa tầng kiểm chứng (Bone-MSK QA)}.

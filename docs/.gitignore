@@ -11,5 +11,5 @@
 *.synctex.gz
 *.toc
 
-# Output PDF
-main.pdf
+# Output PDF (commented to allow tracking)
+# main.pdfde_cuong_khoa_luan.*
