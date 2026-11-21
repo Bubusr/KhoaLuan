@@ -1,0 +1,370 @@
+\chapter{Tổng quan các công trình nghiên cứu liên quan}
+\label{chap:chapter2_proposed}
+
+\section{Tổng quan các hướng tiếp cận hỏi--đáp y khoa và xử lý dữ liệu lâm sàng}
+
+Hỏi--đáp trong lĩnh vực y sinh học và hỗ trợ ra quyết định lâm sàng (Clinical Decision Support Systems -- CDSS) là một trong những bài toán phức tạp và đòi hỏi tính chuẩn xác cao nhất của Trí tuệ Nhân tạo hiện đại. Khác với các hệ thống hỏi--đáp mở thông thường, dữ liệu đầu vào trong thực hành y tế lâm sàng mang tính chất không đồng nhất sâu sắc (\emph{Heterogeneous Clinical Data}), bao gồm: các thuộc tính nhân khẩu và tiền sử bệnh nhân ($\mathcal{P}$), văn bản ghi chép diễn tiến khám lâm sàng tự do ($\mathcal{M}_{\mathrm{clin}}$), bản tường trình kết quả chẩn đoán hình ảnh X-quang/CT/MRI dưới dạng văn bản bán cấu trúc ($\mathcal{M}_{\mathrm{img}}$), và bảng kết quả xét nghiệm sinh hóa, huyết học ($\mathcal{L}$).
+
+Lịch sử phát triển của các hệ thống hỏi--đáp y khoa và hỗ trợ quyết định lâm sàng trải qua bốn giai đoạn tiến hóa chính:
+\begin{enumerate}[label=(\arabic*)]
+    \item \textbf{Hệ chuyên gia dựa trên luật và bản thể học truyền thống (Rule-based \& Ontology):} Tiêu biểu như hệ thống MYCIN hoặc các mô hình luật quyết định lâm sàng \cite{rule_based_1, rule_based_2}. Ưu điểm tuyệt đối là tính minh bạch, suy diễn logic xác định và tuân thủ các quy tắc an toàn y khoa nghiêm ngặt. Tuy nhiên, hệ thống này cực kỳ cứng nhắc, chi phí duy trì cơ sở luật tăng theo hàm mũ và hoàn toàn bất lực trước dữ liệu văn bản tự do trong hồ sơ bệnh án điện tử (EHR).
+    \item \textbf{Mô hình ngôn ngữ lớn y tế độc lập (Standalone Medical LLMs):} Sự phát triển vượt bậc của kiến trúc Transformer \cite{vaswani2017} và các mô hình nền tảng như Med-PaLM \cite{singhal2023towards}, LLaMA \cite{llama3_2024} đã tạo ra bước ngoặt về năng lực hiểu và trả lời câu hỏi y tế. Tuy nhiên, việc lưu trữ tri thức ngầm định trong các trọng số tham số cố định bộc lộ ba điểm yếu cốt tử: (i) Nguy cơ sinh ảo giác (\emph{hallucination}) đưa ra các chẩn đoán sai lệch nghiêm trọng; (ii) Tri thức bị đóng băng, không cập nhật kịp thời các phác đồ điều trị mới; và (iii) Thiếu cơ chế minh chứng và giải thích trích dẫn cụ thể để bác sĩ đối soát.
+    \item \textbf{Kiến trúc Truy xuất tăng cường tạo sinh (Vanilla Medical RAG):} Sự kết hợp giữa bộ truy xuất dữ liệu ngoài và mô hình ngôn ngữ tạo sinh \cite{lewis2020, karpukhin2020} được xem là giải pháp nền tảng nhằm khắc phục ảo giác. Bằng cách ràng buộc câu trả lời vào các đoạn văn bản tài liệu hướng dẫn điều trị đã kiểm chứng, hệ thống có thể cập nhật tri thức động và cung cấp trích dẫn nguồn cho người dùng. Mặc dù vậy, RAG truyền thống phụ thuộc mù quáng vào độ tương đồng cosine bề mặt, dễ kéo về các đoạn văn bản rác (\emph{noisy snippets}) và không nắm bắt được quan hệ cấu trúc giải phẫu.
+    \item \textbf{Kiến trúc RAG đa tác nhân kết hợp Đồ thị tri thức và Lượng giá bất định (Modular Graph-guided \& Uncertainty-aware RAG):} Thế hệ nghiên cứu mới nhất (2024--2026) tích hợp đồ thị tri thức y sinh (Ontology Graph), cơ chế kiểm chứng chuỗi suy luận cấp bước (Process Reward Models) và lượng giá độ bất định lâm sàng (Uncertainty Quantification) để chủ động kiểm soát rủi ro và từ chối trả lời (\emph{Selective Abstention}) khi dữ liệu ca bệnh không đủ tin cậy \cite{knowing_when_abstain_2026, knowguard2024, dong2025discuss}.
+\end{enumerate}
+
+Để làm rõ phương pháp luận khoa học theo đúng tinh thần chỉ đạo của Giảng viên hướng dẫn: \emph{ở mỗi công đoạn kỹ thuật, việc lập bảng tiêu chí so sánh phải làm nổi bật được các lỗ hổng nghiên cứu (Research Gaps) cụ thể, từ đó chỉ rõ giải pháp đề xuất của đề tài nhằm lấp đầy các khoảng trống đó}. Toàn bộ chương này được phân tích thành \textbf{bốn công đoạn kỹ thuật cốt lõi}:
+\begin{itemize}
+    \item \textbf{Công đoạn 1:} Các Mô hình Ngôn ngữ Nền tảng trong Y tế (Medical Foundation LLMs) và Phương pháp Tinh chỉnh Tham số (Fine-tuning / PEFT);
+    \item \textbf{Công đoạn 2:} Biểu diễn Tri thức Bản thể học (Ontology) và Đồ thị Tri thức Lâm sàng (Clinical Knowledge Graph);
+    \item \textbf{Công đoạn 3:} Kỹ thuật Truy xuất Tăng cường (Medical RAG), Đồ thị RAG (GraphRAG) và Hợp nhất Ngữ cảnh Đa nguồn (Heterogeneous Clinical Text Fusion);
+    \item \textbf{Công đoạn 4:} Trí tuệ Nhân tạo Giải thích được (Clinical XAI), Lượng giá Độ bất định (Uncertainty Quantification) và Khắc phục Ảo giác (Hallucination Mitigation).
+\end{itemize}
+
+---
+
+\section{Công đoạn 1: Các Mô hình Ngôn ngữ Nền tảng và Phương pháp Tinh chỉnh trong Y tế}
+
+\subsection{Bức tranh toàn cảnh các Mô hình Ngôn ngữ Nền tảng (Foundation LLMs)}
+Mô hình ngôn ngữ lớn đóng vai trò là "bộ não suy luận" (\emph{Reasoning Engine}), tiếp nhận các chuỗi văn bản lâm sàng phức tạp, bóc tách thực thể và sinh phản hồi có cấu trúc. Bức tranh toàn cảnh về mô hình nền tảng trong y tế hiện nay được chia thành ba nhánh chính:
+
+\subsubsection{Nhóm 1: Mô hình thương mại quy mô lớn (Proprietary Large Models)}
+Điển hình là GPT-4 / GPT-4o (OpenAI) \cite{achiam2023gpt4} và Med-PaLM 2 (Google DeepMind) \cite{singhal2023towards}. Med-PaLM 2 là mô hình đầu tiên đạt độ chính xác tương đương chuyên gia y tế trên bộ dữ liệu MedQA USMLE ($>86\%$). Mặc dù có năng lực lập luận vượt trội, nhóm mô hình này gặp phải ba rào cản mang tính sống còn khi triển khai trong bệnh viện:
+\begin{itemize}
+    \item \emph{Nguy cơ rò rỉ dữ liệu và vi phạm quyền riêng tư:} Bệnh viện bắt buộc phải gửi dữ liệu hồ sơ bệnh nhân lên máy chủ đám mây bên thứ ba, vi phạm nghiêm trọng các quy định bảo vệ dữ liệu y tế (HIPAA/GDPR).
+    \item \emph{Chi phí vận hành khổng lồ:} Việc duy trì các cuộc gọi API liên tục cho các hệ thống CDSS theo thời gian thực tạo gánh nặng tài chính rất lớn.
+    \item \emph{Thiếu khả năng kiểm soát nội tại:} Trọng số mô hình hoàn toàn đóng kín, không thể can thiệp sâu vào các lớp kích hoạt hoặc áp đặt các ràng buộc an toàn cục bộ.
+\end{itemize}
+
+\subsubsection{Nhóm 2: Mô hình nguồn mở thích ứng y tế chuyên biệt (Medical Domain-adapted LLMs)}
+Để giải quyết bài toán mã nguồn mở, cộng đồng nghiên cứu đã phát triển các LLM chuyên biệt thông qua quá trình huấn luyện tiếp tục (\emph{Continual Pre-training}) trên kho văn bản y sinh:
+\begin{itemize}
+    \item \textbf{BioGPT (Microsoft, 2022)} \cite{luo2022biogpt}: Dựa trên kiến trúc GPT-2, được tiền huấn luyện trên 15 triệu tóm tắt bài báo y sinh PubMed, chuyên sâu cho việc khai phá quan hệ y sinh và hoàn thiện câu y khoa. Hạn chế là kiến trúc cũ, kích thước nhỏ (347M) nên khả năng suy luận logic lâm sàng phức tạp còn hạn chế.
+    \item \textbf{PMC-LLaMA (Wu et al., 2023)} \cite{wu2023pmc}: Huấn luyện thích ứng từ LLaMA trên tập ngữ liệu gồm 4.8 triệu bài báo toàn văn từ PubMed Central và các sách giáo khoa y tế. Mô hình thể hiện sự cải thiện rõ rệt về vốn từ vựng chuyên ngành.
+    \item \textbf{Meditron-70B (EPFL, 2023)} \cite{chen2023meditron}: Được huấn luyện trên tập ngữ liệu GAP-Replay gồm tài liệu PubMed và các phác đồ điều trị lâm sàng quốc tế. Đạt hiệu năng rất cao trong số các mô hình nguồn mở nhưng đòi hỏi hạ tầng phần cứng đồ sộ ($\ge 2$ GPU A100 80GB) để vận hành suy luận.
+    \item \textbf{BioMistral (Labrak et al., 2024)} \cite{labrak2024biomistral}: Tinh chỉnh nền tảng Mistral-7B trên dữ liệu y sinh mở, đạt hiệu năng ấn tượng trên các benchmark y tế đa ngôn ngữ và có kích thước gọn nhẹ.
+    \item \textbf{HuatuoGPT-II (Chen et al., 2023)} \cite{chen2023huatuogpt}: Áp dụng cơ chế huấn luyện One-stage thống nhất giữa văn bản y văn và hội thoại bác sĩ--bệnh nhân, tối ưu hóa năng lực trao đổi thông tin lâm sàng tự nhiên.
+\end{itemize}
+
+\subsubsection{Nhóm 3: Mô hình nền tảng nguồn mở thế hệ mới (General Open-Weights LLMs)}
+Sự ra đời của các mô hình thế hệ mới vào năm 2024 như LLaMA-3 / LLaMA-3.1 (Meta AI) \cite{llama3_2024} và Gemma-2 (Google) \cite{gemma2_2024} đã làm thay đổi căn bản cuộc chơi. Nhờ kiến trúc Grouped-Query Attention (GQA), kỹ thuật nén ngữ cảnh dài và lượng hóa tri thức sâu, các phiên bản 8B--9B của nhóm này có năng lực suy diễn logic, giải toán và đặc biệt là khả năng tuân thủ định dạng JSON/Schema vượt trội hơn cả các mô hình chuyên biệt 70B thế hệ trước, hoàn toàn khả thi để chạy trên 1 GPU thương mại thông thường.
+
+\subsection{Các phương pháp tinh chỉnh tham số hiệu quả (PEFT)}
+Để mô hình nền tảng nắm bắt được cấu trúc văn phong hồ sơ bệnh án và phân loại chẩn đoán mà không làm suy thoái năng lực ngôn ngữ ban đầu, các kỹ thuật tinh chỉnh tham số đóng vai trò then chốt:
+\begin{itemize}
+    \item \textbf{LoRA (Low-Rank Adaptation):} Đóng băng toàn bộ trọng số gốc $W_0 \in \mathbb{R}^{d \times k}$, đưa vào hai ma trận tích bậc thấp $B \in \mathbb{R}^{d \times r}$ và $A \in \mathbb{R}^{r \times k}$ với $r \ll \min(d, k)$. Trọng số sau cập nhật là $W = W_0 + \frac{\alpha}{r} BA$.
+    \item \textbf{QLoRA:} Lượng tử hóa trọng số gốc $W_0$ sang định dạng 4-bit NormalFloat (NF4) kết hợp lượng tử hóa kép (\emph{Double Quantization}) và bộ nhớ trang phân đoạn (\emph{Paged Optimizers}), cho phép tinh chỉnh mô hình 8B trên 1 GPU 16GB--24GB VRAM thông thường.
+    \item \textbf{Clinical Instruction Tuning:} Tinh chỉnh mô hình bằng các tập chỉ dẫn lâm sàng đối chuẩn (Clinical Prompts) nhằm rèn luyện cho mô hình khả năng bóc tách thực thể theo cấu trúc định sẵn thay vì sinh văn bản lan man.
+\end{itemize}
+
+\clearpage
+\subsection{Bảng tiêu chí so sánh đối chuẩn các Mô hình Ngôn ngữ Nền tảng}
+
+Bảng~\ref{tab:comparison_llm} đối chuẩn toàn diện các mô hình ngôn ngữ nền tảng theo các tiêu chí kỹ thuật độc lập trong môi trường y tế lâm sàng:
+
+\begin{table}[H]
+\begin{singlespace}
+\centering
+\fontsize{7.5pt}{9.2pt}\selectfont
+\setlength{\tabcolsep}{2.5pt}
+\renewcommand{\arraystretch}{1.02}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.0cm}|>{\raggedright\arraybackslash}p{1.6cm}|>{\centering\arraybackslash}p{1.1cm}|>{\centering\arraybackslash}p{1.5cm}|>{\centering\arraybackslash}p{1.6cm}|>{\centering\arraybackslash}p{1.5cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Mô hình} & \textbf{Kiến trúc} & \textbf{Schema} & \textbf{Bất định} & \textbf{Bệnh Xương?} & \textbf{On-premise} & \textbf{Hạn chế cốt lõi} \\
+\hline
+\textbf{Med-PaLM 2} \cite{singhal2023towards} & PaLM (540B) & Tốt & \ding{55} & \ding{55} (Đa khoa) & \ding{55} (Cloud) & Rủi ro bảo mật dữ liệu y tế, phí API cao. \\
+\hline
+\textbf{BioGPT} \cite{luo2022biogpt} & GPT-2 (347M) & Kém & \ding{55} & \ding{55} (PubMed) & \textbf{\ding{51}} (Rất nhẹ) & Nhỏ, không suy luận được ca bệnh phức tạp. \\
+\hline
+\textbf{PMC-LLaMA} \cite{wu2023pmc} & LLaMA-1 (7B) & TB & \ding{55} & \ding{55} (Y văn) & \textbf{\ding{51}} (1 GPU) & Dữ liệu phẳng, thiếu phác đồ điều trị chuẩn. \\
+\hline
+\textbf{Meditron-70B} \cite{chen2023meditron} & LLaMA-2 (70B) & Tốt & \ding{55} & \ding{55} (Đa khoa) & \ding{55} ($\ge$2 A100) & Quá nặng, khó triển khai tại bệnh viện tỉnh. \\
+\hline
+\textbf{BioMistral} \cite{labrak2024biomistral} & Mistral (7B) & Tốt & \ding{55} & \ding{55} (Y sinh) & \textbf{\ding{51}} (1 GPU) & Thiếu tri thức cấu trúc giải phẫu gãy xương. \\
+\hline
+\textbf{HuatuoGPT-II} \cite{chen2023huatuogpt} & Baichuan-2 (7B) & Tốt & \ding{55} & \ding{55} (Hội thoại) & \textbf{\ding{51}} (1 GPU) & Thiên về giao tiếp chung hơn phân tích bệnh án. \\
+\hline
+\textbf{LLaMA-3-8B} \cite{llama3_2024} & Transformer 8B & Xuất sắc & \ding{55} & \ding{55} (Tổng quát) & \textbf{\ding{51}} (1 GPU) & Thiếu tri thức xương chuyên sâu, cần RAG. \\
+\hline
+\textbf{Gemma-2-9B} \cite{gemma2_2024} & Transformer 9B & Xuất sắc & \ding{55} & \ding{55} (Tổng quát) & \textbf{\ding{51}} (1 GPU) & Cần nguồn tri thức ngoài kiểm chứng sai lệch. \\
+\hline
+\textbf{Bone-MSK (Đề xuất)} & \textbf{LLaMA-3-8B + QLoRA} & \textbf{Xuất sắc} & \textbf{\ding{51}} ($u\_score$) & \textbf{\ding{51}} (\textbf{AAOS/\allowbreak WHO}) & \textbf{\ding{51}} (\textbf{1 GPU nội bộ}) & \textbf{Lấp trọn vẹn bảo mật, tài nguyên và độ chuyên sâu.} \\
+\hline
+\end{tabularx}
+\caption{Bảng so sánh đối chuẩn toàn diện các Mô hình Ngôn ngữ Nền tảng Y tế}
+\label{tab:comparison_llm}
+\end{singlespace}
+\end{table}
+
+\clearpage
+\subsection{Phân tích Lỗ hổng Nghiên cứu (Research Gaps) ở Công đoạn 1}
+Từ Bảng~\ref{tab:comparison_llm}, ba lỗ hổng nghiên cứu lớn của các mô hình nền tảng hiện nay được nhận diện:
+\begin{enumerate}
+    \item \textbf{Lỗ hổng 1.1 (Nghịch lý giữa Năng lực suy luận và Tính bảo mật cục bộ):} Các mô hình có năng lực suy luận mạnh nhất (Med-PaLM 2, GPT-4) đều là mô hình đóng trên đám mây, gây rủi ro vi phạm an toàn hồ sơ bệnh nhân. Ngược lại, các mô hình y tế nguồn mở có kích thước quá lớn (Meditron-70B) lại đòi hỏi cụm máy chủ máy trạm vượt quá ngân sách của hầu hết các cơ sở y tế.
+    \item \textbf{Lỗ hổng 1.2 (Sự thiếu vắng tri thức tham số chuyên sâu về Bệnh lý Cơ Xương Khớp):} Toàn bộ các mô hình y tế hiện có (kể cả BioMistral hay PMC-LLaMA) đều được huấn luyện trên tập ngữ liệu y khoa đa khoa tổng quát (PubMed, USMLE). Chúng hoàn toàn thiếu vắng các biểu diễn tham số về các phân loại gãy xương phức tạp (AO/OTA, Garden, Schatzker), vị trí giải phẫu đặc thù, và các quy tắc cảnh báo nguy cơ hoại tử vô mạch chỏm xương đùi hay chèn ép khoang.
+    \item \textbf{Lỗ hổng 1.3 (Bản chất "Hộp đen" tự tin thái quá):} Tất cả các mô hình nền tảng độc lập đều sinh từ dựa trên phân phối xác suất từ kế tiếp ($P(w_t | w_{<t})$). Chúng không có cơ chế tự định lượng xem thông tin trong câu hỏi bệnh án có đủ để đưa ra kết luận hay không, dẫn đến việc luôn cố gắng tạo sinh câu trả lời ngay cả khi dữ liệu ca bệnh bị thiếu hụt nghiêm trọng.
+\end{enumerate}
+
+\subsection{Giải pháp Đề xuất của Đề tài nhằm Khắc phục Lỗ hổng}
+Để khắc phục triệt để các lỗ hổng trên, đề tài đề xuất:
+\begin{itemize}
+    \item \textbf{Lựa chọn Backbone nguồn mở hiệu năng cao:} Sử dụng mô hình LLaMA-3-8B (hoặc Gemma-2-9B) làm "bộ não suy luận", cho phép triển khai hoàn toàn cục bộ (\emph{On-premise}) trên 1 máy trạm đơn GPU 16GB--24GB VRAM, giải quyết triệt để vấn đề bảo mật dữ liệu bệnh nhân (Lấp Lỗ hổng 1.1).
+    \item \textbf{Tinh chỉnh chỉ dẫn thích ứng chuyên khoa bằng QLoRA:} Áp dụng kỹ thuật QLoRA với dữ liệu phác đồ chẩn đoán cơ xương khớp đối chuẩn, huấn luyện mô hình bóc tách thực thể theo cấu trúc JSON định sẵn (Lấp Lỗ hổng 1.2).
+    \item \textbf{Khóa chặt không gian suy luận bằng tri thức ngoài:} Không cho phép mô hình tự do suy diễn từ các trọng số tham số ngầm định, mà bắt buộc mọi mệnh đề kết luận phải được quy kết vào Đồ thị tri thức (Công đoạn 2) và tài liệu phác đồ truy xuất được (Công đoạn 3), đồng thời trang bị module lượng giá độ bất định độc lập (Công đoạn 4) (Lấp Lỗ hổng 1.3).
+\end{itemize}
+
+---
+
+\section{Công đoạn 2: Biểu diễn Tri thức Bản thể học (Ontology) và Đồ thị Tri thức Lâm sàng}
+
+\subsection{Khảo sát các Hệ thống Bản thể học và Đồ thị Tri thức Y sinh}
+Để khắc phục hiện tượng mất mát ngữ cảnh giải phẫu và đứt gãy quan hệ logic khi xử lý văn bản tự do, việc cấu trúc hóa tri thức bằng Bản thể học (Ontology) và Đồ thị Tri thức (Knowledge Graph -- KG) là bắt buộc:
+\begin{enumerate}
+    \item \textbf{Các hệ thống danh mục chuẩn hóa quốc tế (UMLS, SNOMED-CT, RadLex):} Đóng vai trò là từ điển chuẩn hóa thực thể y sinh lớn nhất hiện nay. SNOMED-CT cung cấp hơn 350.000 khái niệm lâm sàng, trong khi RadLex chuyên biệt hóa cho thuật ngữ chẩn đoán hình ảnh. Tuy nhiên, các hệ thống này thuần túy mang tính chất phân cấp tĩnh (\emph{is-a hierarchy}), hoàn toàn thiếu vắng các luật suy diễn lâm sàng động gắn liền với điều kiện ràng buộc thực tế của ca bệnh (ví dụ: tuổi bệnh nhân, độ di lệch, bệnh nền).
+    \item \textbf{Biểu diễn tri thức bản thể học bệnh lý xương (Dao \& Ly, 2025) \cite{dao2025ontology}:} Công trình đặt nền móng cho việc mô hình hóa các tổn thương cơ xương khớp bằng ngôn ngữ bản thể học OWL và hệ luật Semantic Web Rule Language (SWRL). Ưu điểm vượt trội là khả năng suy luận logic vị từ tuyệt đối chính xác cho các ca bệnh cơ học. Tuy nhiên, hạn chế lớn nhất là hệ thống này hoàn toàn khép kín theo mô hình chuyên gia cổ điển, không thể giao tiếp với mô hình ngôn ngữ lớn để đọc hiểu các bệnh án lâm sàng tự do từ thực tế bệnh viện.
+    \item \textbf{Tự động xây dựng Đồ thị tri thức lâm sàng bằng Đa mô hình ngôn ngữ lớn (Das et al., 2026) \cite{das2025clinicalkg}:} Đề xuất quy trình trích xuất các bộ ba quan hệ $\langle h, r, t \rangle$ từ báo cáo lâm sàng bằng 3 LLM phối hợp thẩm định chéo. Điểm mạnh là khả năng bao quát dữ liệu nhanh, nhưng đồ thị sinh ra vẫn tiềm ẩn các cạnh nhiễu và không có khung bản thể học định chuẩn ràng buộc các quy tắc an toàn phẫu thuật.
+    \item \textbf{Học đa nguồn tăng cường tri thức bệnh án (KnowGen, 2024) \cite{knowgen2024}:} Nghiên cứu trên tạp chí \emph{Information Fusion} chứng minh rằng việc kết hợp đồ thị tri thức y khoa vào quá trình mã hóa hồ sơ bệnh án điện tử (EHR) giúp tăng độ nhạy chẩn đoán vượt bậc so với chỉ xử lý chuỗi văn bản đơn thuần.
+\end{enumerate}
+
+\clearpage
+\subsection{Bảng tiêu chí so sánh các Phương pháp Biểu diễn Tri thức \& Đồ thị Lâm sàng}
+
+Bảng~\ref{tab:comparison_ontology} đối chuẩn các công trình biểu diễn tri thức theo các trục tiêu chí: Mức độ bao phủ bệnh lý xương, Cơ chế chuẩn hóa thực thể, Khả năng suy luận luật hình thức, và Khả năng tích hợp với LLM:
+
+\begin{table}[H]
+\begin{singlespace}
+\centering
+\fontsize{7.5pt}{9.2pt}\selectfont
+\setlength{\tabcolsep}{2.5pt}
+\renewcommand{\arraystretch}{1.02}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.2cm}|>{\raggedright\arraybackslash}p{2.1cm}|>{\centering\arraybackslash}p{1.4cm}|>{\raggedright\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{1.6cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Phương pháp / Công trình} & \textbf{Nguồn tri thức} & \textbf{Bệnh Xương?} & \textbf{Chuẩn hóa Thực thể} & \textbf{Hệ luật (Rules)?} & \textbf{Khả năng tích hợp với LLM} \\
+\hline
+\textbf{UMLS / SNOMED-CT} & Danh mục quốc tế & \ding{55} (Đa khoa) & Mã Concept CUI / SCTID & \ding{55} (Phân cấp tĩnh) & \ding{55} (Từ điển tra cứu rời rạc) \\
+\hline
+\textbf{Dao \& Ly (2025)} \cite{dao2025ontology} & Bệnh học Xương & \textbf{\ding{51}} ($100\%$ Xương) & OWL Ontology, Logic mô tả & \textbf{\ding{51}} (Luật hình thức SWRL) & \ding{55} (Hệ chuyên gia cổ điển đóng) \\
+\hline
+\textbf{Das et al. (2026)} \cite{das2025clinicalkg} & Báo cáo lâm sàng, EHR & \ding{55} (Đa khoa) & Multi-LLM trích xuất chéo & \ding{55} (Đồ thị thực thể phẳng) & \textbf{\ding{51}} (Multi-LLMs tự sinh đồ thị) \\
+\hline
+\textbf{KnowGen (2024)} \cite{knowgen2024} & EHR + Medical KG & \ding{55} (Chẩn đoán) & Ghép nối vector đặc trưng & \ding{55} & \textbf{\ding{51}} (Hợp nhất thông tin trên EHR) \\
+\hline
+\textbf{Đồ thị 6 tầng (Đề xuất)} & \textbf{Phác đồ AAOS/WHO + RadLex} & \textbf{\ding{51}} (\textbf{$100\%$ Xương}) & \textbf{Chuẩn hóa 6 tầng ngữ nghĩa} & \textbf{\ding{51}} (\textbf{Chống chỉ định \& Cờ đỏ u xương}) & \textbf{\ding{51}} (\textbf{Dẫn đường trực tiếp cho RAG}) \\
+\hline
+\end{tabularx}
+\caption{Bảng so sánh đối chuẩn các Phương pháp Biểu diễn Tri thức và Đồ thị Lâm sàng}
+\label{tab:comparison_ontology}
+\end{singlespace}
+\end{table}
+
+\subsection{Phân tích Lỗ hổng Nghiên cứu (Research Gaps) ở Công đoạn 2}
+Từ Bảng~\ref{tab:comparison_ontology}, các hạn chế cốt tử được xác định rõ:
+\begin{enumerate}
+    \item \textbf{Lỗ hổng 2.1 (Sự đứt gãy giữa Bản thể học hình thức và Ngôn ngữ tự nhiên):} Công trình tiên phong của Dao \& Ly (2025) \cite{dao2025ontology} đã xây dựng được hệ luật bản thể học xương rất mẫu mực nhưng lại là một "ốc đảo đóng kín", hoàn toàn không thể xử lý văn bản bệnh án tự do hoặc trả lời câu hỏi tự nhiên của bác sĩ.
+    \item \textbf{Lỗ hổng 2.2 (Thiếu ràng buộc quy tắc an toàn trong Đồ thị tri thức tự động):} Các phương pháp sinh đồ thị tự động bằng LLM như Das et al. (2026) \cite{das2025clinicalkg} tạo ra các đồ thị phẳng thiếu chiều sâu ngữ nghĩa, không có các nút phân tầng (Tầng bệnh học, Tầng phẫu thuật, Tầng chống chỉ định) và không có cơ chế ngăn chặn cạnh quan hệ giả tạo.
+    \item \textbf{Lỗ hổng 2.3 (Bỏ sót các cờ đỏ bệnh lý ác tính trong chấn thương):} Các đồ thị lâm sàng hiện nay chỉ biểu diễn các chấn thương cơ học đơn thuần, bỏ qua mối liên hệ sinh bệnh học giữa gãy xương bệnh lý (\emph{Pathological Fracture}) và u xương ác tính.
+\end{enumerate}
+
+\subsection{Giải pháp Đề xuất của Đề tài nhằm Khắc phục Lỗ hổng}
+Đề tài khắc phục các khoảng trống trên bằng cách:
+\begin{itemize}
+    \item \textbf{Xây dựng Kiến trúc Đồ thị Tri thức 6 tầng chuyên sâu (Bone-MSK 6-tier KG):} Kế thừa và mở rộng công trình \cite{dao2025ontology}, cấu trúc lại thành 6 tầng ngữ nghĩa chặt chẽ: (1) Giải phẫu xương $\rightarrow$ (2) Loại tổn thương/Phân loại gãy $\rightarrow$ (3) Triệu chứng lâm sàng \& Cận lâm sàng $\rightarrow$ (4) Phương pháp điều trị $\rightarrow$ (5) Điều kiện chống chỉ định $\rightarrow$ (6) Dấu hiệu cờ đỏ u xương (Lấp Lỗ hổng 2.2 \& 2.3).
+    \item \textbf{Cơ chế ánh xạ thực thể tự động từ văn bản vào Bản thể học:} Sử dụng LLM Backbone đã tinh chỉnh để bóc tách thực thể từ hồ sơ bệnh nhân không đồng nhất ($\mathcal{P}, \mathcal{M}_{\mathrm{clin}}, \mathcal{M}_{\mathrm{img}}, \mathcal{L}$), sau đó chuẩn hóa và liên kết chính xác vào các nút đồ thị đã định danh, tạo cầu nối hoàn hảo giữa văn bản tự do và logic hình thức (Lấp Lỗ hổng 2.1).
+\end{itemize}
+
+---
+
+\section{Công đoạn 3: Kỹ thuật Truy xuất Tăng cường (Medical RAG), GraphRAG và Hợp nhất Ngữ cảnh}
+
+\subsection{Khảo sát các Kỹ thuật Truy xuất và Hợp nhất Tri thức Y khoa}
+Truy xuất thông tin trong y tế không thể dựa trên việc tìm kiếm phẳng thông thường do câu hỏi của bác sĩ luôn gắn liền với bối cảnh bệnh nhân đa chiều. Các công trình tiêu biểu bao gồm:
+\begin{enumerate}
+    \item \textbf{Truy xuất lai văn bản thưa và đặc (BM25 \& MedCPT):} BM25 \cite{robertson2009} làm rất tốt nhiệm vụ bắt chính xác từ khóa danh pháp y tế hiếm, trong khi MedCPT \cite{jin2023medcpt} (mô hình nhúng chuyên dụng được huấn luyện trên hàng tỷ lượt tìm kiếm PubMed) nắm bắt sự tương đồng ngữ nghĩa sâu. Công trình MedRAG (ACL 2024) \cite{xiong2024medrag} chứng minh việc hợp nhất xếp hạng đối ứng (Reciprocal Rank Fusion -- RRF) giữa BM25 và MedCPT giúp tăng độ chính xác vượt bậc so với các bộ truy xuất đơn lẻ.
+    \item \textbf{Cấu trúc hóa ngữ cảnh lâm sàng (CLI-RAG, 2025) \cite{clirag2024}:} Đề xuất phân đoạn ngữ cảnh theo các trường cấu trúc của bệnh án điện tử. Tuy nhiên, CLI-RAG chỉ tìm kiếm văn bản đơn hướng, chưa bóc tách truy vấn thành các khía cạnh chuyên sâu.
+    \item \textbf{Thảo luận đa tác nhân tiền truy xuất (Discuss-RAG, 2025) \cite{dong2025discuss}:} Công trình chỉ ra khiếm khuyết chết người của các hệ thống RAG hiện tại: việc chỉ dùng cosine similarity giữa câu hỏi gốc và kho dữ liệu sẽ kéo về hàng loạt đoạn văn bản rác gây hiểu lầm (\emph{misleading snippets}). Tác giả đề xuất mô hình Đa tác nhân (Medical Team) thảo luận đa vòng để hiểu sâu bản chất câu hỏi và bóc tách các khía cạnh y khoa trước khi kích hoạt bộ truy xuất.
+    \item \textbf{Truy xuất phân cấp dựa trên đồ thị (GraphRAG, 2024) \cite{edge2024graphrag}:} Công trình của Microsoft chứng minh truy xuất dựa trên cấu trúc cộng đồng của đồ thị tri thức giúp mô hình trả lời các câu hỏi tổng hợp và liên kết thực thể tốt hơn hẳn RAG văn bản truyền thống.
+    \item \textbf{Hợp nhất văn bản lâm sàng đa nguồn (Heterogeneous Clinical Text Fusion):} Nghiên cứu tổng quan trên tạp chí \emph{Information Fusion} (2024) \cite{fusion_review_2024} và GatorTron \cite{yang2022gatortron} khẳng định việc xử lý dữ liệu bảng xét nghiệm ($\mathcal{L}$), văn bản tường trình hình ảnh ($\mathcal{M}_{\mathrm{img}}$) và ghi chép khám ($\mathcal{M}_{\mathrm{clin}}$) không phải là bài toán xử lý ảnh (Multimodal Vision), mà là bài toán \textbf{Hợp nhất dữ liệu văn bản không đồng nhất}. Cần có cơ chế hợp nhất sớm cấp biểu diễn (Early Context Fusion) và hợp nhất muộn cấp xếp hạng (Late Multi-score Fusion).
+\end{enumerate}
+
+\clearpage
+\subsection{Bảng tiêu chí so sánh các Kỹ thuật RAG \& GraphRAG trong Y tế}
+
+Bảng~\ref{tab:comparison_rag} so sánh các hệ thống RAG theo các tiêu chí: Cơ chế phân loại câu hỏi (Query Categories / Facets), Nguồn tri thức tích hợp, Kỹ thuật Hợp nhất (Fusion), và Cơ chế xác minh bằng chứng:
+
+\begin{table}[H]
+\begin{singlespace}
+\centering
+\fontsize{7.5pt}{9.2pt}\selectfont
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}p{2.3cm}|>{\centering\arraybackslash}p{1.5cm}|>{\raggedright\arraybackslash}p{2.4cm}|>{\centering\arraybackslash}p{1.4cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Phương pháp} & \textbf{Cơ chế Truy xuất} & \textbf{Khía cạnh truy vấn?} & \textbf{Cơ chế Hợp nhất} & \textbf{Bệnh Xương?} & \textbf{Xác minh Bằng chứng} \\
+\hline
+\textbf{MedRAG (2024)} \cite{xiong2024medrag} & MedCPT + BM25 & \ding{55} (Nhúng phẳng) & Late Rank Fusion (RRF) & \ding{55} (USMLE) & \ding{55} (Nạp top-$k$ snippets) \\
+\hline
+\textbf{GraphRAG (2024)} \cite{edge2024graphrag} & Tóm tắt phân cấp cộng đồng & \ding{55} (Truy vấn tự do) & Hợp nhất nút đồ thị & \ding{55} (Tổng quát) & \ding{55} (Tổng hợp toàn cục) \\
+\hline
+\textbf{Discuss-RAG (2025)} \cite{dong2025discuss} & Multi-Agent + MedCPT & \textbf{\ding{51}} (Thảo luận đa vòng) & Tóm tắt chuyên gia & \ding{55} (BioASQ) & \textbf{\ding{51}} (Decision Agent) \\
+\hline
+\textbf{CLI-RAG (2025)} \cite{clirag2024} & Phân đoạn trường bệnh án & \textbf{\ding{51}} (Cấu trúc bệnh án) & Hợp nhất hồ sơ EHR & \ding{55} (Đa khoa) & \ding{55} (Chỉ đo $p_{\mathrm{rel}}$) \\
+\hline
+\textbf{Bone-MSK QA (Đề xuất)} & \textbf{Lai: Dense + BM25 + KG} & \textbf{\ding{51}} (\textbf{5 khía cạnh $Q_c$}) & \textbf{Hợp nhất đa tầng (Early/Late)} & \textbf{\ding{51}} (\textbf{100\% Xương}) & \textbf{\ding{51}} (\textbf{Hai chiều: $p_{\mathrm{rel}} \times s_{\mathrm{appl}}$}) \\
+\hline
+\end{tabularx}
+\caption{Bảng so sánh đối chuẩn các Kỹ thuật RAG và GraphRAG trong Y tế}
+\label{tab:comparison_rag}
+\end{singlespace}
+\end{table}
+
+\clearpage
+\subsection{Phân tích Lỗ hổng Nghiên cứu (Research Gaps) ở Công đoạn 3}
+Từ Bảng~\ref{tab:comparison_rag}, ba khoảng trống nghiên cứu then chốt được đúc kết:
+\begin{enumerate}
+    \item \textbf{Lỗ hổng 3.1 (Truy vấn phẳng gây nhiễu ngữ cảnh nghiêm trọng):} Như chứng minh của Discuss-RAG (2025) \cite{dong2025discuss}, việc ném nguyên vẹn một đoạn văn bản bệnh án dài vào hàm nhúng phẳng vector sẽ tạo ra biểu diễn bị pha loãng, kéo theo các đoạn văn bản rác làm mô hình đưa ra phác đồ sai.
+    \item \textbf{Lỗ hổng 3.2 (Đồng nhất hóa mù quáng giữa "Độ liên quan ngữ nghĩa" và "Tính áp dụng lâm sàng"):} Tất cả các hệ thống RAG hiện tại (kể cả MedRAG) chỉ đo độ tương đồng ngữ nghĩa bề mặt ($p_{\mathrm{rel}}$). Một đoạn tài liệu nói về phẫu thuật thay khớp háng có thể đạt $p_{\mathrm{rel}} = 0.95$ với từ khóa "gãy cổ xương đùi", nhưng lại hoàn toàn \textbf{chống chỉ định} trên một bệnh nhân cụ thể đang có nhiễm trùng huyết hoặc suy tim độ 4. Hiện tượng thiếu vắng bộ thẩm định tính áp dụng ($s_{\mathrm{appl}}$) là mối đe dọa an toàn hàng đầu.
+    \item \textbf{Lỗ hổng 3.3 (Bỏ sót cấu trúc bảng xét nghiệm và báo cáo hình ảnh):} Dữ liệu xét nghiệm máu ($\mathcal{L}$) dạng bảng và tường trình X-quang ($\mathcal{M}_{\mathrm{img}}$) nếu chỉ được ghép nối thô sơ bằng chuỗi văn bản sẽ làm mất đi ý nghĩa của các giá trị ngưỡng bệnh lý.
+\end{enumerate}
+
+\subsection{Giải pháp Đề xuất của Đề tài nhằm Khắc phục Lỗ hổng}
+Đề tài thiết kế quy trình truy xuất và hợp nhất đa tầng giải quyết triệt để các khoảng trống:
+\begin{itemize}
+    \item \textbf{Bóc tách truy vấn thành 5 khía cạnh ngữ nghĩa ($Q_c$):} Trước khi truy xuất, hệ thống chuyển hóa dữ liệu đầu vào $u$ thành 5 khía cạnh y khoa độc lập:
+    \begin{equation}
+        Q_c = \{\text{Disease}, \text{Anatomy}, \text{PatientFactor}, \text{ClinicalState}, \text{Intent}\}
+    \end{equation}
+    (Lấp Lỗ hổng 3.1).
+    \item \textbf{Hợp nhất dữ liệu lâm sàng không đồng nhất (Heterogeneous Fusion):} Áp dụng cơ chế hợp nhất sớm (Early Context Fusion) bóc tách chỉ số xét nghiệm $\mathcal{L}$ thành cờ cảnh báo (Abnormal/Critical Flags) tích hợp vào $Q_c$, kết hợp duyệt đồ thị giải phẫu xương để tìm kiếm văn bản có mục tiêu (Lấp Lỗ hổng 3.3).
+    \item \textbf{Bộ thẩm định bằng chứng hai chiều (Dual-aspect Evidence Verifier):} Mỗi đoạn trích dẫn được đánh giá đồng thời qua hai chỉ số: Độ liên quan từ vựng/ngữ nghĩa ($p_{\mathrm{rel}}$) và Điểm số tương thích điều kiện lâm sàng ($s_{\mathrm{appl}}$). Chỉ những bằng chứng vừa liên quan vừa không vi phạm chống chỉ định mới được đưa vào ngữ cảnh sinh câu trả lời (Lấp Lỗ hổng 3.2).
+\end{itemize}
+
+---
+
+\section{Công đoạn 4: Trí tuệ Nhân tạo Giải thích được (XAI), Lượng giá Bất định và Khắc phục Ảo giác}
+
+\subsection{Khảo sát các Kỹ thuật XAI Văn bản và Lượng giá Bất định Lâm sàng}
+Một yêu cầu mang tính sống còn khi đưa AI vào hỗ trợ bác sĩ là tính minh bạch giải thích (Explainability) và khả năng nhận biết giới hạn hiểu biết của mô hình (Uncertainty Quantification):
+\begin{enumerate}
+    \item \textbf{Giải thích văn bản bằng Quy kết nguồn dẫn chứng (Attributed Citation / Verifiable Generation):} Các nghiên cứu tổng quan mới nhất trên EMNLP (2024--2025) như VTG \cite{sun2024vtg}, A$^3$ \cite{alignment_attributed_2024} và Survey về Attributed Generation \cite{attribution_survey_2025} khẳng định: XAI trong các hệ thống văn bản lâm sàng chính là **khả năng quy kết nguồn gốc (Attribution)**. Từng câu khẳng định điều trị sinh ra phải gắn kèm trích dẫn đoạn tài liệu hướng dẫn gốc để bác sĩ kiểm chứng.
+    \item \textbf{Giải thích dựa trên cơ chế nội tại mô hình (MIRAGE, EMNLP 2024) \cite{qi2024mirage}:} Công trình chỉ ra rằng việc tự sinh trích dẫn của LLM thường không trung thực. Tác giả đề xuất khai thác gradient và ma trận chú ý nội tại (\emph{model internals}) để xác định chính xác từ ngữ lâm sàng nào thực sự chịu sự chi phối của tài liệu tham khảo.
+    \item \textbf{Thẩm định bước suy luận y khoa (Med-PRM, 2025) \cite{medprm2024}:} Thay vì coi toàn bộ quá trình lập luận là hộp đen, Med-PRM sử dụng mô hình chấm điểm tiến trình để thẩm định tính chuẩn xác của từng bước suy luận so với phác đồ điều trị chính thống.
+    \item \textbf{Lượng giá độ bất định và Từ chối trả lời an toàn (Selective Abstention):}
+    \begin{itemize}
+        \item Khái niệm **Clinical Uncertainty (Độ bất định lâm sàng)**: Phản ánh sự thiếu hụt thông tin hoặc mơ hồ nội tại của ca bệnh (ảnh X-quang chụp mờ, thiếu xét nghiệm đông máu, triệu chứng lâm sàng chồng lấn giữa viêm khớp và thoái hóa).
+        \item Khái niệm **Medical Hallucination (Ảo giác y tế)**: Hiện tượng mô hình tự bịa đặt thông tin sai lệch nhưng phân phối xác suất vẫn tự tin rất cao do thiên kiến tham số.
+        \item Các công trình tiên phong như *Knowing When to Abstain* (2026) \cite{knowing_when_abstain_2026}, *KnowGuard* (2025) \cite{knowguard2024} và *Trust-Align* (2025) \cite{filice2025generate} chứng minh: Hệ thống RAG y tế bắt buộc phải có cơ chế **định lượng độ bất định hai chiều** và cổng từ chối an toàn để bảo vệ an toàn người bệnh.
+    \end{itemize}
+\end{enumerate}
+
+\clearpage
+\subsection{Bảng tiêu chí so sánh các Cơ chế XAI, Uncertainty và Giảm Ảo giác}
+
+Bảng~\ref{tab:comparison_xai} đối chuẩn các giải pháp theo các tiêu chí: Cơ chế XAI văn bản, Độ đo Uncertainty sử dụng, Phân định rạch ròi giữa Uncertainty và Hallucination, và Không gian hành động quyết định lâm sàng:
+
+\begin{table}[H]
+\begin{singlespace}
+\centering
+\fontsize{7.5pt}{9.2pt}\selectfont
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{1.5cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Phương pháp} & \textbf{Cơ chế XAI} & \textbf{Độ đo Uncertainty} & \textbf{Phân định Hallucination?} & \textbf{Không gian Quyết định ($\Delta$)} \\
+\hline
+\textbf{Liévin et al. (2023)} \cite{lievin2023can} & CoT suy diễn & \ding{55} (Softmax) & \ding{55} & 1 Nhánh: Trả lời ép buộc \\
+\hline
+\textbf{Med-PRM (2025)} \cite{medprm2024} & Thưởng tiến trình (PRM) & Điểm thưởng PRM & \ding{55} & Xếp hạng chuỗi suy luận \\
+\hline
+\textbf{MIRAGE / VTG (2024)} \cite{qi2024mirage, sun2024vtg} & Trích dẫn + Gradient & Độ nhạy ngữ cảnh (KL) & Gián tiếp & 2 Nhánh: Chấp thuận / Sửa \\
+\hline
+\textbf{Knowing When to Abstain (2026)} \cite{knowing_when_abstain_2026} & \ding{55} & Entropy trạng thái ẩn & \textbf{\ding{51}} & 2 Nhánh: Answer / Abstain \\
+\hline
+\textbf{KnowGuard (2025)} \cite{knowguard2024} & Thiếu đồ thị kiểm chứng & Graph Coverage & \textbf{\ding{51}} & 3 Nhánh: Answer / Ask-More / Abstain \\
+\hline
+\textbf{Trust-Align (2025)} \cite{filice2025generate} & Căn chỉnh từ chối (Refuse) & Điểm TRUST-SCORE & \textbf{\ding{51}} & 2 Nhánh: Phản hồi / Từ chối (Fallback) \\
+\hline
+\textbf{Bone-MSK QA (Đề xuất)} & \textbf{Trích dẫn câu + 6 trạng thái mệnh đề} & \textbf{$u\_score$ hai chiều ($\alpha$)} & \textbf{\ding{51}} (Rạch ròi: RAG vs $u\_score$) & \textbf{4 Nhánh hoàn chỉnh: Clean / Warning / Ask-More / Abstain} \\
+\hline
+\end{tabularx}
+\caption{Bảng so sánh đối chuẩn các Cơ chế XAI, Uncertainty và Giảm Ảo giác}
+\label{tab:comparison_xai}
+\end{singlespace}
+\end{table}
+
+\clearpage
+\subsection{Phân tích Lỗ hổng Nghiên cứu (Research Gaps) ở Công đoạn 4}
+Từ Bảng~\ref{tab:comparison_xai}, ba lỗ hổng kỹ thuật cốt tử được phát hiện:
+\begin{enumerate}
+    \item \textbf{Lỗ hổng 4.1 (Đánh đồng giữa Ảo giác và Độ bất định lâm sàng):} Phần lớn các công trình hiện tại coi ảo giác và bất định là một. Thực chất, \emph{Medical Hallucination} là lỗi tạo sinh của mô hình khi thiếu kiểm chứng tài liệu, trong khi \emph{Clinical Uncertainty} là trạng thái khách quan của ca bệnh khi thiếu dữ liệu xét nghiệm/hình ảnh. Nếu không phân định rõ, hệ thống không thể đưa ra hành động khắc phục phù hợp.
+    \item \textbf{Lỗ hổng 4.2 (Không gian quyết định nhị phân cứng nhắc):} Các mô hình từ chối hiện nay (như \emph{Knowing When to Abstain} \cite{knowing_when_abstain_2026}) chỉ có hai lựa chọn cực đoan: hoặc trả lời hoặc "từ chối im lặng" (\texttt{Abstain}). Trong thực tế bệnh viện, khi thiếu một chỉ số xét nghiệm, bác sĩ không cần AI im lặng mà cần AI chủ động chỉ ra \emph{"Cần làm thêm xét nghiệm gì để đưa ra kết luận"} (\texttt{ASK\_MORE}).
+    \item \textbf{Lỗ hổng 4.3 (Trích dẫn hình thức, thiếu phân tách mệnh đề y khoa):} Các hệ thống trích dẫn thông thường gán nhãn nguồn một cách đại khái cho cả đoạn văn, khiến bác sĩ không thể biết chính xác vị trí nào là khẳng định chẩn đoán, vị trí nào là khuyến nghị liều lượng, và vị trí nào có nguy cơ rủi ro.
+\end{enumerate}
+
+\subsection{Giải pháp Đề xuất của Đề tài nhằm Khắc phục Lỗ hổng}
+Đề tài đề xuất kiến trúc thẩm định và kiểm soát rủi ro y tế toàn diện:
+\begin{itemize}
+    \item \textbf{Tách biệt cơ chế xử lý Hallucination và Uncertainty:} Triệt tiêu hoàn toàn \emph{Hallucination} bằng cơ chế kiểm chứng bằng chứng hai chiều và đồ thị tri thức; đồng thời định lượng \emph{Clinical Uncertainty} bằng chỉ số tổng hợp $u\_score = \alpha \cdot u_{\mathrm{rag}} + (1-\alpha) \cdot u_{\mathrm{llm}}$ kết hợp độ phủ bằng chứng và entropy nội tại (Lấp Lỗ hổng 4.1).
+    \item \textbf{Cổng quyết định an toàn 4 nhánh lâm sàng ($\Delta$):} Thay thế mô hình nhị phân bằng không gian 4 hành động chuyên khoa:
+    \begin{equation}
+        \Delta = \{\texttt{ANSWER\_CLEAN}, \texttt{ANSWER\_WITH\_}\allowbreak\texttt{WARNING}, \texttt{ASK\_MORE}, \texttt{ABSTAIN}\}
+    \end{equation}
+    Khi ca bệnh thiếu dữ liệu mấu chốt, hệ thống chuyển sang nhánh \texttt{ASK\_MORE} kèm danh mục xét nghiệm cần bổ sung (Lấp Lỗ hổng 4.2).
+    \item \textbf{XAI văn bản qua Gán nguồn trích dẫn cấp câu và Phân loại 6 trạng thái mệnh đề:} Mỗi câu sinh ra đều được gắn nhãn trích dẫn định vị chính xác và được gán một trong 6 nhãn trạng thái y khoa (\emph{Definite, Probable, Conditional, Negated, Contraindicated, Uncertain}) kèm giải thích luật suy diễn (Lấp Lỗ hổng 4.3).
+\end{itemize}
+
+---
+
+\clearpage
+\section{Bảng tổng hợp đối sánh toàn diện và Bản đồ Khoảng trống Nghiên cứu}
+
+\subsection{Bảng tổng hợp đối sánh toàn diện các công trình}
+Bảng~\ref{tab:master_comparison} tổng hợp sự đối đầu trực diện giữa các hướng tiếp cận tiêu biểu nhất đại diện cho 4 công đoạn kỹ thuật đã phân tích:
+
+\begin{table}[H]
+\begin{singlespace}
+\centering
+\fontsize{7.5pt}{9pt}\selectfont
+\def\baselinestretch{0.9}\selectfont
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}p{2.2cm}|>{\raggedright\arraybackslash}p{2.4cm}|>{\centering\arraybackslash}p{1.5cm}|>{\centering\arraybackslash}p{1.5cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Phương pháp} & \textbf{Mô hình Nền tảng} & \textbf{Biểu diễn Tri thức} & \textbf{XAI Văn bản} & \textbf{Đo Uncertainty} & \textbf{Khoảng trống / Hạn chế cốt lõi} \\
+\hline
+\textbf{RAG Gốc \cite{lewis2020}} & BART / DPR & Đoạn văn bản phẳng & \ding{55} & \ding{55} & Ảo giác cao, mất liên kết giải phẫu. \\
+\hline
+\textbf{MedRAG \cite{xiong2024medrag}} & GPT-3.5 /\allowbreak MedCPT & Sách giáo khoa & \ding{55} & \ding{55} & Thiếu cấu trúc đồ thị, không có cơ chế từ chối an toàn. \\
+\hline
+\textbf{Dao \& Ly \cite{dao2025ontology}} & Hệ luật OWL/\allowbreak SWRL & Bản thể học xương & \textbf{\ding{51}} (Hệ luật) & \ding{55} & Cứng nhắc, không xử lý được ngôn ngữ tự nhiên bệnh án. \\
+\hline
+\textbf{Das et al. \cite{das2025clinicalkg}} & Multi-LLMs & Đồ thị thực thể UMLS & \ding{55} & \ding{55} & Đồ thị còn cạnh nhiễu, thiếu phác đồ điều trị đối soát. \\
+\hline
+\textbf{CLI-RAG \cite{clirag2024}} & LLaMA-2 & Phân đoạn bệnh án & \ding{55} & \ding{55} & Bỏ qua tính tương thích điều kiện lâm sàng trên bệnh nhân. \\
+\hline
+\textbf{Discuss-RAG \cite{dong2025discuss}} & Multi-Agent & PubMed /\allowbreak MedQA & \ding{55} & \ding{55} & Thiếu đồ thị quan hệ giải phẫu cơ xương khớp. \\
+\hline
+\textbf{KnowGuard \cite{knowguard2024}} & LLM + Subgraph & Văn bản + Đồ thị kiểm chứng & \ding{55} & \textbf{\ding{51}} (Graph Cov.) & Không bóc tách câu hỏi theo các khía cạnh lâm sàng. \\
+\hline
+\textbf{Med-PRM \cite{medprm2024}} & LLaMA-3 + PRM & Chuỗi suy luận logic & \textbf{\ding{51}} (Cấp bước) & \ding{55} & Chưa kết hợp truy xuất lai đa nguồn. \\
+\hline
+\textbf{Bone-MSK QA (Đề xuất)} & \textbf{LLaMA-3-8B + QLoRA (On-premise)} & \textbf{Lai Đồ thị 6 tầng + Phác đồ AAOS} & \textbf{\ding{51}} (Attributed) & \textbf{\ding{51}} ($u\_score$) & \textbf{Khắc phục trọn vẹn: Sàng lọc cờ đỏ u xương, thẩm định bằng chứng hai chiều ($p_{\mathrm{rel}} \times s_{\mathrm{appl}}$), Cổng quyết định 4 nhánh an toàn.} \\
+\hline
+\end{tabularx}
+\caption{Bảng tổng hợp đối chuẩn toàn diện các giải pháp hỏi--đáp y khoa hiện đại}
+\label{tab:master_comparison}
+\end{singlespace}
+\end{table}
+
+\subsection{Bản đồ quan hệ từ Lỗ hổng Nghiên cứu đến Thiết kế Kiến trúc ở Chương 3}
+
+Dựa trên quá trình phân tích đối chuẩn tại từng công đoạn, mối quan hệ hữu cơ giữa \textbf{Lỗ hổng nghiên cứu được phát hiện} và \textbf{Module giải pháp đề xuất} được tổng kết một cách nhất quán:
+
+\begin{enumerate}
+    \item \textbf{Lỗ hổng 1 (Tri thức xương thiếu hụt \& Nguy cơ bảo mật):} Được lấp bằng việc chọn mô hình nền tảng nguồn mở LLaMA-3-8B triển khai On-premise, kết hợp tinh chỉnh tham số hiệu quả QLoRA trên tập dữ liệu chỉ dẫn lâm sàng đối chuẩn.
+    \item \textbf{Lỗ hổng 2 (Đứt gãy giữa bản thể học hình thức và bệnh án tự do):} Được lấp bằng Kiến trúc Đồ thị Tri thức 6 tầng chuyên sâu (Bone-MSK KG) kết hợp cơ chế tự động bóc tách thực thể và ánh xạ vào bản thể học qua JSON schema.
+    \item \textbf{Lỗ hổng 3 (Truy vấn phẳng gây nhiễu \& Bỏ quên tính áp dụng điều trị):} Được lấp bằng cơ chế phân rã câu hỏi thành 5 khía cạnh ngữ nghĩa ($Q_c$), Hợp nhất văn bản không đồng nhất (Context Fusion), và Bộ thẩm định bằng chứng hai chiều (Liên quan $p_{\mathrm{rel}}$ và Tính áp dụng $s_{\mathrm{appl}}$).
+    \item \textbf{Lỗ hổng 4 (Đánh đồng ảo giác với bất định \& Quyết định nhị phân cứng nhắc):} Được lấp bằng công thức định lượng độ bất định hai chiều $u\_score$, Cổng an toàn 4 nhánh lâm sàng ($\Delta$), và Cơ chế XAI văn bản gán nguồn trích dẫn cấp câu phân loại 6 trạng thái mệnh đề.
+\end{enumerate}
+
+\vspace{1em}
+\noindent Toàn bộ các nguyên lý và module kiến trúc được thiết kế nhằm lấp đầy các khoảng trống khoa học này sẽ được trình bày chi tiết và mô hình hóa toán học chặt chẽ trong \textbf{Chương 3: Phương pháp đề xuất}.

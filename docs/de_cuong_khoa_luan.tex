@@ -1,0 +1,400 @@
+\documentclass[12pt,a4paper]{article}
+
+% ==============================================================================
+% GÓI VÀ ĐỊNH DẠNG HÌNH THỨC TRÌNH BÀY THEO QUY ĐỊNH
+% ==============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[vietnamese,english]{babel}
+\usepackage[utf8]{vntex}
+\usepackage{mathptmx} % Font Times New Roman
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{xurl}
+\usepackage{microtype}
+\usepackage[colorlinks=true, linkcolor=blue, citecolor=red, urlcolor=blue]{hyperref}
+
+% 1. Căn lề quy định: Lề trên 3cm, dưới 3.5cm, trái 3.5cm, phải 2cm
+\usepackage[top=3cm, bottom=3.5cm, left=3.5cm, right=2cm, a4paper]{geometry}
+
+% 2. Dãn dòng: Chế độ 1.5 lines
+\setstretch{1.5}
+
+% 3. Đánh số trang: Ở giữa bên dưới
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\cfoot{\thepage}
+
+% Thiết lập cỡ chữ chuẩn 13pt cho toàn bộ văn bản
+\renewcommand{\normalsize}{\fontsize{13pt}{16.5pt}\selectfont}
+\normalsize
+
+% Định dạng tiêu đề các mục
+\usepackage{titlesec}
+\titleformat{\section}{\normalfont\fontsize{13pt}{16.5pt}\bfseries}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\normalfont\fontsize{13pt}{16.5pt}\bfseries}{\thesubsection.}{0.6em}{}
+\titleformat{\subsubsection}{\normalfont\fontsize{13pt}{16.5pt}\bfseries\itshape}{\thesubsubsection.}{0.6em}{}
+\titlespacing*{\section}{0pt}{1.0em}{0.4em}
+\titlespacing*{\subsection}{0pt}{0.8em}{0.3em}
+\titlespacing*{\subsubsection}{0pt}{0.6em}{0.2em}
+
+% Thụt đầu dòng đoạn văn
+\usepackage{indentfirst}
+\setlength{\parindent}{1.27cm}
+\setlength{\parskip}{0pt}
+
+\begin{document}
+\selectlanguage{vietnamese}
+
+% ==============================================================================
+% TIÊU ĐỀ ĐỀ CƯƠNG KHÓA LUẬN
+% ==============================================================================
+\begin{center}
+    \fontsize{13pt}{15pt}\selectfont
+    \textbf{TRƯỜNG ĐẠI HỌC KHOA HỌC TỰ NHIÊN} \\
+    \textbf{KHOA CÔNG NGHỆ THÔNG TIN} \\[0.8em]
+    \fontsize{14pt}{17pt}\selectfont
+    \textbf{ĐỀ CƯƠNG KHÓA LUẬN TỐT NGHIỆP} \\[0.8em]
+    \fontsize{13.5pt}{16.5pt}\selectfont
+    \textbf{PHÁT TRIỂN MÔ HÌNH HỎI ĐÁP TIN CẬY BỆNH LÝ VỀ XƯƠNG DỰA TRÊN MÔ HÌNH NGÔN NGỮ LỚN VÀ TRUY XUẤT TĂNG CƯỜNG SINH NỘI DUNG DỰA TRÊN VĂN BẢN} \\[0.3em]
+    \fontsize{12pt}{15pt}\selectfont
+    \textit{(Developing a Reliable Question-Answering Model for Bone Disease Based on Large Language Models and Retrieval-Augmented Generation)}
+\end{center}
+
+\vspace{0.4em}
+
+% ==============================================================================
+% PHẦN 1: THÔNG TIN CHUNG
+% ==============================================================================
+\noindent\textbf{THÔNG TIN CHUNG}
+\vspace{0.2em}
+
+\begin{itemize}[leftmargin=1.5cm, noitemsep, topsep=0pt]
+    \item \textbf{Người hướng dẫn:} PGS.TS. Lý Quốc Ngọc (Khoa Công nghệ Thông tin)
+    \item \textbf{Nhóm Sinh viên thực hiện:}
+    \begin{enumerate}[leftmargin=0.8cm, label=\arabic*., noitemsep]
+        \item Nguyễn Thiên Nhã Trân \hfill (MSSV: 23127272)
+        \item Phạm Cao Thu Hương \hfill (MSSV: 23127375)
+    \end{enumerate}
+    \item \textbf{Loại đề tài:} Nghiên cứu
+    \item \textbf{Thời gian thực hiện:} Từ tháng 10/2025 đến tháng 05/2026
+\end{itemize}
+
+\vspace{0.4em}
+
+% ==============================================================================
+% PHẦN 2: NỘI DUNG THỰC HIỆN
+% ==============================================================================
+\noindent\textbf{NỘI DUNG THỰC HIỆN}
+
+\section{Giới thiệu về đề tài}
+
+\subsection{Đặt vấn đề và bối cảnh thực tiễn}
+Trong bối cảnh y học hiện đại, các bệnh lý về cơ xương khớp (loãng xương, thoái hóa khớp, gãy xương do giòn xương, hoại tử vô mạch chỏm xương đùi, viêm xương tủy) chiếm tỷ trọng bệnh tật rất lớn và gia tăng nhanh chóng theo xu hướng già hóa dân số \cite{who2022musculoskeletal}. Khối lượng tri thức y khoa chuyên sâu, các báo cáo thử nghiệm lâm sàng và phác đồ điều trị chuyên khoa ngày càng trở nên đồ sộ. Việc ứng dụng công nghệ thông tin nhằm hỗ trợ tiếp cận thông tin y khoa đang đối mặt với hai thách thức thực tiễn lớn:
+\begin{enumerate}[label=(\alph*), leftmargin=1.27cm]
+    \item \textbf{Đối với nhân viên y tế và sinh viên y khoa:} Việc tra cứu, tổng hợp và đối chiếu chéo các thông tin chính xác từ sách giáo trình, cơ sở dữ liệu y sinh (PubMed, Embase) hay các hướng dẫn thực hành lâm sàng (Clinical Practice Guidelines - CPGs) đòi hỏi nhiều thời gian. Trong môi trường làm việc áp lực cao, sự chậm trễ hoặc bỏ sót các chống chỉ định dược lý có thể ảnh hưởng trực tiếp đến chất lượng ra quyết định lâm sàng \cite{ortho_rag_13}.
+    \item \textbf{Đối với bệnh nhân và cộng đồng:} Xu hướng tự tìm kiếm triệu chứng và bài tập phục hồi chức năng trên Internet diễn ra phổ biến. Tuy nhiên, thông tin trên mạng tiềm ẩn tình trạng "nhiễu loạn", thiếu kiểm chứng khoa học, dễ dẫn tới các hành vi tự điều trị sai lầm hoặc tập luyện sai tư thế gây tổn thương thứ phát nghiêm trọng (như gập xoay cột sống khi đang bị gãy lún đốt sống cấp tính).
+\end{enumerate}
+
+\subsection{Ý tưởng giải quyết và phương pháp tiếp cận}
+Sự ra đời của các Mô hình Ngôn ngữ Lớn (Large Language Models - LLMs) dựa trên kiến trúc Transformer \cite{vaswani2017} đã mang lại khả năng hiểu và sinh ngôn ngữ tự nhiên vượt bậc. Tuy nhiên, việc áp dụng LLM trực tiếp vào y tế vấp phải rào cản chí mạng: \textbf{Hiện tượng ảo giác tri thức (Hallucination)}, tri thức đóng băng trong tham số không cập nhật kịp thời, và không có khả năng trích dẫn bằng chứng kiểm chứng được \cite{singhal2023expert, nist_ai_100_2e2025}.
+
+Để khắc phục triệt để các hạn chế trên, đề tài đề xuất giải pháp phát triển \textbf{Mô hình Hỏi--Đáp Y khoa Tin cậy Chuyên biệt cho Bệnh lý về Xương} dựa trên kỹ thuật Truy xuất Tăng cường Sinh nội dung (Retrieval-Augmented Generation - RAG) \cite{lewis2020, karpukhin2020}. Ý tưởng cốt lõi của đề tài bao gồm:
+\begin{itemize}[leftmargin=1.27cm]
+    \item \textbf{Gắn kết tri thức chuẩn mực (Medical Knowledge Grounding):} Toàn bộ câu trả lời của mô hình được ràng buộc trực tiếp dựa trên tập ngữ liệu phác đồ điều trị quốc tế đã được kiểm chứng (100\% Verifiable Provenance).
+    \item \textbf{Truy xuất lai kết hợp Bản thể học (Ontology-Guided Hybrid Retrieval):} Kết hợp truy xuất đặc ngữ nghĩa (Dense Retrieval) và truy xuất từ khóa chính xác (Sparse Retrieval - BM25) với khung bản thể học chuyên khoa xương (Ontology) để giải quyết hiện tượng \textit{"đúng ngữ nghĩa nhưng sai ngữ cảnh lâm sàng"}.
+    \item \textbf{Lớp an toàn và cơ chế quyết định Tam phân (Answer -- Abstain -- Escalate):} Hệ thống tự động đánh giá mức độ đủ của bằng chứng và độ an toàn lâm sàng để quyết định: (1) \textit{Answer} (Trả lời kèm trích dẫn minh bạch), (2) \textit{Abstain} (Từ chối trả lời khi thiếu dữ liệu hoặc không chắc chắn để triệt tiêu ảo giác phỏng đoán), hoặc (3) \textit{Escalate} (Chuyển chuyên gia khẩn cấp khi nhận diện dấu hiệu cờ đỏ nguy kịch) \cite{medtrustrag}.
+\end{itemize}
+
+\subsection{Ý nghĩa thực tiễn của đề tài}
+Hệ thống đóng vai trò như một trợ lý hỗ trợ ra quyết định lâm sàng (CDSS) tin cậy: hỗ trợ bác sĩ tra cứu phác đồ chuẩn xác trong vài giây, giảm thiểu sai sót y khoa; đồng thời cung cấp cho bệnh nhân một kênh tham vấn an toàn, có căn cứ khoa học minh bạch, bảo vệ người bệnh trước thông tin sai lệch trên Internet.
+
+% ==============================================================================
+\section{Mục tiêu đề tài}
+
+\subsection{Bối cảnh và tính cấp thiết (Tại sao cần thực hiện đề tài?)}
+\begin{itemize}[leftmargin=1.27cm]
+    \item \textbf{Yêu cầu an toàn tiệm cận tuyệt đối trong y tế:} Biên độ chấp nhận sai sót trong y khoa gần như bằng không. Các mô hình AI y tế không thể chỉ "trông có vẻ đúng" mà phải đảm bảo tính xác thực và an toàn cao nhất \cite{medrag2024}.
+    \item \textbf{Đặc thù phức tạp của miền bệnh lý cơ xương khớp:} Bệnh lý xương đòi hỏi sự kết hợp chặt chẽ giữa nội khoa, cơ sinh học và phục hồi chức năng. Cùng một bệnh nhân loãng xương, nhưng ở trạng thái "ổn định" sẽ được khuyến khích vận động chịu lực, trong khi ở trạng thái "gãy lún đốt sống cấp tính" lại chống chỉ định tuyệt đối việc gập xoay cột sống. RAG truyền thống dựa thuần túy trên độ tương đồng vector ngữ nghĩa dễ bỏ sót các ràng buộc cơ sinh học này.
+    \item \textbf{Nhu cầu cá nhân hóa và quản trị rủi ro:} Cần có một hệ thống thông minh có khả năng nhận biết ranh giới năng lực của mình, biết từ chối khi dữ liệu mâu thuẫn và biết cảnh báo nguy hiểm trong các ca bệnh cấp cứu.
+\end{itemize}
+
+\subsection{Mục tiêu cụ thể (Đề tài mang lại được điều gì?)}
+\begin{enumerate}[leftmargin=1.27cm, label=\arabic*.]
+    \item \textbf{Xây dựng Kho ngữ liệu phác đồ xương khớp chuẩn quốc tế (Clinical Knowledge Base):} Thu thập, xử lý và chuẩn hóa các Hướng dẫn thực hành lâm sàng uy tín nhất từ BHOF/NOF, AAOS, Endocrine Society, AAOMS, NICE, IDSA, ARCO thành tập dữ liệu có cấu trúc với định danh DOI/PMID minh bạch.
+    \item \textbf{Thiết lập Bộ ca bệnh đối chứng lâm sàng (Clinical Vignette Benchmark):} Xây dựng tập câu hỏi và bệnh án mẫu dạng USMLE/Vignette có gắn nhãn các ràng buộc chống chỉ định, cờ đỏ và trích dẫn chuẩn phục vụ đánh giá thực nghiệm.
+    \item \textbf{Thiết kế và cài đặt Kiến trúc RAG chuyên biệt đa tầng:} Hiện thực hóa pipeline gồm bộ phân tích ngữ cảnh (Query Parser), bộ truy xuất lai song ngữ (Hybrid Retriever), bộ xếp hạng lại dựa trên bản thể học (Ontology Reranker) và bộ sinh có định hướng bằng chứng (Grounded LLM Generator).
+    \item \textbf{Phát triển Lớp kiểm soát an toàn (Quality \& Safety Guardrails):} Hiện thực hóa cơ chế phân loại phản hồi \textit{Answer -- Abstain -- Escalate} và bộ kiểm tra trích dẫn.
+    \item \textbf{Đánh giá thực nghiệm toàn diện:} Thiết lập quy trình kiểm thử 3 tầng độc lập (\textit{Retrieval Quality $\to$ Generation Quality $\to$ End-to-End Clinical Safety}).
+\end{enumerate}
+
+\subsection{Ảnh hưởng và ý nghĩa đối với hướng nghiên cứu}
+\begin{itemize}[leftmargin=1.27cm]
+    \item \textbf{Ý nghĩa khoa học:} Đóng góp một mốc so sánh (Baseline Benchmark) chuẩn mực về khả năng vận hành và ranh giới tri thức của RAG trên ngữ liệu bệnh lý xương; mở ra hướng nghiên cứu kết hợp giữa mô hình ngôn ngữ lớn và tri thức bản thể học có cấu trúc trong NLP y sinh.
+    \item \textbf{Ý nghĩa công nghệ:} Cung cấp khung phương pháp luận hoàn chỉnh để đánh giá độc lập lỗi từ bộ truy xuất so với lỗi từ mô hình sinh, giúp nâng cao độ tin cậy và minh bạch cho các hệ thống CDSS trong tương lai.
+\end{itemize}
+
+% ==============================================================================
+\section{Phạm vi của đề tài}
+
+\subsection{Đối tượng và nội dung nghiên cứu chính}
+Đề tài tập trung nghiên cứu 4 nhóm bệnh lý xương trọng tâm và 1 nhóm phản xạ cảnh báo cờ đỏ (bao phủ $>95\%$ các kịch bản gặp trong thực hành lâm sàng):
+\begin{enumerate}[leftmargin=1.27cm, label=\arabic*.]
+    \item \textbf{Bệnh chuyển hóa xương \& Mật độ khoáng xương:} Loãng xương nguyên phát \& sau mãn kinh, loãng xương do dùng Corticoid kéo dài (GIOP), giảm mật độ xương (Osteopenia), nhuyễn xương, bệnh Paget xương \cite{bhof2022guide}.
+    \item \textbf{Gãy xương do giòn xương \& Tổn thương cấu trúc:} Gãy lún đốt sống cột sống (phân biệt giai đoạn cấp tính $<6$ tuần và giai đoạn ổn định $>8$ tuần), gãy cổ xương đùi / khớp háng ở người cao tuổi, gãy đầu dưới xương quay \cite{aaos2011spine, aaos2015hip}.
+    \item \textbf{Nhiễm trùng xương \& Hoại tử mạch máu:} Viêm xương tủy xương (Osteomyelitis), hoại tử vô mạch chỏm xương đùi (Avascular Necrosis - AVN theo phân loại ARCO) \cite{idsa2015osteomyelitis, arco2020staging}.
+    \item \textbf{Dược lý chuyên khoa \& Ràng buộc an toàn:} Nguy cơ hoại tử xương hàm do thuốc (MRONJ), ngưỡng suy thận an toàn của Bisphosphonate ($eGFR < 30$--$35\text{ mL/min}$), hạn chế tải trọng vận động trong hồi phục \cite{endocrine2020pharma, aaoms2022mronj}.
+    \item \textbf{Tầm soát Cờ đỏ khẩn cấp (Red-Flag Emergency Triage):} Dấu hiệu nghi ngờ u xương ác tính / di căn xương (đau buốt về đêm liên tục, sụt cân nhanh không rõ nguyên nhân) và Hội chứng chùm đuôi ngựa (rối loạn cơ vòng sau chấn thương) \cite{nice2021sarcoma}.
+\end{enumerate}
+
+\subsection{Các giới hạn và ràng buộc của đề tài}
+\begin{itemize}[leftmargin=1.27cm]
+    \item \textbf{Giới hạn ứng dụng:} Hệ thống được định vị là công cụ \textbf{Hỗ trợ Tra cứu Thông tin và Tham vấn Bằng chứng}, không thay thế quyền chỉ định và chẩn đoán trực tiếp của bác sĩ chuyên khoa.
+    \item \textbf{Ràng buộc ngôn ngữ:} Kho ngữ liệu phác đồ (Corpus) và bộ đánh giá lâm sàng được chuẩn hóa bằng \textbf{Tiếng Anh Y khoa Chuyên ngành} (Standard Clinical English) để tương thích tuyệt đối với các mô hình nhúng y sinh chuyên dụng (PubMedBERT, Med-CPT) và hệ thống Ontology quốc tế (SNOMED-CT, UMLS, MeSH). Giao diện tiếp nhận truy vấn hỗ trợ cả \textbf{Tiếng Việt} (thông qua từ điển thuật ngữ y khoa chuẩn hóa) và \textbf{Tiếng Anh}.
+    \item \textbf{Định dạng dữ liệu:} Đề tài giới hạn phạm vi trên dữ liệu dạng văn bản và bảng biểu cấu trúc; chưa xử lý dữ liệu hình ảnh chẩn đoán thô (X-quang, MRI, CT scanner) trong phiên bản này.
+\end{itemize}
+
+% ==============================================================================
+\section{Cách tiếp cận dự kiến}
+
+\subsection{Tổng quan các nghiên cứu liên quan}
+
+Các hướng nghiên cứu về hệ thống Hỏi--Đáp Y tế (Medical QA) đã trải qua các giai đoạn phát triển chính:
+\begin{itemize}[leftmargin=1.27cm]
+    \item \textbf{Hệ thống dựa trên luật (Rule-based Systems):} Kuo và Fuh \cite{rule_based_1}, Maqsood và cộng sự \cite{rule_based_2} đề xuất các mô hình hỗ trợ quyết định lâm sàng dựa trên tập luật và cây quyết định. Cách tiếp cận này có độ chính xác cao trong miền hẹp nhưng cứng nhắc và không thể xử lý ngôn ngữ tự nhiên phức tạp.
+    \item \textbf{Mô hình Ngôn ngữ Lớn độc lập (Prompt-only LLMs):} Sự ra đời của kiến trúc Transformer \cite{vaswani2017} và các mô hình chuyên biệt như Med-PaLM 2 \cite{singhal2023expert}, BioGPT \cite{luo2022biogpt} đạt độ chính xác cao trên các bài thi trắc nghiệm y khoa (MedQA). Tuy nhiên, nghiên cứu chỉ ra rằng mô hình vẫn tạo ra ảo giác nghiêm trọng, không thể trích dẫn nguồn bằng chứng và tiềm ẩn rủi ro lớn trong chăm sóc lâm sàng.
+    \item \textbf{Truy xuất tăng cường sinh nội dung trong Y tế (Medical RAG):} Lewis và cộng sự \cite{lewis2020}, Karpukhin và cộng sự \cite{karpukhin2020} đặt nền móng cho RAG. Nghiên cứu benchmark MIRAGE \cite{xiong2024mirage} trên 7.663 câu hỏi y khoa chứng minh RAG cải thiện tới 18\% độ chính xác so với Prompting thông thường. MedRAG \cite{medrag2024} và i-MedRAG \cite{imedrag} tiếp tục phát triển hướng truy xuất đa bước. Tuy nhiên, benchmark MedRGB \cite{chen2024medrgb} chỉ ra rằng các hệ thống RAG hiện tại vẫn gặp khó khăn lớn trước dữ liệu nhiễu và thiếu cơ chế nhận biết ranh giới từ chối.
+    \item \textbf{Xác thực bằng chứng và Độ tin cậy (Trust Alignment):} MedTrust-RAG \cite{medtrustrag} phân loại 4 dạng ảo giác y khoa nguy hiểm: Suy luận lỗi ($\mathcal{H}_F$), Bỏ sót thông tin ($\mathcal{H}_M$), Từ chối quá mức ($\mathcal{H}_O$) và Gán sai nguồn ($\mathcal{H}_A$). Baur và cộng sự (JMIR AI 2025) \cite{ortho_rag_13} phát triển chatbot RAG cho bệnh nhân chấn thương chỉnh hình nhưng chưa xây dựng khung đánh giá định lượng phân tầng.
+    \item \textbf{Tổng quan tích hợp Fine-Tuning và RAG:} Collaco và cộng sự (2026) \cite{collaco2026} thực hiện scoping review về các hệ thống kết hợp FT + RAG trong y tế, nhấn mạnh sự cần thiết của việc đánh giá độc lập retriever và generator cùng cơ chế kiểm soát an toàn chủ động.
+\end{itemize}
+
+\subsection{Phương pháp và Mô hình đề xuất trong đề tài}
+
+Hệ thống được thiết kế theo 2 pipeline liên kết chặt chẽ:
+
+\subsubsection{Pipeline Lập chỉ mục Tri thức và Huấn luyện (Offline Knowledge Pipeline)}
+\begin{enumerate}[leftmargin=1.27cm, label=\arabic*.]
+    \item \textbf{Thu thập và Chuẩn hóa Dữ liệu Phác đồ:} Trích xuất văn bản từ các CPGs chuẩn quốc tế (BHOF, AAOS, NICE,...). Phân đoạn tài liệu thành các chunk tri thức mang đầy đủ siêu dữ liệu (Tên phác đồ, Tổ chức, Năm, DOI, PMID, Vùng giải phẫu, Trạng thái bệnh, Chống chỉ định bắt buộc).
+    \item \textbf{Lập chỉ mục Tri thức Đa thành phần (Indexing):}
+    \begin{itemize}
+        \item \textit{Chỉ mục Đặc (Dense Index):} Mã hóa ngữ nghĩa văn bản bằng mô hình nhúng y sinh chuyên dụng (Med-CPT / PubMedBERT).
+        \item \textit{Chỉ mục Thưa (Sparse Index):} Lập chỉ mục từ khóa theo giải thuật BM25 kết hợp mở rộng thuật ngữ đồng nghĩa từ Ontology.
+    \end{itemize}
+    \item \textbf{Xây dựng Đồ thị Bản thể học (Bone Domain Ontology):} Định nghĩa cấu trúc phân cấp thực thể (\textit{Disease, Anatomy, ClinicalState, Contraindication, RedFlag}) và các mối quan hệ ngữ nghĩa (\textit{contraindicatedFor, recommendedFor, isStageOf}).
+\end{enumerate}
+
+\subsubsection{Pipeline Suy diễn và Kiểm soát An toàn (Online Inference Pipeline)}
+Khi người dùng gửi câu hỏi $q$ kèm bối cảnh bệnh nhân $u$ và lịch sử $h$:
+\begin{enumerate}[leftmargin=1.27cm, label=\arabic*.]
+    \item \textbf{Tiền xử lý và Chuẩn hóa Truy vấn:} Phân tích truy vấn thành bộ thông tin cấu trúc dạng tuple:
+    \begin{equation}
+        Q_c = (\text{Disease}, \text{Anatomy}, \text{ClinicalState}, \text{Intent}, \text{Biomarkers})
+    \end{equation}
+    \item \textbf{Truy xuất Lai (Hybrid Retrieval):} Kết hợp điểm tương đồng ngữ nghĩa $s_{\text{dense}}$ và điểm từ khóa $s_{\text{sparse}}$:
+    \begin{equation}
+        s(q, c) = \alpha \cdot s_{\text{dense}}(q, c) + (1 - \alpha) \cdot s_{\text{sparse}}(q, c)
+    \end{equation}
+    \item \textbf{Xếp hạng lại theo Bản thể học (Ontology-Guided Reranking):} Đối chiếu các ràng buộc lâm sàng. Các tài liệu phù hợp chính xác giai đoạn tổn thương hoặc phát hiện chống chỉ định sẽ được ưu tiên xếp hạng lên Top-$k$.
+    \item \textbf{Sinh Phản hồi có Bằng chứng (Grounded Generation):} LLM tiếp nhận Prompt gồm chỉ dẫn an toàn, câu hỏi và các đoạn bằng chứng đã truy xuất $C^*$ để sinh câu trả lời nháp $\widetilde{y}$ có trích dẫn nguồn.
+    \item \textbf{Lớp Kiểm định An toàn \& Ra Quyết định Tam phân (Quality Check \& Tri-Action Filter):} Đánh giá bản nháp qua các chỉ số \textit{Groundedness, Faithfulness, Citation Validity, Red-Flag Risk} để đưa ra quyết định cuối cùng:
+    \begin{equation}
+        d = \begin{cases}
+            \text{\textbf{Answer}}, & \text{khi đủ bằng chứng xác thực và an toàn tuyệt đối} \\
+            \text{\textbf{Abstain}}, & \text{khi thiếu bằng chứng, dữ liệu mâu thuẫn hoặc độ tin cậy thấp} \\
+            \text{\textbf{Escalate}}, & \text{khi phát hiện dấu hiệu Cờ đỏ / nguy cơ cấp cứu cần gặp bác sĩ}
+        \end{cases}
+    \end{equation}
+\end{enumerate}
+
+\subsection{Sự khác biệt và Điểm mới của đề tài}
+\begin{itemize}[leftmargin=1.27cm]
+    \item \textbf{Khắc phục hiện tượng đứt gãy ngữ cảnh lâm sàng:} Khác với RAG thông thường chỉ so khớp từ ngữ bề mặt, hệ thống kết hợp Ontology để nhận biết sự khác biệt giữa các giai đoạn bệnh và ngăn chặn triệt để các khuyến nghị vận động sai cơ sinh học.
+    \item \textbf{Cơ chế Tam phân quyết định chủ động:} Chuyển đổi mô hình từ cơ chế "luôn cố gắng trả lời" thành hệ thống có khả năng tự nhận biết ranh giới tri thức, triệt tiêu ảo giác phỏng đoán và bảo vệ an toàn tối đa cho người bệnh.
+    \item \textbf{Tính minh bạch và khả năng truy nguyên 100\%:} Mọi câu trả lời đều gắn liền với định danh DOI/PMID của phác đồ gốc.
+\end{itemize}
+
+% ==============================================================================
+\section{Kết quả dự kiến của đề tài}
+
+\subsection{Số liệu và chỉ tiêu định lượng (Quantitative Metrics)}
+Đề tài cam kết đạt được các chỉ tiêu định lượng trên bộ Benchmark ca bệnh đối chứng:
+
+\begin{table}[htbp]
+\centering
+\fontsize{11pt}{14pt}\selectfont
+\caption{Bảng chỉ tiêu định lượng dự kiến của hệ thống}
+\label{tab:metrics}
+\begin{tabularx}{\textwidth}{|l|X|c|}
+\hline
+\textbf{Tầng Đánh giá} & \textbf{Chỉ số Đo lường (Metrics)} & \textbf{Mục tiêu Dự kiến} \\ \hline
+\textbf{1. Tầng Truy xuất} & Recall@3 / Recall@5 & $\ge 90\%$ \\
+(Retrieval Quality) & Precision@3 & $\ge 85\%$ \\
+& Mean Reciprocal Rank (MRR) & $\ge 0.88$ \\ \hline
+\textbf{2. Tầng Sinh văn bản} & Faithfulness (Độ trung thực tri thức) & $\ge 92\%$ \\
+(Generation Quality) & Answer Relevance (Độ phù hợp câu hỏi) & $\ge 90\%$ \\
+& Citation Precision (Độ chính xác trích dẫn) & $\ge 95\%$ \\ \hline
+\textbf{3. Tầng An toàn Lâm sàng} & Tuân thủ Chống chỉ định (Safety Compliance) & $\mathbf{100\%}$ \\
+(Clinical Safety \& Decision) & Phát hiện \& Chuyển viện Cờ đỏ (Red-Flag Triage) & $\mathbf{100\%}$ \\
+& Tỷ lệ Lời khuyên Nguy hại (Dangerous Advice Rate) & $\mathbf{0.0\%}$ \\
+& Thời gian phản hồi trung bình & $< 3.5\text{ giây}$ \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection{Sản phẩm đầu ra của đề tài}
+\begin{enumerate}[leftmargin=1.27cm, label=\arabic*.]
+    \item \textbf{Kho Dữ liệu Phác đồ \& Bản thể học (Corpus \& Ontology DB):} Bộ ngữ liệu tri thức chuẩn hóa JSON Schema chứa các chunk phác đồ kèm metadata DOI/PMID và hệ thống thực thể quan hệ cơ xương khớp.
+    \item \textbf{Bộ Ca bệnh Đối chứng Đánh giá (Clinical Vignette Benchmark Suite):} Tập hợp 50--100 ca bệnh đối chứng bao phủ đa dạng tình huống lâm sàng (USMLE-style vignettes).
+    \item \textbf{Mã nguồn Hệ thống (Source Code):} Toàn bộ mã nguồn mở các module Crawler, Parser, Retriever, Reranker, Generator, Safety Guardrails và Evaluator được đóng gói module hóa rõ ràng.
+    \item \textbf{Ứng dụng Web Demo Tương tác (Interactive Clinical QA Web App):} Giao diện web hoàn chỉnh cho phép nhập bệnh án, tra cứu phác đồ, theo dõi trích dẫn minh bạch và cây phân tích thực thể.
+    \item \textbf{Quyển Khóa luận Tốt nghiệp:} Báo cáo toàn văn hoàn chỉnh theo quy chuẩn học thuật của Trường ĐH Khoa học Tự nhiên -- ĐHQG-HCM.
+\end{enumerate}
+
+\subsection{Công trình khoa học liên quan}
+\begin{itemize}[leftmargin=1.27cm]
+    \item Dự kiến viết và nộp \textbf{01 bài báo khoa học} đăng tại Hội nghị Khoa học Quốc gia / Quốc tế hoặc Tạp chí chuyên ngành uy tín trong lĩnh vực Xử lý Ngôn ngữ Tự nhiên và Tin học Y sinh (FAIR, RIVF, IEEE/Springer Conferences).
+\end{itemize}
+
+% ==============================================================================
+\section{Kế hoạch thực hiện}
+
+Đề tài được tiến hành trong thời gian 8 tháng (từ tháng 10/2025 đến tháng 05/2026), phân chia công việc cụ thể cho 2 thành viên:
+\begin{itemize}[leftmargin=1.27cm]
+    \item \textbf{Nguyễn Thiên Nhã Trân (NTN Trân):} Phụ trách nghiên cứu mô hình ngôn ngữ lớn, trích xuất ngữ cảnh truy vấn, thiết kế cấu trúc prompt sinh câu trả lời bám sát bằng chứng và xây dựng lớp kiểm soát an toàn (\textit{LLM Generation \& Safety Guardrails}).
+    \item \textbf{Phạm Cao Thu Hương (PCT Hương):} Phụ trách thu thập/chuẩn hóa ngữ liệu phác đồ y khoa, xây dựng khung Ontology, tối ưu hóa đường ống truy xuất lai (\textit{Hybrid Retrieval \& Ontology Reranker}) và thiết kế bộ ca bệnh kiểm thử đối chứng (\textit{Clinical Benchmark}).
+\end{itemize}
+
+\begin{table}[htbp]
+\centering
+\fontsize{10pt}{13pt}\selectfont
+\caption{Kế hoạch thực hiện và phân công công việc chi tiết}
+\label{tab:schedule}
+\begin{tabularx}{\textwidth}{|p{2.8cm}|X|p{2.6cm}|}
+\hline
+\textbf{Thời gian} & \textbf{Nội dung công việc chi tiết} & \textbf{Phân công} \\ \hline
+\textbf{Tháng 10/2025 -- Tháng 11/2025} & $\bullet$ Khảo sát các công trình nghiên cứu về Medical QA, RAG và LLMs.\newline $\bullet$ Thu thập các tài liệu Hướng dẫn Thực hành Lâm sàng (CPGs) quốc tế về bệnh lý xương (BHOF, AAOS, NICE, IDSA, ARCO).\newline $\bullet$ Viết Đề cương chi tiết và hoàn thiện Báo cáo Tổng quan (Chương 1 \& 2). & \textbf{Cả nhóm}\newline \textit{(Trân: RAG/LLMs;\newline Hương: Y văn)} \\ \hline
+\textbf{Tháng 12/2025 -- Tháng 01/2026} & $\bullet$ Thiết kế cấu trúc Bản thể học (Ontology) chuyên khoa cơ xương khớp.\newline $\bullet$ Tiền xử lý, bẻ chunk, gán nhãn siêu dữ liệu và xây dựng `corpus.json`.\newline $\bullet$ Thiết kế bộ ca bệnh đối chứng (Clinical Vignette Benchmark). & \textbf{PCT Hương}\newline \textit{(Chủ trì)},\newline \textbf{NTN Trân} \\ \hline
+\textbf{Tháng 02/2026 -- Tháng 03/2026} & $\bullet$ Cài đặt đường ống truy xuất lai (Hybrid Retriever: BM25 + Med-CPT/PubMedBERT).\newline $\bullet$ Cài đặt thuật toán xếp hạng lại dựa trên bản thể học (Ontology Reranker).\newline $\bullet$ Thiết kế Prompt, tinh chỉnh bộ sinh và tích hợp lớp an toàn Tam phân \textit{Answer -- Abstain -- Escalate}. & \textbf{PCT Hương}\newline \textit{(Retrieval)},\newline \textbf{NTN Trân}\newline \textit{(Gen \& Safety)} \\ \hline
+\textbf{Tháng 04/2026} & $\bullet$ Tiến hành thực nghiệm đối chiếu 3 mức độ (Vanilla RAG, Concept RAG, Ontology RAG).\newline $\bullet$ Đánh giá định lượng 3 tầng (RAGAS và LLM-as-a-Judge).\newline $\bullet$ Phân tích lỗi, khảo sát hiện tượng ảo giác và tối ưu hóa tham số. & \textbf{Cả nhóm}\newline \textit{(Hương: Retrieval;\newline Trân: Generation)} \\ \hline
+\textbf{Tháng 05/2026} & $\bullet$ Xây dựng ứng dụng Web Demo tương tác.\newline $\bullet$ Hoàn thiện toàn văn Khóa luận Tốt nghiệp và Slide báo cáo.\newline $\bullet$ Viết bài báo khoa học và chuẩn bị bảo vệ trước Hội đồng. & \textbf{Cả nhóm} \\ \hline
+\end{tabularx}
+\end{table}
+
+% ==============================================================================
+% PHẦN 3: TÀI LIỆU THAM KHẢO (ĐỊNH DẠNG IEEE)
+% ==============================================================================
+\begin{thebibliography}{99}
+\fontsize{11pt}{14pt}\selectfont
+
+\bibitem{who2022musculoskeletal}
+World Health Organization (WHO), ``Musculoskeletal health,'' \textit{WHO Fact Sheets}, 2022. [Online]. Available: \url{https://www.who.int/news-room/fact-sheets/detail/musculoskeletal-conditions}.
+
+\bibitem{rule_based_1}
+K.-L. Kuo and C.-S. Fuh, ``A rule-based clinical decision model to support interpretation of multiple data in health examinations,'' \textit{Journal of Medical Systems}, vol. 35, no. 6, pp. 1359--1373, 2011.
+
+\bibitem{rule_based_2}
+M. H. Maqsood, M. Sajid, K. Ahmed, M. U. Shahid, and M. Farooq, ``A hybrid AI and rule-based decision support system for disease diagnosis and management using labs,'' \textit{arXiv preprint arXiv:2603.14876}, 2026.
+
+\bibitem{vaswani2017}
+A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, Ł. Kaiser, and I. Polosukhin, ``Attention is all you need,'' in \textit{Advances in Neural Information Processing Systems}, vol. 30, 2017, pp. 5998--6008.
+
+\bibitem{singhal2023expert}
+K. Singhal, T. Tu, J. Gottweis, et al., ``Towards expert-level medical question answering with large language models,'' \textit{Nature}, vol. 620, pp. 172--180, 2023.
+
+\bibitem{luo2022biogpt}
+R. Luo, L. Sun, Y. Xia, et al., ``BioGPT: generative pre-trained transformer for biomedical text generation and mining,'' \textit{Briefings in Bioinformatics}, vol. 23, no. 6, p. bbac409, 2022.
+
+\bibitem{karpukhin2020}
+V. Karpukhin, B. Oğuz, S. Min, P. Lewis, L. Wu, S. Edunov, D. Chen, and W.-t. Yih, ``Dense passage retrieval for open-domain question answering,'' in \textit{Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)}, 2020, pp. 6769--6810.
+
+\bibitem{lewis2020}
+P. Lewis, E. Perez, A. Piktus, F. Petroni, V. Karpukhin, N. Goyal, H. Küttler, M. Lewis, W.-t. Yih, T. Rocktäschel, S. Riedel, and D. Kiela, ``Retrieval-augmented generation for knowledge-intensive NLP tasks,'' in \textit{Advances in Neural Information Processing Systems}, vol. 33, 2020, pp. 9459--9474.
+
+\bibitem{gao2023}
+Y. Gao, Y. Xiong, X. Gao, K. Jia, J. Pan, Y. Bi, Y. Dai, J. Sun, and H. Wang, ``Retrieval-augmented generation for large language models: A survey,'' \textit{arXiv preprint arXiv:2312.10997}, 2023.
+
+\bibitem{xiong2024mirage}
+G. Xiong, Q. Jin, Z. Lu, and A. Zhang, ``Benchmarking retrieval-augmented generation for medicine,'' in \textit{Findings of the Association for Computational Linguistics: ACL 2024}, 2024, pp. 6271--6290.
+
+\bibitem{medrag2024}
+X. Zhao, S. Liu, S.-Y. Yang, and C. Miao, ``MedRAG: Enhancing Retrieval-augmented Generation with Knowledge Graph-Elicited Reasoning for Healthcare Copilot,'' \textit{arXiv preprint arXiv:2502.04413}, 2025.
+
+\bibitem{imedrag}
+G. Xiong, Q. Jin, X. Wang, M. Zhang, Z. Lu, and A. Zhang, ``Improving retrieval-augmented generation in medicine with iterative follow-up questions,'' in \textit{Pacific Symposium on Biocomputing (PSB)}, 2024.
+
+\bibitem{medtrustrag}
+Y. Ning et al., ``MedTrust-RAG: Evidence verification and trust alignment for biomedical question answering,'' \textit{arXiv preprint arXiv:2510.14400}, 2025.
+
+\bibitem{ortho_rag_13}
+D. Baur, J. Ansorg, et al., ``Development and evaluation of a retrieval-augmented generation chatbot for orthopedic and trauma surgery patient education: Mixed-methods study,'' \textit{JMIR AI}, vol. 4, p. e75262, 2025.
+
+\bibitem{chen2024medrgb}
+X. Chen, S. Zhong, et al., ``Benchmarking large language models in retrieval-augmented generation for medicine (MedRGB),'' \textit{arXiv preprint arXiv:2402.16111}, 2024.
+
+\bibitem{nist_ai_100_2e2025}
+A. Vassilev, A. Oprea, A. Fordyce, and H. Anderson, ``Adversarial machine learning: A taxonomy and terminology of attacks and mitigations,'' \textit{NIST AI 100-2e2023}, 2023.
+
+\bibitem{cheng2025knowledge}
+M. Cheng, Y. Luo, J. Ouyang, et al., ``A survey on knowledge-oriented retrieval-augmented generation,'' \textit{arXiv preprint arXiv:2503.10677}, 2025.
+
+\bibitem{collaco2026}
+B. G. Collaco, P. Srinivasagam, C. A. Gomez-Cabello, et al., ``Integrating fine-tuning and retrieval-augmented generation for healthcare AI systems: A scoping review,'' \textit{Bioengineering}, vol. 13, no. 2, p. 225, 2026.
+
+\bibitem{microsoft2024}
+D. Edge, H. Trinh, N. Cheng, et al., ``From local to global: A GraphRAG approach to query-focused summarization,'' \textit{arXiv preprint arXiv:2404.16130}, 2024.
+
+\bibitem{bhof2022guide}
+P. M. Camacho, S. M. Petak, N. Binkley, et al., ``Clinician's guide to prevention and treatment of osteoporosis,'' \textit{Osteoporosis International}, vol. 33, no. 10, pp. 2049--2102, 2022.
+
+\bibitem{endocrine2020pharma}
+D. Shoback, C. J. Rosen, D. M. Black, et al., ``Pharmacological management of osteoporosis in postmenopausal women: An Endocrine Society guideline update,'' \textit{The Journal of Clinical Endocrinology \& Metabolism}, vol. 105, no. 3, p. dgaa042, 2020.
+
+\bibitem{aaos2011spine}
+American Academy of Orthopaedic Surgeons (AAOS), ``The treatment of symptomatic osteoporotic spinal compression fractures: Guideline and evidence report,'' \textit{J. Am. Acad. Orthop. Surg.}, vol. 19, no. 3, pp. 176--182, 2011.
+
+\bibitem{aaos2015hip}
+American Academy of Orthopaedic Surgeons (AAOS), ``Management of hip fractures in the elderly: Evidence-based clinical practice guideline,'' \textit{J. Am. Acad. Orthop. Surg.}, vol. 23, no. 2, pp. 138--140, 2015.
+
+\bibitem{aaoms2022mronj}
+S. L. Ruggiero, T. B. Dodson, T. Aghaloo, et al., ``American Association of Oral and Maxillofacial Surgeons' position paper on medication-related osteonecrosis of the jaws---2022 update,'' \textit{Journal of Oral and Maxillofacial Surgery}, vol. 80, no. 5, pp. 920--943, 2022.
+
+\bibitem{idsa2015osteomyelitis}
+E. F. Berbari, S. S. Kanj, T. J. Kowalski, et al., ``2015 Infectious Diseases Society of America (IDSA) clinical practice guideline for the diagnosis and treatment of native vertebral osteomyelitis in adults,'' \textit{Clinical Infectious Diseases}, vol. 61, no. 6, pp. e26--e46, 2015.
+
+\bibitem{arco2020staging}
+B. H. Yoon, M. A. Mont, K. H. Koo, et al., ``The 2019 revised version of Association Research Circulation Osseous (ARCO) staging system for osteonecrosis of the femoral head,'' \textit{Journal of Bone and Joint Surgery}, vol. 102, no. 16, pp. 1459--1466, 2020.
+
+\bibitem{nice2021sarcoma}
+National Institute for Health and Care Excellence (NICE), ``Suspected cancer: recognition and referral - Bone and soft tissue sarcoma recommendations,'' \textit{NICE Guideline NG12}, 2015, updated 2021.
+
+\end{thebibliography}
+
+\vspace{1.5em}
+
+% ==============================================================================
+% PHẦN 4: XÁC NHẬN CỦA NGƯỜI HƯỚNG DẪN VÀ SINH VIÊN
+% ==============================================================================
+\noindent
+\begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \textbf{XÁC NHẬN}\\[0.2em]
+    \textbf{CỦA NGƯỜI HƯỚNG DẪN}\\[0.2em]
+    \textit{(Ký và ghi rõ họ tên)}\\[4.5em]
+    \textbf{PGS.TS. Lý Quốc Ngọc}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \textit{TP. Hồ Chí Minh, ngày \dots\dots\ tháng \dots\dots\ năm 2025}\\[0.2em]
+    \textbf{NHÓM SINH VIÊN THỰC HIỆN}\\[0.2em]
+    \textit{(Ký và ghi rõ họ tên)}\\[4.5em]
+    \textbf{Nguyễn Thiên Nhã Trân \quad Phạm Cao Thu Hương}
+\end{minipage}
+
+\end{document}

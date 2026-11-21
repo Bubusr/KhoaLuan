@@ -1,0 +1,342 @@
+\section{Công đoạn 3: Kỹ thuật Truy xuất Tăng cường (Medical RAG), GraphRAG và Hợp nhất Ngữ cảnh Lâm sàng}
+\label{sec:chap2_medical_rag}
+
+Trong các hệ thống Hỗ trợ Ra quyết định Lâm sàng (CDSS) hiện đại, mô hình ngôn ngữ lớn (LLM) đóng vai trò là động cơ lập luận (\emph{Reasoning Engine}). Tuy nhiên, nếu chỉ dựa thuần túy vào bộ nhớ tham số tĩnh nội tại, mô hình sẽ đối mặt với nguy cơ ảo giác trầm trọng (\emph{hallucination}), lỗi thời tri thức y khoa và hoàn toàn không thể tiếp cận dữ liệu lịch sử của từng bệnh nhân cụ thể trong Hồ sơ Bệnh án Điện tử (Electronic Health Records -- EHR). Kỹ thuật Truy xuất Tăng cường (Retrieval-Augmented Generation -- RAG) đóng vai trò là "cầu nối tri thức động", chịu trách nhiệm truy xuất có chọn lọc các ghi chú lâm sàng dọc thời gian, bảng chỉ số xét nghiệm, tường trình hình ảnh và phác đồ điều trị ngoại sinh để cung cấp ngữ cảnh neo đậu (\emph{grounding context}) cho LLM.
+
+Mặc dù RAG đã đạt nhiều bước tiến trong miền tri thức mở, việc ứng dụng RAG vào dữ liệu EHR y tế đặt ra những thách thức đặc thù: sự bất đối xứng giữa độ liên quan ngữ nghĩa và tính an toàn lâm sàng, sự phân mảnh dữ liệu qua nhiều đợt khám dọc thời gian, và sự đan xen giữa văn bản tự do với dữ liệu bảng xét nghiệm. Nhằm xây dựng cơ sở lý luận vững chắc cho mô hình đề xuất của khóa luận, mục này trình bày một khảo sát toàn diện, có hệ thống và đối chuẩn thực nghiệm chi tiết về các kỹ thuật RAG, GraphRAG và phương pháp hợp nhất ngữ cảnh lâm sàng trên thế giới cập nhật đến năm 2026.
+
+\subsection{Phạm vi Khảo sát, Mục tiêu và Hai Trục Phân loại Độc lập trong RAG Y tế}
+
+\subsubsection{Mục tiêu và nguyên tắc phương pháp luận}
+Khảo sát này tập trung vào bài toán truy xuất và hợp nhất tri thức hỗ trợ quyết định lâm sàng trên dữ liệu EHR, tuân thủ các nguyên tắc phương pháp luận khoa học sau:
+\begin{itemize}
+    \item \textbf{Phân định rạch ròi hai bài toán:} (1) Truy xuất thực thể hoặc đoạn trích y khoa (\emph{Medical Information / Entity Retrieval}); và (2) Hỏi đáp lâm sàng có neo bằng chứng (\emph{Evidence-grounded Clinical QA}). Hiệu năng cao ở bài toán truy xuất thực thể không đồng nghĩa với việc hệ thống sẽ sinh ra câu trả lời chuẩn xác và an toàn.
+    \item \textbf{Không quy đổi điểm số chéo giữa các benchmark:} Mỗi benchmark sở hữu phân bố dữ liệu, giao thức đánh giá và định dạng nhãn khác biệt, tuyệt đối không so sánh trực tiếp điểm số giữa các bộ dữ liệu khác nhau.
+    \item \textbf{Phân định giữa mô hình trần và hệ thống luồng điều khiển:} Các kỹ thuật mở rộng luồng điều khiển suy luận không thể được đánh đồng với các phương pháp lập chỉ mục văn bản.
+\end{itemize}
+
+\subsubsection{Hai trục phân loại độc lập của Hệ thống RAG Lâm sàng}
+Nhằm tránh sự nhầm lẫn phổ biến trong y văn khi đánh đồng phương pháp lập chỉ mục với chiến lược điều khiển suy luận, khóa luận xác lập hai trục phân loại độc lập cấu thành một hệ thống Medical RAG hoàn chỉnh (Hình~\ref{fig:rag_two_axes}):
+
+\begin{figure}[H]
+\centering
+\begin{singlespace}
+\fontsize{8.5pt}{10.5pt}\selectfont
+\begin{tabular}{|p{7.2cm}|p{7.2cm}|}
+\hline
+\multicolumn{1}{|c|}{\textbf{Trục 1: Biểu diễn và Chỉ mục (Index \& Representation)}} & \multicolumn{1}{c|}{\textbf{Trục 2: Luồng Điều khiển Suy luận (Control Flow)}} \\
+\hline
+$\bullet$ \textbf{Sparse Retrieval:} Chỉ mục nghịch đảo BM25, TF-IDF nắm bắt chính xác từ vựng danh pháp y khoa hiếm \cite{robertson2009}. & $\bullet$ \textbf{Single-step RAG:} Truy xuất top-$k$ đoạn văn một lần duy nhất trước khi nạp vào prompt của LLM. \\
+$\bullet$ \textbf{Dense Retrieval:} Bi-encoder nhúng vector ngữ nghĩa sâu (MedCPT \cite{jin2023medcpt}, BGE \cite{myers2025lessons}, Qwen-Embedding). & $\bullet$ \textbf{Multi-step / Interleaving RAG:} Luân phiên truy xuất và lập luận nhiều vòng (IRCoT \cite{trivedi2023interleaving}). \\
+$\bullet$ \textbf{Hybrid Retrieval:} Hợp nhất xếp hạng đối ứng (Reciprocal Rank Fusion -- RRF) giữa thưa và đặc \cite{xiong2024medrag}. & $\bullet$ \textbf{Adaptive-RAG:} Tự động phân loại độ phức tạp câu hỏi để chọn chiến lược truy xuất tối ưu. \\
+$\bullet$ \textbf{Late Interaction:} Tương đồng đa vector token-to-token bảo toàn chi tiết (ColBERT, Reason-ModernColBERT \cite{almannaa2026investigating}). & $\bullet$ \textbf{Self-RAG \& CRAG:} Tự phản tư nhu cầu truy xuất và đánh giá/hiệu chỉnh chất lượng đoạn trích bằng bộ phản biện độc lập. \\
+$\bullet$ \textbf{Graph-guided Index:} Cấu trúc đồ thị tri thức phân cấp cộng đồng hoặc quan hệ thực thể (GraphRAG \cite{edge2024graphrag}, MedRAG KG \cite{medrag2024}). & $\bullet$ \textbf{Agentic Retrieval:} Tác nhân tự động lập kế hoạch, gọi công cụ API, tra cứu lặp trên EHR (ClinSeek \cite{clinseek2026}). \\
+\hline
+\end{tabular}
+\end{singlespace}
+\caption{Hai trục phân loại độc lập cấu thành hệ thống Truy xuất Tăng cường (Medical RAG)}
+\label{fig:rag_two_axes}
+\end{figure}
+
+Việc phân định hai trục khẳng định rõ: Các giải pháp như IRCoT, Self-RAG hay Agentic Retrieval thuộc về \emph{trục luồng điều khiển suy luận}, có thể kết hợp linh hoạt với bất kỳ kỹ thuật biểu diễn chỉ mục nào thuộc \emph{trục biểu diễn}.
+
+\subsection{Hệ thống Benchmark Đối chuẩn Retrieval và Evidence-Grounded QA trên EHR}
+
+Để đối chuẩn khách quan các nghiên cứu, khóa luận khảo sát 4 bộ dữ liệu chuẩn mực đại diện cho các tầng năng lực khác nhau:
+
+\begin{enumerate}
+    \item \textbf{CliniQ (Zhao et al., 2025) \cite{cliniq2025} -- Tầng Entity Retrieval Cấp đoạn trích:}
+    \begin{itemize}
+        \item \emph{Quy mô và nguồn dữ liệu:} Xây dựng trên 1.000 bản tóm tắt xuất viện (Discharge Summaries) trích từ MIMIC-III, phân đoạn thành 16.550 đoạn trích (chunks) với độ dài cố định 100 từ/chunk; bao gồm 1.246 truy vấn lâm sàng với hơn 77.000 nhãn tương quan (\emph{relevance annotations}) được thẩm định kỹ lưỡng.
+        \item \emph{Đặc tính kỹ thuật:} Phân biệt rạch ròi hai thiết lập: Truy xuất đơn bệnh nhân (Single-Patient Retrieval) và Truy xuất đa bệnh nhân (Multi-Patient Retrieval). Benchmark phân loại tương quan ngữ nghĩa thành 4 cấp độ: từ đồng nghĩa (\emph{synonym}), từ viết tắt (\emph{abbreviation}), từ cấp dưới (\emph{hyponym}) và hàm ý lâm sàng (\emph{implication}) trên 3 nhóm thực thể: bệnh lý, thủ thuật, và dược phẩm.
+        \item \emph{Ý nghĩa và giới hạn:} Là công cụ lý tưởng để kiểm chứng sự đối nghịch giữa BM25 (bắt từ khóa chính xác) và Dense Retrieval (bắt từ đồng nghĩa/hàm ý). Tuy nhiên, CliniQ là benchmark thuần về truy xuất thực thể (\emph{entity retrieval}), không phải benchmark hỏi đáp tự do trên bệnh án, không thể dùng kết quả CliniQ để suy diễn khả năng sinh câu trả lời của mô hình.
+    \end{itemize}
+
+    \item \textbf{EHRNote-ChatQA (PhysioNet v1.0, 2026) \cite{ehrnote_chatqa2026} -- Tầng Hỏi đáp Bệnh án Gắn bằng chứng:}
+    \begin{itemize}
+        \item \emph{Quy mô và nguồn dữ liệu:} Xây dựng từ 2.852 bản tóm tắt xuất viện của 967 bệnh nhân thuộc cơ sở dữ liệu MIMIC-IV.
+        \item \emph{Cấu trúc câu hỏi:} Bao gồm 8.036 câu hỏi nội dung lâm sàng ghép cặp trực tiếp với 8.036 câu hỏi xác định bằng chứng, tạo thành tổng cộng 16.072 câu hỏi trắc nghiệm (5 lựa chọn/câu) trải rộng trên 8 nhóm bệnh lý.
+        \item \emph{Ý nghĩa và giới hạn:} Điểm vượt trội là mỗi câu trả lời đều bị ràng buộc bởi khả năng định vị chính xác đoạn văn bản hỗ trợ trong bệnh án. Hạn chế cốt tử là định dạng trắc nghiệm đóng, chỉ tập trung vào discharge summaries (chưa bao phủ toàn bộ ghi chú khám bệnh dọc thời gian và xét nghiệm thô), và dữ liệu thuộc diện cấp quyền nghiên cứu có điều kiện (credentialed access).
+    \end{itemize}
+
+    \item \textbf{MIMIC-IV-Ext-MedicalBench (PhysioNet v1.0, 2026) \cite{medicalbench2026} -- Tầng Xác minh Khái niệm và Bằng chứng cấp Câu:}
+    \begin{itemize}
+        \item \emph{Quy mô và nhiệm vụ:} Gồm 405 mẫu bệnh án trích từ MIMIC-IV kèm mã ICD-10 chuẩn hóa, giải quyết hai nhiệm vụ độc lập: (1) Medical Concept Verification (xác minh một khái niệm chẩn đoán có xuất hiện hoặc được ngụ ý trong hồ sơ hay không); và (2) Sentence-level Evidence Retrieval (tìm kiếm chính xác các câu đơn lẻ trong văn bản đóng vai trò là bằng chứng y khoa).
+        \item \emph{Đánh giá:} Sử dụng độ hồi tưởng cấp câu (\emph{Sentence Recall}) với quy trình gán nhãn y khoa kép (dual clinical annotation) và thẩm định chuyên gia.
+        \item \emph{Ý nghĩa và giới hạn:} Phù hợp để đánh giá mô-đun trích xuất bằng chứng câu đơn, nhưng không thể sử dụng độ chính xác xác minh khái niệm để xếp hạng các pipeline RAG hỏi đáp đa bước.
+    \end{itemize}
+
+    \item \textbf{ClinSeek-Bench (UCSC-VLAA, 2026) \cite{clinseek2026} -- Tầng Tìm kiếm Bằng chứng Chủ động (Agentic Evidence Seeking):}
+    \begin{itemize}
+        \item \emph{Quy mô:} Gồm 1.800 câu hỏi thuần văn bản (40 mẫu trích từ mỗi tác vụ trong số 45 tác vụ con của EHR-Bench, trải rộng qua 13 nhóm nghiệp vụ lâm sàng) kết hợp 989 câu hỏi đa phương thức (497 mẫu từ EHRXQA và 492 mẫu từ MedMod kết hợp ảnh X-quang ngực qua 6 nhóm tác vụ).
+        \item \emph{Cơ chế đối chuẩn kép:} So sánh hiệu năng giữa hai điều kiện: \emph{Curated Input} (LLM được cung cấp sẵn bằng chứng đã tinh lọc bởi chuyên gia) và \emph{Automated Evidence Seeking} (mô hình tác nhân phải tự dùng các công cụ tìm kiếm, lọc và trích xuất bằng chứng từ kho EHR thô).
+        \item \emph{Ý nghĩa và giới hạn:} Cung cấp thước đo thực tế cho năng lực tác nhân truy xuất chủ động (Agentic RAG). Nghiên cứu hiện ở dạng bản thảo khoa học cập nhật tháng 10/2026, đóng vai trò tham chiếu mở rộng.
+    \end{itemize}
+\end{enumerate}
+
+\noindent\textbf{Khoảng trống nghiên cứu then chốt:} Toàn bộ các bộ benchmark trên đều được xây dựng dựa trên nguồn dữ liệu bệnh án tiếng Anh tại Hoa Kỳ (MIMIC-III, MIMIC-IV, Stanford). Hiện tại \textbf{hoàn toàn thiếu vắng} một bộ dữ liệu đối chuẩn Retrieval và Evidence Grounding chuẩn mực dành riêng cho Hồ sơ Bệnh án Điện tử chuyên khoa Cơ Xương Khớp (MSK) bằng ngôn ngữ tiếng Việt.
+
+\subsection{Hệ thống Baseline và Thiết kế Thực nghiệm Đối chuẩn}
+
+Nhằm đảm bảo tính khách quan và khoa học khi đánh giá đóng góp của từng thành phần kỹ thuật, hệ thống baseline được phân định thành 6 cấu hình chính quy không trùng lặp (Bảng~\ref{tab:rag_baselines}):
+
+\begin{table}[H]
+\begin{singlespace}
+\centering
+\fontsize{8.5pt}{10.2pt}\selectfont
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{|c|l|p{6.8cm}|p{4.2cm}|}
+\hline
+\textbf{Mã} & \textbf{Tên Baseline} & \textbf{Mô tả Cấu hình Đầu vào} & \textbf{Vai trò Đối chuẩn} \\
+\hline
+$B_0$ & Recent Notes & LLM + $k$ ghi chú lâm sàng gần nhất theo thời gian & Context-selection baseline \\
+\hline
+$B_1$ & Full-context & LLM + Toàn bộ hồ sơ bệnh án trong ngưỡng token ($64\text{K} - 120\text{K}$) & Long-context baseline \\
+\hline
+$B_2$ & BM25 Sparse & LLM + Top-$k$ đoạn trích từ chỉ mục đảo ngữ từ vựng \cite{robertson2009} & Lexical matching baseline \\
+\hline
+$B_3$ & Dense Retrieval & LLM + Top-$k$ đoạn trích từ Bi-encoder vector cosine similarity & Semantic matching baseline \\
+\hline
+$B_4$ & Hybrid RAG & LLM + Top-$k$ hợp nhất từ BM25 và Dense qua thuật toán RRF & Hybrid retrieval baseline \\
+\hline
+$B_5$ & Hybrid + Reranking & Cấu hình $B_4$ kết hợp bộ tái xếp hạng Cross-Encoder hoặc Late Interaction & Advanced retrieval baseline \\
+\hline
+\end{tabular}
+\caption{Hệ thống 6 Baseline chuẩn mực đối chuẩn bài toán Retrieval trên EHR}
+\label{tab:rag_baselines}
+\end{singlespace}
+\end{table}
+
+\noindent Bên cạnh 6 baseline chính, nghiên cứu xác lập các baseline phụ trợ:
+\begin{itemize}
+    \item \emph{LLM-only (No EHR context):} Chỉ cung cấp câu hỏi $q$ cho LLM nhằm đo lường lượng tri thức tham số nội tại. Trong nghiên cứu của Ali et al. \cite{ali2026biomedical}, cấu hình này chỉ đạt $6.4\%$ độ chính xác, chứng minh việc cung cấp ngữ cảnh EHR là bắt buộc.
+    \item \emph{Keyword / ICD-10 Filtering:} Lọc tài liệu theo từ khóa hoặc mã chẩn đoán cấu trúc, chỉ áp dụng làm baseline phụ khi hồ sơ đã có mã hóa sẵn.
+    \item \emph{SQL / Graph Query:} Thực hiện truy vấn trên các bảng dữ liệu cấu trúc hóa (xét nghiệm, danh mục thuốc), không dùng làm baseline so sánh trực tiếp cho văn bản tự do.
+\end{itemize}
+
+\noindent\textbf{Các điều kiện kiểm soát thực nghiệm bắt buộc:} Khi so sánh đối chuẩn giữa các retriever, các yếu tố sau phải được cố định tuyệt đối: cùng mô hình ngôn ngữ nền tảng (LLM backbone), cùng mẫu prompt, cùng tập câu hỏi và phân chia bệnh nhân (\emph{patient split}), cùng phương pháp phân đoạn văn bản (\emph{chunking strategy}), cùng cơ chế lọc cứng cấp độ bệnh nhân (\emph{patient-level hard filter}), và cùng ngân sách token đầu vào.
+
+\subsection{Khảo sát Chi tiết các Công trình Thực nghiệm Trọng yếu}
+
+Dưới đây là phân tích chi tiết các công trình thực nghiệm bước ngoặt được công bố trên các tạp chí y tin học và hội nghị AI hàng đầu trong giai đoạn 2024--2026:
+
+\subsubsection{Myers et al. (JAMIA 2025): Khảo sát Toàn diện Mô hình Nhúng và Chiến lược Pooling trên EHR}
+Nghiên cứu của Myers et al. \cite{myers2025lessons} trên tạp chí hàng đầu về tin học y tế \emph{JAMIA} đã tiến hành thực nghiệm trên quy mô kỷ lục với \textbf{3.488 cấu hình truy xuất} trên hai tập dữ liệu độc lập: University of Wisconsin (UW) và MIMIC-III:
+\begin{itemize}
+    \item \textbf{Phương pháp và Thiết lập:} Khảo sát sự kết hợp chéo giữa các họ mô hình nhúng (tổng quát vs chuyên ngành y tế), chiến lược biểu diễn câu hỏi (Query Formulation \& Pooling), và chiến lược gom cụm văn bản bệnh án (Note Pooling).
+    \item \textbf{Kết quả thực nghiệm chi tiết (Chỉ số Mean Average Precision -- MAP):}
+    \begin{itemize}
+        \item Mô hình nhúng tổng quát BGE-large-en: Đạt MAP $\mathbf{0.403}$ trên UW và $\mathbf{0.475}$ trên MIMIC-III (dẫn đầu toàn bộ khảo sát).
+        \item SFR-Embedding-Mistral: Đạt MAP $0.302$ trên UW và $0.417$ trên MIMIC-III.
+        \item Llama3-8B-Instruct: Đạt MAP $0.313$ trên UW và $0.359$ trên MIMIC-III.
+        \item LLM2Vec-Llama-3-8B: Đạt MAP $0.229$ trên UW và $0.422$ trên MIMIC-III.
+        \item Mistral-7B-Instruct: Đạt MAP $0.258$ trên UW và $0.362$ trên MIMIC-III.
+        \item BioMistral (mô hình nhúng y sinh chuyên biệt) \cite{labrak2024biomistral}: Chỉ đạt MAP $0.276$ trên UW và $0.328$ trên MIMIC-III.
+        \item Gatortron-large (mô hình chuyên sâu cho văn bản EHR) \cite{yang2022gatortron}: Chỉ đạt MAP $0.191$ trên UW và $0.270$ trên MIMIC-III.
+    \end{itemize}
+    \item \textbf{Các phát hiện khoa học then chốt:}
+    \begin{itemize}
+        \item \emph{Sự vượt trội của mô hình nhúng tổng quát:} BGE-large-en vượt trội hoàn toàn tất cả các mô hình chuyên biệt y sinh (BioMistral, GatorTron) trên cả hai kho ngữ liệu và 3 tác vụ lâm sàng. Điều này bác bỏ giả định phổ biến rằng "mô hình y sinh luôn vượt trội mô hình tổng quát trên dữ liệu bệnh án".
+        \item \emph{Ảnh hưởng của Note Pooling:} Chiến lược gộp biểu diễn ghi chú lâm sàng (Note Pooling) có tác động mang ý nghĩa thống kê sâu sắc đến chất lượng truy xuất.
+        \item \emph{Ảnh hưởng của Query Formulation:} Việc diễn đạt lại câu hỏi lâm sàng rất nhạy cảm với từ vựng, tuy nhiên chiến lược Query Pooling lại không tạo ra sự khác biệt có ý nghĩa thống kê trên phần lớn các mô hình.
+    \end{itemize}
+    \item \textbf{Giới hạn đối với đề tài:} Toàn bộ khảo sát của Myers et al. thực hiện trên văn bản tiếng Anh. Kết quả này không thể áp dụng máy móc cho tiếng Việt do các đặc thù ngữ pháp, từ ghép và sự thiếu hụt tài nguyên mô hình nhúng y tế tiếng Việt chuẩn hóa.
+\end{itemize}
+
+\subsubsection{Ali et al. (2026): Đánh giá Biomedical Reranking cho Hỏi đáp Lâm sàng Dọc thời gian}
+Công trình của Ali et al. \cite{ali2026biomedical} khảo sát chuyên sâu vai trò của tầng tái xếp hạng sinh y học (\emph{Biomedical Reranker}) trên hồ sơ lâm sàng dọc thời gian:
+\begin{itemize}
+    \item \textbf{Thiết lập thực nghiệm:} Khảo sát trên 200 bệnh nhân phẫu thuật giảm béo (Bariatric Surgery) tại một trung tâm y tế với 1.000 câu hỏi lâm sàng. Nghiên cứu sử dụng Qwen3-8B làm giám khảo nội bộ (\emph{local judge}) đánh giá độ chính xác câu trả lời (Answer Correctness) dựa trên câu trả lời tham chiếu.
+    \item \textbf{Kết quả thực nghiệm chi tiết (Tầng Retrieval và Tầng QA):}
+    \begin{itemize}
+        \item Cấu hình No-RAG (trả lời thuần bằng bộ nhớ tham số): Answer Correctness chỉ đạt $6.4\%$.
+        \item PubMedBERT Dense Retrieval: Đạt Hit\@10 $37.9\%$, MRR $0.1621$.
+        \item BM25 Sparse Retrieval: Đạt Hit\@10 $43.7\%$, MRR $0.2244$ (vượt trội Dense thuần túy).
+        \item Weighted Hybrid (BM25 + PubMedBERT): Đạt Hit\@10 $46.6\%$, MRR $0.2371$.
+        \item Hybrid + MedCPT Cross-Encoder Reranker: Đạt Hit\@10 $\mathbf{60.6\%}$ (tăng vọt $+14.0\%$ so với Hybrid), MRR $\mathbf{0.3252}$ (tăng $+0.0881$).
+        \item Tác động đến chất lượng sinh câu trả lời (Answer Correctness): Tăng từ $44.8\%$ lên $48.6\%$ (chỉ tăng $+3.8\%$ điểm phần trăm).
+    \end{itemize}
+    \item \textbf{Nhận định phản biện và giới hạn phương pháp luận:}
+    \begin{itemize}
+        \item \emph{Nghịch lý giữa Retrieval và Answer Quality:} Tầng Reranker giúp tăng vượt bậc khả năng bắt đúng đoạn văn bản nguồn ($+14.0\%$ Hit\@10), nhưng mức cải thiện chất lượng trả lời lại rất khiêm tốn ($+3.8\%$). Điều này chứng minh rằng việc truy xuất đúng tài liệu không tự động bảo đảm LLM sẽ lập luận đúng nếu thiếu cơ chế neo bằng chứng chặt chẽ.
+        \item \emph{Giới hạn của Thước đo Answer Correctness:} Giám khảo Qwen3-8B chấm điểm dựa trên câu trả lời mẫu mà không được cung cấp các đoạn trích truy xuất; do đó điểm số này không phản ánh tính trung thực (\emph{Faithfulness}) hay khả năng bám sát bằng chứng (\emph{Evidence Grounding}).
+        \item \emph{Giới hạn dữ liệu:} Tập dữ liệu chỉ gồm 200 bệnh nhân đơn chuyên khoa tại một cơ sở, không có tập kiểm định độc lập và chưa qua rà soát của bác sĩ lâm sàng đối chứng.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{AlMannaa et al. (AACL-IJCNLP 2026): Hybrid RAG, Late Interaction và Năng lực Đọc Ngữ cảnh Dài}
+Nghiên cứu của AlMannaa et al. \cite{almannaa2026investigating} được công bố chính thức tại hội nghị quốc tế \emph{AACL-IJCNLP 2026}, khảo sát năng lực đọc hiểu ngữ cảnh bệnh án dài qua các kiến trúc truy xuất thế hệ mới:
+\begin{itemize}
+    \item \textbf{Kiến trúc và Cấu hình:} Hệ thống tích hợp Dense Retriever (Qwen3-Embedding-8B), Sparse Retriever (BM25), hợp nhất xếp hạng đối ứng (Reciprocal Rank Fusion -- RRF), bộ tái xếp hạng Reason-ModernColBERT hoạt động theo cơ chế tương tác muộn (\emph{Late Interaction}), cơ sở dữ liệu vector Qdrant, kích thước phân đoạn 512 tokens, và sắp xếp thứ tự thời gian (\emph{Chronological Ordering}).
+    \item \textbf{Hai chiến lược ngữ cảnh đối đầu:}
+    \begin{itemize}
+        \item \emph{Standard RAG:} Đưa trực tiếp các đoạn trích top-$k$ được truy xuất vào prompt của LLM.
+        \item \emph{RAG-HIR (Hierarchical Index Retrieval):} Truy xuất ở cấp đoạn trích phân đoạn (512 tokens), nhưng trước khi sinh câu trả lời, hệ thống mở rộng ngữ cảnh ngược về toàn bộ ghi chú gốc của bác sĩ (\emph{parent note}).
+    \end{itemize}
+    \item \textbf{Bài học kỹ thuật then chốt:}
+    \begin{itemize}
+        \item \emph{Bản chất của Late Interaction Reranker:} Khác biệt hoàn toàn với Cross-Encoder (nhúng nối chuỗi câu hỏi và tài liệu), Reason-ModernColBERT duy trì các biểu diễn đa vector cấp token và áp dụng toán tử tương đồng cực đại (\emph{MaxSim operator}). Cơ chế này bảo toàn chi tiết ngữ nghĩa thực thể lâm sàng với chi phí tính toán thấp hơn nhiều so với Cross-Encoder.
+        \item \emph{Sự vượt trội có điều kiện của RAG:} Cấu hình Hybrid RAG kết hợp Late Interaction Reranking vượt qua mô hình nạp toàn bộ ngữ cảnh (Full-Context) trên các câu hỏi xác định sự kiện lâm sàng cục bộ.
+        \item \emph{Hạn chế trong suy luận dọc thời gian:} Khi gặp các câu hỏi đòi hỏi xâu chuỗi tiến trình bệnh lý kéo dài qua nhiều năm, RAG tiêu chuẩn gặp khó khăn do các đoạn trích bị tách rời ngữ cảnh; chiến lược RAG-HIR giúp bù đắp đáng kể thiếu hụt này nhờ phục hồi bối cảnh cha.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Myers et al. (JAMIA 2026): Đánh giá Thực nghiệm RAG Đối đầu Cửa sổ Ngữ cảnh Dài (Long-Context)}
+Xuất bản trên \emph{JAMIA} số tháng 11/2026, công trình của Myers et al. \cite{myers2026evaluating} trực tiếp giải đáp câu hỏi: "Khi LLM đã hỗ trợ cửa sổ ngữ cảnh lên tới hàng trăm nghìn tokens, liệu kỹ thuật RAG có còn cần thiết trên dữ liệu EHR?":
+\begin{itemize}
+    \item \textbf{Thiết lập thực nghiệm:} Khảo sát trên 200 ca bệnh nhân mỗi tác vụ từ University of Wisconsin trên 3 nhiệm vụ lâm sàng phức tạp. Cấu hình RAG sử dụng phân đoạn nhỏ 128 tokens với độ trượt 20 tokens (\emph{sliding window}); embedding BGE-en-large-v1.5 và Qwen3-Embedding-8B; top-$k \in \{20, 40, 60\}$ so sánh trực tiếp với cửa sổ ngữ cảnh dài ($64\text{K}$, $120\text{K}$ tokens) và baseline Recent Notes.
+    \item \textbf{Kết quả thực nghiệm chi tiết theo 3 tác vụ lâm sàng:}
+    \begin{itemize}
+        \item \emph{Tác vụ 1 -- Trích xuất quy trình chẩn đoán hình ảnh (Imaging Procedures):} RAG vượt trội áp đảo so với phương pháp cung cấp các ghi chú gần nhất (Recent Notes) tại cùng ngân sách token ($p < 0.01$).
+        \item \emph{Tác vụ 2 -- Tái dựng dòng thời gian sử dụng kháng sinh (Antibiotic Timelines):} RAG vượt xa Recent Notes và đạt hiệu năng tiệm cận mô hình nạp toàn bộ ngữ cảnh cực dài 120K tokens, trong khi tiết kiệm hơn 85\% chi phí tính toán và độ trễ.
+        \item \emph{Tác vụ 3 -- Sinh chẩn đoán đợt nhập viện (Diagnosis Generation):} RAG không mang lại sự cải thiện nhất quán; trong một số cấu hình, RAG thậm chí làm giảm độ chính xác chẩn đoán so với Long-Context. Nguyên nhân là việc băm nhỏ văn bản làm phân mảnh các mối liên hệ bệnh sinh tổng quát.
+    \end{itemize}
+    \item \textbf{Đúc kết khoa học:} Không tồn tại sự vượt trội tuyệt đối giữa RAG và Long-Context. Hiệu quả phụ thuộc hoàn toàn vào bản chất tác vụ: với các tác vụ định vị sự kiện hoặc lập dòng thời gian cụ thể, RAG là giải pháp tối ưu; ngược lại, các tác vụ tổng hợp chẩn đoán phức tạp đòi hỏi phải duy trì một bối cảnh toàn diện.
+\end{itemize}
+
+\subsubsection{Các Tiếp cận Bổ trợ và Hợp nhất Dữ liệu Lâm sàng Không đồng nhất}
+Bên cạnh các nghiên cứu đối chuẩn trên, các công trình sau đóng góp các góc nhìn kiến trúc giá trị:
+\begin{itemize}
+    \item \textbf{Thảo luận Đa tác nhân Tiền truy xuất (Discuss-RAG, 2025) \cite{dong2025discuss}:} Chứng minh việc sử dụng trực tiếp câu hỏi thô để tính khoảng cách vector phẳng kéo về hàng loạt đoạn văn bản rác gây hiểu lầm (\emph{misleading snippets}). Đề xuất cơ chế thảo luận đa tác nhân (Multi-Agent Discussion) bóc tách các khía cạnh y khoa trước khi truy xuất.
+    \item \textbf{Hợp nhất Xếp hạng Đối ứng trong Y tế (MedRAG, ACL 2024) \cite{xiong2024medrag}:} Khẳng định sự kết hợp giữa BM25 (bắt từ khóa hiếm) và MedCPT (nắm bắt ngữ nghĩa) thông qua RRF mang lại bước nhảy vọt so với các bộ truy xuất đơn lẻ trên các bài thi USMLE.
+    \item \textbf{Truy xuất Phân cấp Cộng đồng Đồ thị (GraphRAG, 2024) \cite{edge2024graphrag}:} Ứng dụng kỹ thuật phân cụm đồ thị tri thức Leiden để tóm tắt thông tin theo cấp bậc, giúp mô hình trả lời các câu hỏi mang tính tổng hợp toàn cục tốt hơn hẳn RAG văn bản phẳng.
+    \item \textbf{Hợp nhất Dữ liệu Lâm sàng Không đồng nhất (Heterogeneous Clinical Text Fusion) \cite{fusion_review_2024}:} Nghiên cứu trên \emph{Information Fusion} (2024) khẳng định việc xử lý dữ liệu xét nghiệm ($\mathcal{L}$), tường trình hình ảnh ($\mathcal{M}_{\mathrm{img}}$) và ghi chú khám ($\mathcal{M}_{\mathrm{clin}}$) thực chất là bài toán hợp nhất văn bản không đồng nhất. Cần kết hợp giữa hợp nhất sớm cấp biểu diễn (Early Context Fusion) và hợp nhất muộn cấp xếp hạng (Late Rank Fusion).
+\end{itemize}
+
+\subsection{Đặc thù Kỹ thuật của Retrieval trên Dữ liệu Bệnh án Điện tử (EHR)}
+
+Từ các công trình thực nghiệm trên, khóa luận đúc kết 3 đặc thù kỹ thuật cốt lõi cần phải giải quyết khi thiết kế hệ thống Retrieval trên EHR:
+
+\begin{enumerate}
+    \item \textbf{Chiến lược Phân đoạn Văn bản (Chunking Strategies):}
+    \begin{itemize}
+        \item \emph{Kích thước phân đoạn cố định:} Nghiên cứu của Myers et al. (2026) sử dụng kích thước nhỏ 128 tokens (sliding window 20) nhằm định vị chính xác thực thể; ngược lại, AlMannaa et al. (2026) sử dụng kích thước lớn 512 tokens để bảo toàn trọn vẹn ngữ cảnh đoạn văn.
+        \item \emph{Phân đoạn theo cấu trúc biểu mẫu (Section-based Chunking):} Chia đoạn theo cấu trúc chuẩn của bệnh án (Lý do khám, Tiền sử, Diễn biến bệnh, Kết quả cận lâm sàng, Hướng điều trị). Đây là một giả thuyết thiết kế có cơ sở khoa học cao đối với EHR, tuy nhiên cần được khảo sát và tối ưu hóa trên dữ liệu thực tế thay vì mặc định xem là phương án luôn vượt trội.
+    \end{itemize}
+
+    \item \textbf{Cơ chế Lọc cứng Cấp độ Bệnh nhân (Patient-level Hard Filtering):}
+    Trong môi trường lâm sàng thực tế, việc một bệnh nhân được kê đơn dựa trên dữ liệu trích xuất từ hồ sơ của bệnh nhân khác là một lỗi y khoa nghiêm trọng. Do đó, mã định danh bệnh nhân ($P_{\mathrm{id}}$) bắt buộc phải đóng vai trò là \textbf{bộ lọc cứng} (\emph{hard filter}) áp đặt tiên quyết trước mọi phép tính toán độ tương đồng vector, triệt tiêu hoàn toàn khả năng rò rỉ dữ liệu chéo giữa các bệnh nhân.
+
+    \item \textbf{Mô hình hóa Chiều Thời gian (Temporal Processing):}
+    Khóa luận phân định rạch ròi hai cấp độ xử lý thời gian trong RAG y tế:
+    \begin{itemize}
+        \item \emph{Sắp xếp Thời gian (Temporal Ordering):} Chỉ đơn thuần là thao tác sắp xếp lại các đoạn trích đã truy xuất theo trật tự thời gian (chronological order) trước khi nạp vào LLM, giúp mô hình đọc hiểu tiến trình thuận tự nhiên.
+        \item \emph{Truy xuất Thời gian (Temporal Retrieval):} Cơ chế truy xuất động dựa trên các bộ lọc cửa sổ thời gian (ví dụ: chỉ tìm các triệu chứng phát sinh trong vòng 48 giờ trước phẫu thuật) và áp dụng hệ số suy giảm thời gian (\emph{Time-decayed Relevance Weighting}). Đây là hướng nghiên cứu còn rất mới và cần được hoàn thiện.
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Hệ thống Thước đo Đánh giá Toàn diện (Metrics Framework)}
+
+Để đánh giá toàn diện một hệ thống RAG lâm sàng, cần thiết lập một khung đánh giá đa tầng, phân biệt rõ các thước đo tiêu chuẩn của ngành Truy hồi thông tin (IR) và các thước đo an toàn bằng chứng được đề xuất riêng (Hình~\ref{fig:rag_metrics}):
+
+\begin{figure}[H]
+\centering
+\begin{singlespace}
+\fontsize{8.5pt}{10.5pt}\selectfont
+\begin{tabular}{|p{3.5cm}|p{5.0cm}|p{5.5cm}|}
+\hline
+\textbf{Tầng Đánh giá} & \textbf{Chỉ số Cụ thể} & \textbf{Ý nghĩa và Điều kiện Đo lường} \\
+\hline
+\textbf{1. Retrieval Quality} (Chất lượng Truy xuất) & $\bullet$ Hit\@$k$ / Recall\@$k$ \newline $\bullet$ Precision\@$k$ \newline $\bullet$ MRR\@$k$ \newline $\bullet$ MAP / nDCG\@$k$ & Đo lường khả năng bắt đúng đoạn trích hoặc câu bằng chứng vàng (\emph{gold evidence}); đòi hỏi tập dữ liệu có gán nhãn tương quan chính xác. \\
+\hline
+\textbf{2. Answer Quality} (Chất lượng Trả lời) & $\bullet$ Exact Match (EM) \newline $\bullet$ Macro/Micro F1 \newline $\bullet$ Answer Correctness & Đánh giá độ đúng đắn của câu trả lời sinh ra so với đáp án tham chiếu chuẩn lâm sàng. \\
+\hline
+\textbf{3. Evidence Grounding} (Bám sát Bằng chứng) & $\bullet$ Faithfulness \newline $\bullet$ Citation Precision \newline $\bullet$ Citation Recall & $\bullet$ \textbf{Faithfulness:} Câu trả lời có được suy diễn hoàn toàn từ ngữ cảnh hay không (chống ảo giác). \newline $\bullet$ \textbf{Citation Precision/Recall:} Tỷ lệ phát biểu y khoa được hỗ trợ chính xác bởi các trích dẫn đi kèm. \\
+\hline
+\textbf{4. Longitudinal Reasoning} (Lập luận Dọc thời gian) & $\bullet$ Temporal Consistency \newline $\bullet$ Event Ordering Accuracy & Đánh giá mức độ chuẩn xác của việc xâu chuỗi sự kiện lâm sàng theo đúng diễn tiến thời gian thực tế của bệnh nhân. \\
+\hline
+\end{tabular}
+\end{singlespace}
+\caption{Khung 4 tầng thước đo đánh giá toàn diện Hệ thống RAG trên Bệnh án Điện tử}
+\label{fig:rag_metrics}
+\end{figure}
+
+\noindent Cần đặc biệt nhấn mạnh rằng: \textbf{Answer Correctness cao không đồng nghĩa với Faithfulness cao}. Một mô hình có thể trả lời đúng phác đồ điều trị nhờ tri thức tham số nội tại (Answer Correctness đạt điểm tuyệt đối), nhưng trích dẫn sai đoạn bệnh án hoặc hoàn toàn không dựa vào ngữ cảnh cung cấp (Faithfulness bằng 0). Trong y tế, tính minh bạch và khả năng kiểm chứng nguồn gốc bằng chứng là điều kiện sống còn để bác sĩ phê duyệt phác đồ.
+
+\subsection{Bảng Tổng hợp Đối chuẩn Thực nghiệm Toàn diện}
+
+Bảng~\ref{tab:master_rag_comparison} tổng hợp đối chuẩn các kiến trúc, kỹ thuật truy xuất, tập dữ liệu thực nghiệm và kết quả then chốt từ các công trình được khảo sát (các giá trị chưa đo hoặc không áp dụng được thể hiện thống nhất bằng ký tự ``--''):
+
+\begin{table}[H]
+\begin{singlespace}
+\centering
+\fontsize{7.0pt}{8.6pt}\selectfont
+\setlength{\tabcolsep}{2.5pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.2cm}|>{\raggedright\arraybackslash}p{2.3cm}|>{\centering\arraybackslash}p{1.4cm}|>{\raggedright\arraybackslash}p{2.4cm}|>{\centering\arraybackslash}p{2.0cm}|>{\centering\arraybackslash}p{1.4cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Công trình / Hệ thống} & \textbf{Cơ chế Truy xuất} & \textbf{Chunk Size (Tokens)} & \textbf{Tập Dữ liệu Đối chuẩn} & \textbf{Kết quả Retrieval (Hit/MAP/MRR)} & \textbf{Độ đúng Trả lời (QA)} & \textbf{Đặc tính / Giới hạn Cốt tử} \\
+\hline
+\textbf{Myers et al. (2025)} \cite{myers2025lessons} & BGE-large-en (Dense) & Note-level & UW / MIMIC-III (3.488 configs) & MAP: $\mathbf{0.403}$ (UW) / $\mathbf{0.475}$ (MIMIC) & -- & Embedding tổng quát thắng mô hình y tế; khảo sát tiếng Anh. \\
+\hline
+\textbf{Myers et al. (2025)} \cite{myers2025lessons} & BioMistral (Dense) & Note-level & UW / MIMIC-III & MAP: $0.276$ (UW) / $0.328$ (MIMIC) & -- & Mô hình y sinh chuyên ngành cho hiệu năng truy xuất kém hơn BGE. \\
+\hline
+\textbf{Myers et al. (2025)} \cite{myers2025lessons} & GatorTron (Dense) & Note-level & UW / MIMIC-III & MAP: $0.191$ (UW) / $0.270$ (MIMIC) & -- & Mô hình chuyên sâu EHR đạt MAP thấp nhất trong khảo sát. \\
+\hline
+\textbf{Ali et al. (2026)} \cite{ali2026biomedical} & BM25 (Sparse) & Sentence & 200 bệnh nhân bariatric & Hit\@10: $43.7\%$, MRR: $0.2244$ & -- & Bắt từ khóa danh pháp tốt hơn Dense đơn lẻ. \\
+\hline
+\textbf{Ali et al. (2026)} \cite{ali2026biomedical} & Hybrid + MedCPT Reranker & Sentence & 200 bệnh nhân bariatric & Hit\@10: $\mathbf{60.6\%}$, MRR: $\mathbf{0.3252}$ & Correctness: $48.6\%$ & Hit tăng $+14.0\%$, nhưng Correctness chỉ tăng $+3.8\%$; đơn trung tâm. \\
+\hline
+\textbf{AlMannaa et al. (2026)} \cite{almannaa2026investigating} & Hybrid + Reason-ModernColBERT & 512 & MIMIC-IV Long EHR & Thắng Full-Context trên factual QA & Thắng trên Factual & Late Interaction tối ưu cho thực thể cục bộ; khó khăn ở suy luận thời gian. \\
+\hline
+\textbf{Myers et al. (2026)} \cite{myers2026evaluating} & RAG (128 chunk, overlap 20) & 128 & UW (3 tác vụ lâm sàng) & RAG $>$ Recent Notes ($p < 0.01$) & Tiệm cận 120K context & Tối ưu cho timeline/imaging; kém hiệu quả trên tổng hợp chẩn đoán. \\
+\hline
+\textbf{MedRAG (2024)} \cite{xiong2024medrag} & BM25 + MedCPT (RRF) & Khối văn bản & USMLE, MedQA & Vượt trội bộ truy xuất đơn lẻ & Acc tăng $+8-12\%$ & Chỉ tối ưu cho trắc nghiệm y khoa đóng; thiếu dữ liệu bảng EHR. \\
+\hline
+\textbf{Discuss-RAG (2025)} \cite{dong2025discuss} & Multi-Agent + MedCPT & Đa dạng & BioASQ & Lọc sạch misleading snippets & F1 tăng $+6.2\%$ & Chứng minh truy vấn vector phẳng kéo về nhiều đoạn rác. \\
+\hline
+\textbf{GraphRAG (2024)} \cite{edge2024graphrag} & Phân cấp Cộng đồng & Cụm đồ thị & Open-domain / Bio & Độ bao phủ thực thể cao & Toàn diện hơn RAG phẳng & Tốn kém chi phí xây dựng đồ thị; chưa tích hợp chỉ số cận lâm sàng. \\
+\hline
+\textbf{Khóa luận Đề xuất (Bone-MSK QA)} & \textbf{Lai: BM25 + Dense + KG 6 tầng} & \textbf{Section / 256} & \textbf{EHR Cơ Xương Khớp Tiếng Việt} & \textbf{Mục tiêu: Tối ưu Hit@k \& Precision} & \textbf{Mục tiêu: Dual-aspect $p_{\mathrm{rel}} \times s_{\mathrm{appl}}$} & \textbf{Lọc cứng bệnh nhân, 5 khía cạnh $Q_c$, hợp nhất xét nghiệm và X-quang.} \\
+\hline
+\end{tabularx}
+\caption{Bảng tổng hợp đối chuẩn thực nghiệm các Kỹ thuật RAG và GraphRAG trong Y tế}
+\label{tab:master_rag_comparison}
+\end{singlespace}
+\end{table}
+
+\subsection{Các Bài học Đối chuẩn Thực nghiệm Then chốt}
+
+Từ việc phân tích chuyên sâu các công trình nghiên cứu trên, 4 bài học khoa học then chốt được đúc kết:
+
+\begin{enumerate}
+    \item \textbf{Bài học 1 -- Mô hình nhúng tổng quát vượt trội mô hình nhúng y tế chuyên biệt trên EHR:} Nghiên cứu quy mô lớn của Myers et al. (JAMIA 2025) chứng minh rõ ràng rằng mô hình nhúng tổng quát chất lượng cao (BGE-large-en) đạt MAP vượt trội so với BioMistral và GatorTron trên dữ liệu bệnh án thực tế. Chiến lược gom cụm biểu diễn ghi chú (Note Pooling) có ý nghĩa quyết định đến chất lượng truy xuất.
+    \item \textbf{Bài học 2 -- Sự bất đối xứng giữa hiệu năng Retrieval và chất lượng Trả lời:} Nghiên cứu của Ali et al. (2026) chỉ ra rằng việc bổ sung bộ tái xếp hạng (Biomedical Reranker) giúp Hit\@10 tăng vọt $+14.0\%$, nhưng Answer Correctness chỉ cải thiện khiêm tốn $+3.8\%$. Việc chỉ tối ưu hóa bộ truy xuất là không đủ; hệ thống bắt buộc phải có cơ chế thẩm định và neo giữ bằng chứng chặt chẽ.
+    \item \textbf{Bài học 3 -- Sự đánh đổi phụ thuộc vào bản chất tác vụ giữa RAG và Long-Context:} Khảo sát của Myers et al. (JAMIA 2026) và AlMannaa et al. (2026) khẳng định không có giải pháp nào áp đảo hoàn toàn. RAG thể hiện ưu thế vượt trội ở các tác vụ định vị sự kiện cụ thể, trích xuất thủ thuật và tái dựng dòng thời gian thuốc; ngược lại, các tác vụ tổng hợp chẩn đoán toàn diện đòi hỏi phải duy trì ngữ cảnh rộng và bối cảnh cha (RAG-HIR).
+    \item \textbf{Bài học 4 -- Nhu cầu tất yếu của Bộ lọc cứng Bệnh nhân và Mô hình hóa Thời gian:} Truy xuất trên dữ liệu EHR dọc thời gian bắt buộc phải tích hợp mã định danh bệnh nhân ($P_{\mathrm{id}}$) làm bộ lọc cứng để ngăn ngừa rò rỉ chéo dữ liệu, đồng thời phải kết hợp sắp xếp thời gian (Temporal Ordering) và truy xuất thời gian (Temporal Retrieval) để tái dựng chính xác tiến trình bệnh lý.
+\end{enumerate}
+
+\subsection{Phân tích Khoảng trống Nghiên cứu (Research Gaps 3.1--3.3) và Thiết kế Hệ thống Đề xuất}
+
+Tổng hợp từ các phân tích đối chuẩn thực nghiệm, khóa luận xác định 3 khoảng trống nghiên cứu cốt tử hiện hữu trong các hệ thống RAG y tế:
+
+\begin{enumerate}
+    \item \textbf{Khoảng trống 3.1 -- Truy vấn phẳng gây pha loãng biểu diễn và kéo theo các đoạn văn bản rác:}
+    Như được chứng minh trong nghiên cứu Discuss-RAG (2025) \cite{dong2025discuss}, việc nạp trực tiếp toàn bộ câu hỏi dài hoặc một đoạn bệnh án thô vào hàm nhúng vector phẳng sẽ làm phân tán trọng tâm chú ý, kéo theo các đoạn trích dẫn gây hiểu lầm (\emph{misleading snippets}). Hiện chưa có hệ thống RAG nào bóc tách câu hỏi lâm sàng thành các khía cạnh chuyên sâu độc lập trước khi truy xuất trên bệnh án cơ xương khớp tiếng Việt.
+    
+    \item \textbf{Khoảng trống 3.2 -- Sự đồng nhất hóa mù quáng giữa "Độ liên quan ngữ nghĩa" và "Tính áp dụng lâm sàng":}
+    Các hệ thống RAG hiện tại (kể cả MedRAG và các mô hình sử dụng Cross-Encoder/Late Interaction) hoàn toàn chỉ tối ưu hóa điểm số tương đồng ngữ nghĩa bề mặt ($p_{\mathrm{rel}}$). Một đoạn văn bản y văn hướng dẫn phẫu thuật thay khớp háng có thể đạt độ tương đồng ngữ nghĩa rất cao ($p_{\mathrm{rel}} = 0.95$) với từ khóa "thoái hóa khớp háng độ 4", nhưng phác đồ đó lại hoàn toàn \textbf{chống chỉ định} trên một bệnh nhân cụ thể đang có nhiễm trùng khớp tiến triển hoặc suy tim sung huyết nặng. Sự thiếu vắng mô-đun thẩm định tính áp dụng lâm sàng ($s_{\mathrm{appl}}$) và phát hiện chống chỉ định là rủi ro an toàn hàng đầu.
+
+    \item \textbf{Khoảng trống 3.3 -- Bỏ sót cấu trúc bảng xét nghiệm và báo cáo hình ảnh không đồng nhất:}
+    Các nghiên cứu RAG hiện nay chủ yếu thao tác trên văn bản tự do thuần túy (discharge summaries). Dữ liệu bảng xét nghiệm máu ($\mathcal{L}$) và bản tường trình hình ảnh X-quang/MRI ($\mathcal{M}_{\mathrm{img}}$) nếu chỉ được làm phẳng thành văn bản thô sẽ làm mất đi ý nghĩa của các giá trị ngưỡng bệnh lý bất thường và mối quan hệ vị trí giải phẫu không gian.
+\end{enumerate}
+
+\noindent\textbf{Giải pháp Kiến trúc Đề xuất của Khóa luận (Liên kết sang Chương 3):}
+Nhằm khắc phục triệt để 3 khoảng trống trên, khóa luận đề xuất quy trình truy xuất và hợp nhất tri thức đa tầng (sơ đồ kiến trúc tổng thể tại Chương~3, Hình~\ref{fig:system_architecture}):
+
+\begin{itemize}
+    \item \textbf{Khắc phục Khoảng trống 3.1 -- Bóc tách Truy vấn 5 Khía cạnh Ngữ nghĩa ($Q_c$):} Trước khi thực hiện truy xuất, hệ thống chuyển hóa câu hỏi lâm sàng thô $u$ thành cấu trúc 5 khía cạnh y khoa độc lập:
+    \begin{equation}
+        Q_c = \{\text{Disease}, \text{Anatomy}, \text{PatientFactor}, \text{ClinicalState}, \text{Intent}\}
+    \end{equation}
+    Mỗi khía cạnh kích hoạt các không gian tìm kiếm mục tiêu riêng biệt, triệt tiêu hiện tượng pha loãng biểu diễn vector.
+
+    \item \textbf{Khắc phục Khoảng trống 3.2 -- Bộ Thẩm định Bằng chứng Hai Chiều (Dual-aspect Evidence Verifier):} Mỗi đoạn trích dẫn được đánh giá đồng thời qua hai chỉ số:
+    \begin{equation}
+        S_{\mathrm{evidence}} = p_{\mathrm{rel}} \times s_{\mathrm{appl}}
+    \end{equation}
+    trong đó $p_{\mathrm{rel}}$ đo lường độ liên quan từ vựng và ngữ nghĩa, còn $s_{\mathrm{appl}}$ là điểm số tương thích điều kiện lâm sàng do mô hình kiểm tra ràng buộc bệnh lý chấm điểm. Những bằng chứng vi phạm tiền sử dị ứng, bệnh lý nền hoặc vi phạm chống chỉ định phẫu thuật sẽ bị gán $s_{\mathrm{appl}} \to 0$ và bị loại bỏ ngay lập tức khỏi ngữ cảnh sinh câu trả lời.
+
+    \item \textbf{Khắc phục Khoảng trống 3.3 -- Hợp nhất Dữ liệu Lâm sàng Không đồng nhất kết hợp Đồ thị Tri thức 6 tầng:} Áp dụng cơ chế Hợp nhất sớm (Early Context Fusion) bóc tách chỉ số xét nghiệm $\mathcal{L}$ thành các cờ cảnh báo bất thường (\emph{Abnormal/Critical Flags}) tích hợp vào $Q_c$, kết hợp truy xuất lai 3 nguồn: BM25 (từ vựng), Dense Vector (ngữ nghĩa) và duyệt Đồ thị Tri thức Cơ Xương Khớp 6 tầng (MSK-KG) để liên kết chính xác vị trí giải phẫu xương và phác đồ điều trị đặc hiệu.
+\end{itemize}

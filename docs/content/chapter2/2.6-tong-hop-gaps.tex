@@ -1,0 +1,53 @@
+\section{Bảng tổng hợp đối sánh toàn diện và Bản đồ Khoảng trống Nghiên cứu}
+
+\subsection{Bảng tổng hợp đối sánh toàn diện các công trình}
+Bảng~\ref{tab:master_comparison} tổng hợp sự đối đầu trực diện giữa các hướng tiếp cận tiêu biểu nhất đại diện cho 4 công đoạn kỹ thuật đã phân tích:
+
+\begin{table}[H]
+\begin{singlespace}
+\centering
+\fontsize{7.5pt}{9pt}\selectfont
+\def\baselinestretch{0.9}\selectfont
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}p{2.2cm}|>{\raggedright\arraybackslash}p{2.4cm}|>{\centering\arraybackslash}p{1.5cm}|>{\centering\arraybackslash}p{1.5cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Phương pháp} & \textbf{Mô hình Nền tảng} & \textbf{Biểu diễn Tri thức} & \textbf{XAI Văn bản} & \textbf{Đo Uncertainty} & \textbf{Khoảng trống / Hạn chế cốt lõi} \\
+\hline
+\textbf{RAG Gốc \cite{lewis2020}} & BART / DPR & Đoạn văn bản phẳng & \ding{55} & \ding{55} & Ảo giác cao, mất liên kết giải phẫu. \\
+\hline
+\textbf{MedRAG \cite{xiong2024medrag}} & GPT-3.5 /\allowbreak MedCPT & Sách giáo khoa & \ding{55} & \ding{55} & Thiếu cấu trúc đồ thị, không có cơ chế từ chối an toàn. \\
+\hline
+\textbf{Dao \& Ly \cite{dao2025ontology}} & Hệ luật OWL/\allowbreak SWRL & Bản thể học xương & \textbf{\ding{51}} (Hệ luật) & \ding{55} & Cứng nhắc, không xử lý được ngôn ngữ tự nhiên bệnh án. \\
+\hline
+\textbf{Das et al. \cite{das2025clinicalkg}} & Multi-LLMs & Đồ thị thực thể UMLS & \ding{55} & \ding{55} & Đồ thị còn cạnh nhiễu, thiếu phác đồ điều trị đối soát. \\
+\hline
+\textbf{CLI-RAG \cite{clirag2024}} & LLaMA-2 & Phân đoạn bệnh án & \ding{55} & \ding{55} & Bỏ qua tính tương thích điều kiện lâm sàng trên bệnh nhân. \\
+\hline
+\textbf{Discuss-RAG \cite{dong2025discuss}} & Multi-Agent & PubMed /\allowbreak MedQA & \ding{55} & \ding{55} & Thiếu đồ thị quan hệ giải phẫu cơ xương khớp. \\
+\hline
+\textbf{KnowGuard \cite{knowguard2024}} & LLM + Subgraph & Văn bản + Đồ thị kiểm chứng & \ding{55} & \textbf{\ding{51}} (Graph Cov.) & Không bóc tách câu hỏi theo các khía cạnh lâm sàng. \\
+\hline
+\textbf{Med-PRM \cite{medprm2024}} & LLaMA-3 + PRM & Chuỗi suy luận logic & \textbf{\ding{51}} (Cấp bước) & \ding{55} & Chưa kết hợp truy xuất lai đa nguồn. \\
+\hline
+\textbf{Bone-MSK QA (Đề xuất)} & \textbf{LLaMA-3.1-8B + QLoRA (On-premise)} & \textbf{Lai Đồ thị 6 tầng + Phác đồ AAOS} & \textbf{\ding{51}} (Attributed) & \textbf{\ding{51}} ($u\_score$) & \textbf{Khắc phục trọn vẹn: Sàng lọc cảnh báo đỏ u xương, thẩm định bằng chứng hai chiều ($p_{\mathrm{rel}} \times s_{\mathrm{appl}}$), Cổng quyết định 4 nhánh an toàn.} \\
+\hline
+\end{tabularx}
+\caption{Bảng tổng hợp đối chuẩn toàn diện các giải pháp hỏi--đáp y khoa hiện đại}
+\label{tab:master_comparison}
+\end{singlespace}
+\end{table}
+
+\subsection{Bản đồ quan hệ từ Lỗ hổng Nghiên cứu đến Thiết kế Kiến trúc ở Chương 3}
+
+Dựa trên quá trình phân tích đối chuẩn tại từng công đoạn, mối quan hệ hữu cơ giữa \textbf{Lỗ hổng nghiên cứu được phát hiện} và \textbf{Module giải pháp đề xuất} được tổng kết một cách nhất quán:
+
+\begin{enumerate}
+    \item \textbf{Lỗ hổng 1 (Tri thức xương thiếu hụt \& Nguy cơ bảo mật):} Được lấp bằng việc chọn mô hình nền tảng nguồn mở LLaMA-3.1-8B triển khai On-premise, kết hợp tinh chỉnh tham số hiệu quả QLoRA trên tập dữ liệu chỉ dẫn lâm sàng đối chuẩn.
+    \item \textbf{Lỗ hổng 2 (Đứt gãy giữa bản thể học hình thức và bệnh án tự do):} Được lấp bằng Kiến trúc Đồ thị Tri thức 6 tầng chuyên sâu (Bone-MSK KG) kết hợp cơ chế tự động bóc tách thực thể và ánh xạ vào bản thể học qua JSON schema.
+    \item \textbf{Lỗ hổng 3 (Truy vấn phẳng gây nhiễu \& Bỏ quên tính áp dụng điều trị):} Được lấp bằng cơ chế phân rã câu hỏi thành 5 khía cạnh ngữ nghĩa ($Q_c$), Hợp nhất văn bản không đồng nhất (Context Fusion), và Bộ thẩm định bằng chứng hai chiều (Liên quan $p_{\mathrm{rel}}$ và Tính áp dụng $s_{\mathrm{appl}}$).
+    \item \textbf{Lỗ hổng 4 (Đánh đồng ảo giác với bất định \& Quyết định nhị phân cứng nhắc):} Được lấp bằng công thức định lượng độ bất định hai chiều $u\_score$, Cổng an toàn 4 nhánh lâm sàng ($\Delta$), và Cơ chế XAI văn bản gán nguồn trích dẫn cấp câu phân loại 6 trạng thái mệnh đề.
+\end{enumerate}
+
+\vspace{1em}
+\noindent Toàn bộ các nguyên lý và module kiến trúc được thiết kế nhằm lấp đầy các khoảng trống khoa học này sẽ được trình bày chi tiết và mô hình hóa toán học chặt chẽ trong \textbf{Chương 3: Phương pháp đề xuất}.

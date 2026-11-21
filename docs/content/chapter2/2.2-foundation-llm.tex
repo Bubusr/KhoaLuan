@@ -1,0 +1,546 @@
+\section{Công đoạn 1: Khảo sát Toàn diện các Mô hình Ngôn ngữ Nền tảng và Phương pháp Tinh chỉnh trong Y tế}
+\label{sec:chap2_llm_survey}
+
+Mô hình ngôn ngữ lớn (Large Language Models -- LLM) đóng vai trò là "hạt nhân suy luận" (\emph{Reasoning Engine}), chịu trách nhiệm tiếp nhận dữ liệu lâm sàng phức tạp, trích xuất thực thể giải phẫu, liên kết bệnh lý và tổng hợp câu trả lời y khoa. Tuy nhiên, việc ứng dụng LLM vào bài toán hỗ trợ quyết định lâm sàng trên Hồ sơ Bệnh án Điện tử (EHR) cơ xương khớp đặt ra những yêu cầu khắt khe về độ chuẩn xác, tính minh bạch giải thích (XAI), khả năng lượng giá độ bất định (UQ) và an toàn dữ liệu y tế. Mục này trình bày một khảo sát toàn diện, có hệ thống và chi tiết về các nhóm mô hình nền tảng đa dụng và chuyên biệt, đối chuẩn thực nghiệm trên các bộ dữ liệu lâm sàng chuẩn mực, làm tiền đề khoa học cho giải pháp đề xuất của khóa luận.
+
+\subsection{Phạm vi khảo sát và Hệ thống Benchmark đối chuẩn lâm sàng}
+
+\subsubsection{Phạm vi và quy ước khoa học}
+Nhằm đảm bảo tính khách quan và khoa học, khảo sát tuân thủ các nguyên tắc sau:
+\begin{itemize}
+    \item \textbf{Đánh giá trên tác vụ thuần văn bản (Text-only Evaluation):} Đầu vào của hệ thống là văn bản ghi chép bệnh án điện tử ($\mathcal{M}_{\mathrm{clin}}$), bản tường trình kết quả chẩn đoán hình ảnh X-quang/CT/MRI ($\mathcal{M}_{\mathrm{img}}$), bảng số liệu xét nghiệm ($\mathcal{L}$) và cơ sở tri thức y văn. Các mô hình đa phương thức gốc (như Gemini 2.0/3.1, LLaMA-4, Qwen-3.5) vẫn được khảo sát nhưng chỉ xét trên kênh đầu vào/đầu ra văn bản, không xét tác vụ đọc ảnh trực tiếp.
+    \item \textbf{Phân loại 4 nhóm mô hình rõ rệt:} (1) Mô hình Đa dụng Mã nguồn đóng; (2) Mô hình Đa dụng Trọng số mở thế hệ mới; (3) Mô hình Y khoa Thích ứng Chuyên biệt; và (4) Mô hình/Hệ thống Chuyên khoa Cơ Xương Khớp (MSK) \& EHR.
+    \item \textbf{Phân định mô hình nền tảng và hệ thống ứng dụng (R1):} Đạt điểm cao trên bài kiểm tra lâm sàng không đồng nghĩa là mô hình nền tảng chuyên sâu. Cần phân biệt rõ giữa \emph{mô hình lõi} (như CHEESE-32B) và \emph{hệ thống ứng dụng tích hợp} (như OrthoPilot kết hợp ReAct agent, công cụ gọi ngoài, đồ thị tri thức và hướng dẫn điều trị). Không đánh đồng và không so sánh ngang hàng giữa một hệ thống hoàn chỉnh với một mô hình trần.
+    \item \textbf{Quy ước không so sánh chéo trực tiếp điểm số giữa các benchmark (R2):} Điểm số trên các tập dữ liệu khác nhau (VM14K, Spanish MIR, OrthoBench, EHR-Bench) phản ánh các khía cạnh năng lực và giao thức đánh giá khác nhau, tuyệt đối không quy đổi đồng nhất.
+    \item \textbf{Phân định CoT và XAI (R4):} Hiển thị chuỗi suy luận (Chain-of-Thought -- CoT) hay chế độ Thinking không mặc nhiên là XAI, và không đồng nghĩa với giải thích trung thực (\emph{faithfulness}).
+\end{itemize}
+
+\subsubsection{Các benchmark đánh giá y khoa chuẩn mực}
+Nghiên cứu sử dụng 6 benchmark lâm sàng tiêu biểu để đối chuẩn:
+\begin{enumerate}
+    \item \textbf{VM14K (Nguyen et al., 2025) \cite{vm14k_2025}:} Benchmark hỏi--đáp y khoa tiếng Việt đầu tiên với 14.000 câu hỏi trắc nghiệm và ca bệnh thực tế thuộc 31 chuyên ngành y khoa. VM14K là nguồn tham chiếu trực tiếp cho năng lực tiếng Việt của các backbone.
+    \item \textbf{Spanish MIR (Fernandez-de-Retana et al., 2026) \cite{spanish_mir_2026}:} Bộ dữ liệu dựa trên 1.552 câu hỏi từ 8 kỳ thi tuyển bác sĩ nội trú y khoa Tây Ban Nha (Médico Interne Residente), đánh giá toàn diện độ chính xác, độ hiệu chuẩn (Calibration -- ECE), khả năng phân biệt (Discrimination -- AUROC) và chất lượng lập luận.
+    \item \textbf{Mind the Gap (EACL 2026) \cite{mind_the_gap_2026}:} Nghiên cứu thực nghiệm đối chuẩn các kỹ thuật ước lượng độ không chắc chắn (UQ) như Semantic Entropy, G-NLL, Behavioral Features trên các mô hình suy luận (Reasoning LLMs).
+    \item \textbf{EHR-Bench \& EHRSHOT (2023--2025):} Các benchmark đánh giá suy luận lâm sàng và dự đoán rủi ro trên chuỗi thời gian hồ sơ bệnh án điện tử (Longitudinal EHR) dựa trên cơ sở dữ liệu MIMIC-IV và Stanford Medicine.
+    \item \textbf{OrthoBench (2026) \cite{orthopilot_2026}:} Benchmark chuyên sâu về cơ xương khớp gồm 5.905 bệnh nhân, 135.745 mẫu đánh giá trên 1.000 mã bệnh, được kiểm chứng ngoài tại 60 trung tâm y tế, phân chia thành các tác vụ chẩn đoán trước mổ và kế hoạch quản lý điều trị.
+    \item \textbf{HealthBench (OpenAI, 2025):} Benchmark đối thoại y khoa thực tế, đo lường tỷ lệ phát biểu bị bác bỏ (Refuted) và bất định (Uncertain) theo tiêu chuẩn của hội đồng chuyên gia y tế.
+\end{enumerate}
+
+\subsection{Khảo sát Chi tiết các Mô hình Ngôn ngữ Lớn Đa dụng (General LLMs)}
+
+\subsubsection{Nhóm mô hình Đa dụng Mã nguồn đóng (Closed-source LLMs)}
+Các mô hình độc quyền thương mại đóng vai trò là \textbf{mốc trần hiệu năng tham chiếu (Performance Ceiling)} và công cụ giám khảo độc lập (\emph{LLM-as-a-judge}):
+\begin{itemize}
+    \item \textbf{Dòng OpenAI GPT (GPT-4o, GPT-5.1, GPT-5.2-High, GPT-5.4) \cite{achiam2023gpt4}:} 
+    \begin{itemize}
+        \item \emph{Đặc tính kỹ thuật:} Huấn luyện qua nhiều giai đoạn tiền huấn luyện quy mô lớn kết hợp học tăng cường dựa trên phản hồi con người (RLHF) và học tăng cường suy luận. Mô hình thể hiện năng lực lập luận logic tổng quát đỉnh cao, hiểu ngữ cảnh sâu và tuân thủ định dạng chỉ dẫn xuất sắc.
+        \item \emph{Kết quả thực nghiệm:}
+        \begin{itemize}
+            \item Trên benchmark tiếng Việt VM14K: GPT-4o đạt $72.74\%$ Pass\@1 \cite{vm14k_2025}.
+            \item Trên OrthoBench (nhóm 62 bệnh xương khớp): GPT-5.1 đạt $67.2\%$ \cite{orthopilot_2026}.
+            \item Trên HealthBench: GPT-5.2-High ghi nhận tỷ lệ phát biểu bị bác bỏ (Refuted) $2.37\%$ và bất định (Uncertain) $2.78\%$.
+            \item Trên EHR-Bench: GPT-4o chỉ đạt F1 $0.3155$ khi phân tích bệnh án dọc thời gian phức tạp nếu thiếu công cụ chuyên dụng.
+        \end{itemize}
+        \item \emph{Hạn chế cốt tử trong y tế:} Toàn bộ mã nguồn và trọng số đóng kín qua API đám mây. Triển khai bắt buộc phải truyền dữ liệu bệnh nhân lên máy chủ bên thứ ba, vi phạm các quy định pháp lý bắt buộc về bảo vệ dữ liệu y tế nhạy cảm (HIPAA, GDPR và Luật Khám bệnh, chữa bệnh Việt Nam). Bản chất hộp đen ngăn cản việc can thiệp vào logit hoặc trạng thái ẩn để đo lường độ bất định (UQ).
+    \end{itemize}
+
+    \item \textbf{Dòng Anthropic Claude (Claude 3.5 Sonnet, Claude Opus 4.7) \cite{claude35_2024}:}
+    \begin{itemize}
+        \item \emph{Đặc tính kỹ thuật:} Tối ưu hóa bằng phương pháp Constitutional AI, chuyên sâu cho việc lập trình phức tạp, tư duy phản biện và tuân thủ chỉ dẫn an toàn.
+        \item \emph{Kết quả thực nghiệm:}
+        \begin{itemize}
+            \item Trên VM14K: Claude 3.5 Sonnet đạt $71.46\%$ Pass\@1 \cite{vm14k_2025}.
+            \item Khả năng bám sát định dạng JSON/Schema giúp mô hình bóc tách thực thể lâm sàng rất ổn định.
+        \end{itemize}
+        \item \emph{Hạn chế cốt tử:} Hoàn toàn phụ thuộc vào dịch vụ đám mây, không thể tự lưu trữ cục bộ tại cơ sở khám chữa bệnh.
+    \end{itemize}
+
+    \item \textbf{Dòng Google Gemini (Gemini 2.0 Flash, Gemini 1.5/3.1 Pro) \cite{gemini_2024}:}
+    \begin{itemize}
+        \item \emph{Đặc tính kỹ thuật:} Tối ưu hóa cho cửa sổ ngữ cảnh cực dài ($1\text{M} - 2\text{M}+$ tokens), cho phép nạp toàn bộ lịch sử bệnh án nhiều năm và hàng chục trang phác đồ điều trị vào prompt (\emph{in-context grounding}).
+        \item \emph{Kết quả thực nghiệm:}
+        \begin{itemize}
+            \item Trên VM14K: Gemini 2.0 Flash đạt $\mathbf{75.67\%}$ Pass\@1 \cite{vm14k_2025}, dẫn đầu trong nhóm mô hình thương mại đóng được khảo sát.
+        \end{itemize}
+        \item \emph{Hạn chế cốt tử:} Chi phí duy trì kết nối đám mây liên tục và rủi ro rò rỉ dữ liệu hồ sơ bệnh án điện tử.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Nhóm mô hình Đa dụng Trọng số mở thế hệ mới (Open-weights General LLMs)}
+Sự phát triển vượt bậc của các mô hình mở tiên tiến mang lại tiềm năng tự chủ công nghệ và bảo vệ dữ liệu nội viện:
+\begin{itemize}
+    \item \textbf{Dòng DeepSeek (DeepSeek-R1, DeepSeek-V4.1 / V4-Pro) \cite{deepseek_r1_2025}:}
+    \begin{itemize}
+        \item \emph{Kiến trúc và Phương pháp:} Kiến trúc Mixture of Experts (MoE) 671B tổng tham số (37B tham số kích hoạt mỗi token). Đột phá nằm ở kỹ thuật học tăng cường suy luận quy mô lớn không cần dữ liệu SFT giám sát ban đầu (Pure RL), tạo ra khả năng tự chiêm nghiệm và sửa sai trong chuỗi tư duy.
+        \item \emph{Kết quả thực nghiệm:}
+        \begin{itemize}
+            \item Trên VM14K: DeepSeek-R1 dẫn đầu tuyệt đối với $\mathbf{78.17\%}$ Pass\@1 \cite{vm14k_2025}, vượt qua toàn bộ các mô hình thương mại đóng tốt nhất.
+            \item Trên OrthoBench (cohort gốc 62 bệnh): R1 đạt $63.0\%$ \cite{orthopilot_2026}.
+            \item Đo lường UQ trên bản R1-70B Distill \cite{mind_the_gap_2026}: Semantic Entropy đạt AUROC $0.837$, ECE $0.051$; Behavioral Features đạt AUROC $0.793$.
+        \end{itemize}
+        \item \emph{Hạn chế triển khai:} Bản đầy đủ 671B đòi hỏi hạ tầng máy trạm khổng lồ ($\sim 960\text{GB}$ VRAM), vượt ngoài ngân sách đầu tư của phần lớn bệnh viện tại Việt Nam.
+    \end{itemize}
+
+    \item \textbf{Họ Alibaba Qwen (Qwen3-8B/14B/32B, Qwen-3.5/3.6/3.8):}
+    \begin{itemize}
+        \item \emph{Kiến trúc và Phương pháp:} Dải mô hình phong phú từ 0.6B đến 235B tham số, hỗ trợ ngữ cảnh $128\text{K} - 1\text{M}$ tokens, huấn luyện trên kho ngữ liệu đa ngôn ngữ lớn.
+        \item \emph{Kết quả thực nghiệm:}
+        \begin{itemize}
+            \item Trên VM14K: Qwen3-32B đạt $72.47\%$ Pass\@1 \cite{vm14k_2025}, tiệm cận GPT-4o.
+            \item Trên Spanish MIR \cite{spanish_mir_2026}: Qwen3-14B đạt độ chính xác $75.2\%$, AUROC $0.790$, ECE $0.221$; Qwen3-8B đạt độ chính xác $61.6\%$.
+            \item Riêng chuyên khoa chấn thương chỉnh hình cơ xương khớp: Qwen3-8B chỉ đạt $49\%$, thua xa mức $80\% - 85\%$ của các phiên bản lớn hơn.
+        \end{itemize}
+    \end{itemize}
+
+    \item \textbf{Họ Meta LLaMA (LLaMA-3.1-8B/70B, LLaMA-3.3, LLaMA-4 Maverick/Scout) \cite{llama3_2024}:}
+    \begin{itemize}
+        \item \emph{Kiến trúc và Phương pháp:} Kiến trúc Dense tối ưu với Grouped-Query Attention (GQA), context window 128K. LLaMA-4 Maverick sử dụng kiến trúc MoE đa phương thức gốc.
+        \item \emph{Kết quả thực nghiệm:}
+        \begin{itemize}
+            \item Trên VM14K: LLaMA-4 Maverick đạt $71.76\%$, trong khi LLaMA-3.1-8B-Instruct đạt $48.73\%$ \cite{vm14k_2025}.
+            \item Sau khi tinh chỉnh chỉ thị y khoa tiếng Việt (SFT): LLaMA-3.1-8B tăng mạnh lên $59.2\%$ (+10.7 điểm phần trăm).
+        \end{itemize}
+        \item \emph{Khả năng triển khai:} LLaMA-3.1-8B có cấu trúc gọn nhẹ, khả năng tuân thủ định dạng JSON tuyệt vời và có thể vận hành mượt mà trên 1 GPU máy trạm thương mại duy nhất (16GB--24GB VRAM), là ứng viên nền tảng lý tưởng cho việc triển khai On-premise.
+    \end{itemize}
+
+    \item \textbf{Họ Google Gemma (Gemma-2-9B, Gemma-3-27B, Gemma-4) \cite{gemma2_2024}:}
+    \begin{itemize}
+        \item \emph{Kiến trúc và Phương pháp:} Thiết kế tối ưu cho hiệu suất cao trên tài nguyên hạn chế.
+        \item \emph{Kết quả thực nghiệm:} Gemma-3-27B đạt $75.8\%$ trên Spanish MIR \cite{spanish_mir_2026} và $63.38\%$ trên VM14K \cite{vm14k_2025}.
+        \item \emph{Ý nghĩa đối chuẩn:} Cặp mô hình Gemma-3-27B và biến thể y tế MedGemma-27B là hệ quy chiếu chuẩn quốc tế để phân tích độc lập tác động của quá trình Medical Fine-tuning.
+    \end{itemize}
+
+    \item \textbf{Các mô hình mở khác:} Kimi K3 / K3.1 Pro (Moonshot AI, tối ưu cho Agentic RAG và ngữ cảnh 1M token), gpt-oss-120b/20b (OpenAI, Apache 2.0), PhoGPT-4B và VinaLLaMA-7B (mô hình mở tối ưu tiếng Việt nhưng năng lực suy luận ca bệnh phức tạp còn hạn chế).
+\end{itemize}
+
+\subsubsection{Bảng tổng hợp kết quả General LLM trên các Benchmark}
+
+Bảng~\ref{tab:general_llm_benchmark} tổng hợp kết quả đối chuẩn thực nghiệm của các mô hình đa dụng trên hai tập dữ liệu lâm sàng đối chuẩn độc lập VM14K và Spanish MIR:
+
+\begin{table}[H]
+\begin{singlespace}
+\centering
+\fontsize{8pt}{10pt}\selectfont
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|>{\centering\arraybackslash}p{1.8cm}|>{\centering\arraybackslash}p{2.0cm}|>{\centering\arraybackslash}p{2.6cm}|>{\centering\arraybackslash}p{3.0cm}|}
+\hline
+\textbf{Mô hình} & \textbf{Phân loại} & \textbf{Quy mô} & \textbf{VM14K (Pass\@1)} & \textbf{Spanish MIR (Accuracy)} \\
+\hline
+GPT-4o \cite{achiam2023gpt4} & Đóng & Proprietary & $72.74\%$ & -- \\
+\hline
+Claude 3.5 Sonnet \cite{claude35_2024} & Đóng & Proprietary & $71.46\%$ & -- \\
+\hline
+Gemini 2.0 Flash \cite{gemini_2024} & Đóng & Proprietary & $\mathbf{75.67\%}$ & -- \\
+\hline
+DeepSeek-R1 \cite{deepseek_r1_2025} & Mở & MoE 671B & $\mathbf{78.17\%}$ & -- \\
+\hline
+Qwen3-32B & Mở & Dense 32B & $72.47\%$ & -- \\
+\hline
+Qwen3-14B & Mở & Dense 14B & -- & $75.2\%$ \\
+\hline
+Qwen3-8B & Mở & Dense 8B & -- & $61.6\%$ \\
+\hline
+Llama-4 Maverick & Mở & MoE & $71.76\%$ & -- \\
+\hline
+Gemma-3-27B \cite{gemma2_2024} & Mở & Dense 27B & $63.38\%$ & $75.8\%$ \\
+\hline
+Llama-3.1-8B-Instruct \cite{llama3_2024} & Mở & Dense 8B & $48.73\%$ & -- \\
+\hline
+\end{tabularx}
+\caption{Tổng hợp kết quả của các mô hình Đa dụng trên benchmark VM14K và Spanish MIR}
+\label{tab:general_llm_benchmark}
+\end{singlespace}
+\end{table}
+
+\subsubsection{Các bài học rút ra từ khảo sát General LLM}
+\begin{enumerate}[label=\textbf{Insight \arabic*:}]
+    \item \textbf{Năng lực trả lời đúng không đồng nghĩa với giải thích lâm sàng đúng:} Nghiên cứu trên Spanish MIR \cite{spanish_mir_2026} chỉ ra rằng một tỷ lệ lớn các câu trả lời đúng của mô hình lại đi kèm với lý do loại trừ phương án sai hoàn toàn vô lý về mặt y khoa. Do đó, đánh giá LLM trong y khoa không thể chỉ dựa vào Accuracy mà bắt buộc phải kiểm tra tính đúng đắn của bằng chứng hỗ trợ.
+    \item \textbf{Mô hình mở có năng lực suy luận mạnh hoàn toàn có thể cạnh tranh với mô hình đóng:} Kết quả của DeepSeek-R1 ($78.17\%$) và Qwen3-32B ($72.47\%$) trên VM14K chứng minh mô hình trọng số mở hoàn toàn có khả năng đóng vai trò bộ não suy luận trong các hệ thống y tế chuyên sâu.
+    \item \textbf{Quy mô mô hình và ngữ cảnh dài không giải quyết được phân tích EHR:} Phân tích bệnh án đòi hỏi năng lực bóc tách dữ liệu có cấu trúc, xâu chuỗi thông tin theo thời gian và phát hiện chống chỉ định. Mở rộng context window chỉ giải quyết dung lượng đầu vào, không tự động giải quyết bài toán suy luận cấu trúc.
+\end{enumerate}
+
+\subsection{Khảo sát Chi tiết các Mô hình Y khoa và Chuyên biệt Cơ Xương Khớp}
+
+\subsubsection{Nhóm 1: Tiền huấn luyện tiếp trên dữ liệu y sinh (Continued Pretraining)}
+
+\paragraph{Tổng quan phương pháp:}
+Phương pháp Tiếp tục Tiền huấn luyện (\emph{Continued Pretraining} hay \emph{Domain-Adaptive Pretraining -- DAPT}) là kỹ thuật đưa một mô hình nền tảng đa dụng tiếp tục trải qua quá trình học tự giám sát (\emph{Self-supervised Learning}) trên một kho ngữ liệu chuyên ngành y sinh và lâm sàng khổng lồ (từ hàng tỷ đến hàng trăm tỷ token). Mục tiêu cốt lõi của phương pháp này là:
+\begin{enumerate}[(i)]
+    \item Mở rộng và tái phân bố không gian vector nhúng của bộ từ vựng (\emph{vocabulary embeddings}) nhằm nắm bắt chính xác các thuật ngữ giải phẫu học, danh pháp dược lý và cơ chế sinh bệnh học phức tạp;
+    \item Rèn luyện cho mô hình khả năng dự đoán từ tiếp theo trên cấu trúc văn phong học thuật y khoa đặc thù (văn phong bài báo PubMed, sách giáo khoa y khoa và ghi chép diễn tiến bệnh án).
+\end{enumerate}
+Tuy nhiên, rào cản lý thuyết lớn nhất của phương pháp này là nguy cơ xảy ra hiện tượng \textbf{"quên thảm họa" (\emph{Catastrophic Forgetting})}: khi mô hình liên tục tối ưu hóa hàm mất mát trên kho ngữ liệu y sinh đơn ngữ (chủ yếu là tiếng Anh), các trọng số liên kết ngôn ngữ bản địa (như tiếng Việt) và năng lực tuân thủ chỉ thị tổng quát rất dễ bị thoái hóa nghiêm trọng.
+
+\paragraph{Chi tiết các mô hình tiêu biểu:}
+\begin{itemize}
+    \item \textbf{BioGPT (Microsoft, 2022) \cite{luo2022biogpt}:} 
+    \begin{itemize}
+        \item \emph{Kiến trúc \& Nền tảng:} Dựa trên kiến trúc Transformer tự hồi quy kiểu GPT-2 với kích thước khiêm tốn gồm 347 triệu tham số ($347\text{M}$).
+        \item \emph{Dữ liệu \& Quy trình huấn luyện:} Được tiền huấn luyện từ đầu trên tập ngữ liệu gồm 15 triệu tóm tắt bài báo y sinh học trích xuất từ PubMed (khoảng 3.2 tỷ token văn bản).
+        \item \emph{Cơ chế hoạt động:} Mô hình tối ưu hóa hàm mất mát hợp lý cực đại theo chiều xuôi, chuyên sâu cho các tác vụ khai phá quan hệ y sinh cấp câu ngắn, nhận dạng thực thể tên gọi y tế (BC5CDR, NCBI-Disease) và hoàn thiện câu hỏi văn bản y khoa.
+        \item \emph{Kết quả thực nghiệm:}
+        \begin{itemize}
+            \item Đạt điểm F1 $44.98\%$ trên tập trích xuất quan hệ y sinh KD-DTI.
+            \item Đạt độ chính xác $78.2\%$ trên PubMedQA (thiết lập fine-tuned), vượt qua các mô hình cùng quy mô ở thời điểm công bố.
+        \end{itemize}
+        \item \emph{Hạn chế lâm sàng:} Kích thước tham số quá nhỏ khiến BioGPT hoàn toàn bất lực trước các tác vụ suy luận lâm sàng đa bước hoặc phân tích diễn tiến bệnh án cơ xương khớp phức tạp.
+    \end{itemize}
+
+    \item \textbf{PMC-LLaMA (Wu et al., 2023) \cite{wu2023pmc}:}
+    \begin{itemize}
+        \item \emph{Kiến trúc \& Nền tảng:} Khởi tạo từ mô hình nền tảng LLaMA-1 phiên bản 7B và 13B tham số.
+        \item \emph{Dữ liệu \& Quy trình huấn luyện:} Tiếp tục tiền huấn luyện trên tập ngữ liệu đồ sộ gồm 4.8 triệu bài báo học thuật toàn văn từ kho lưu trữ PubMed Central (PMC) và các sách giáo khoa y tế chuẩn mực, tổng cộng hơn 75 tỷ token y sinh. Sau đó mô hình được tinh chỉnh chỉ thị trên tập PMC-1M.
+        \item \emph{Cơ chế hoạt động:} Mô hình mở rộng vốn từ vựng y sinh chuyên sâu, giúp nắm bắt các khái niệm liên quan đến sinh học phân tử, bệnh lý học và chẩn đoán tổng quát.
+        \item \emph{Kết quả thực nghiệm:}
+        \begin{itemize}
+            \item Cải thiện điểm số từ $40.5\%$ lên $51.2\%$ trên MedQA-USMLE so với LLaMA-7B gốc.
+            \item Nâng cao năng lực hiểu thuật ngữ chuyên môn trong các bài kiểm tra trắc nghiệm y khoa tiếng Anh.
+        \end{itemize}
+        \item \emph{Hạn chế lâm sàng:} Tập ngữ liệu huấn luyện thuần túy là văn bản tiếng Anh phẳng, không có dữ liệu bệnh án tiếng Việt và thiếu hoàn toàn các phác đồ phân loại gãy xương chấn thương chỉnh hình.
+    \end{itemize}
+
+    \item \textbf{Dòng Meditron: Meditron-70B \& Meditron3-8B (EPFL / Yale) \cite{chen2023meditron}:}
+    \begin{itemize}
+        \item \emph{Kiến trúc \& Nền tảng:} Meditron-70B được xây dựng trên nền LLaMA-2-70B; Meditron3-8B được tiếp tục tiền huấn luyện trên nền LLaMA-3.1-8B.
+        \item \emph{Dữ liệu \& Quy trình huấn luyện:} Sử dụng kho dữ liệu GAP-Replay bao gồm 48.1 tỷ token từ PubMed, 30.000 bài báo y khoa tuyển chọn, sách giáo khoa và các tài liệu hướng dẫn lâm sàng quốc tế chất lượng cao.
+        \item \emph{Cơ chế hoạt động:} Áp dụng kỹ thuật đóng băng một phần tham số và kiểm soát tỷ lệ dữ liệu đa dụng để duy trì năng lực suy diễn toán học và logic trong quá trình thích ứng y tế.
+        \item \emph{Kết quả thực nghiệm:}
+        \begin{itemize}
+            \item Meditron-70B đạt $70.2\%$ trên MedQA-USMLE (4 lựa chọn), vượt qua GPT-3.5 và Med-PaLM thế hệ đầu.
+            \item Trên benchmark y tế tiếng Việt VM14K \cite{vm14k_2025}: Meditron3-8B bộc lộ điểm yếu chết người khi chỉ đạt $\mathbf{23.05\%}$ Pass\@1, sụt giảm hơn một nửa so với mô hình nền tảng gốc LLaMA-3.1-8B-Instruct ($48.73\%$).
+        \end{itemize}
+        \item \emph{Hạn chế lâm sàng:} Minh chứng cho thấy Continued Pretraining bằng dữ liệu y sinh tiếng Anh đơn thuần phá hủy nghiêm trọng khả năng hiểu tiếng Việt; đồng thời bản 70B đòi hỏi tài nguyên tính toán rất lớn ($\ge 2$ GPU A100 80GB).
+    \end{itemize}
+
+    \item \textbf{Me-LLaMA (Yale / UTHealth, 2025):}
+    \begin{itemize}
+        \item \emph{Kiến trúc \& Nền tảng:} Xây dựng trên nền tảng LLaMA-2 (các phiên bản 13B và 70B).
+        \item \emph{Dữ liệu \& Quy trình huấn luyện:} Tiếp tục tiền huấn luyện liên tục với 129 tỷ token văn bản kết hợp từ y văn PubMed, kho dữ liệu lâm sàng tự do và các ghi chú bệnh án điện tử (EHR clinical notes) trích xuất từ các hệ thống bệnh viện lớn tại Hoa Kỳ. Sau đó, mô hình được tinh chỉnh chỉ thị lâm sàng trên 214.000 mẫu đa nhiệm.
+        \item \emph{Cơ chế hoạt động:} Tối ưu hóa sâu cho việc bóc tách ghi chú lâm sàng phi cấu trúc, tóm tắt diễn tiến điều trị và phân loại mã bệnh ICD.
+        \item \emph{Kết quả thực nghiệm:}
+        \begin{itemize}
+            \item Đạt kết quả xuất sắc trên các tác vụ tóm tắt ghi chú lâm sàng và trích xuất thực thể EHR tiếng Anh.
+        \end{itemize}
+        \item \emph{Hạn chế lâm sàng:} Mô hình khép kín theo ngữ cảnh y tế Hoa Kỳ, dữ liệu huấn luyện thuần tiếng Anh, không được đánh giá trên bệnh án tiếng Việt và thiếu các module lượng giá độ bất định (UQ).
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Nhóm 2: Fine-tuning trên dữ liệu y khoa đa nhiệm (Multi-task Medical Fine-tuning)}
+
+\paragraph{Tổng quan phương pháp:}
+Khác với Continued Pretraining đòi hỏi hàng chục tỷ token văn bản thô, kỹ thuật Tinh chỉnh Chỉ thị Y khoa Đa nhiệm (\emph{Multi-task Instruction Tuning}) tập trung vào việc định hình hành vi ứng xử của mô hình ngôn ngữ thông qua các cặp dữ liệu $(\text{Chỉ dẫn lâm sàng}, \text{Đầu vào ca bệnh}, \text{Phản hồi y khoa chuẩn mực})$. Phương pháp này sử dụng hàm mất mát cross-entropy có giám sát (SFT) để rèn luyện mô hình tuân thủ quy trình khám chữa bệnh, đóng vai bác sĩ chuyên khoa và giải thích cơ chế chẩn đoán. Mặc dù giúp mô hình trả lời lịch thiệp và đúng cấu trúc hơn, fine-tuning y khoa thuần túy thường gặp phải hiện tượng \textbf{"chi phí căn chỉnh" (\emph{Alignment Tax})}: mô hình có thể trở nên thận trọng quá mức, giảm độ chính xác trên các bài toán suy luận phức tạp do bị hạn chế không gian tìm kiếm xác suất.
+
+\paragraph{Chi tiết các mô hình tiêu biểu:}
+\begin{itemize}
+    \item \textbf{MedGemma-27B (Google, 2025--2026) \cite{spanish_mir_2026}:}
+    \begin{itemize}
+        \item \emph{Kiến trúc \& Nền tảng:} Tinh chỉnh từ mô hình nền tảng mở Gemma-3-27B.
+        \item \emph{Dữ liệu \& Quy trình huấn luyện:} Sử dụng tập ngữ liệu y sinh đa tác vụ quy mô lớn HAI-DEF (Health AI Data Engine Framework), bao gồm hàng trăm nghìn ca bệnh tương tác, bài thi y khoa chuyên gia và các hướng dẫn thực hành điều trị.
+        \item \emph{Cơ chế hoạt động:} Huấn luyện mô hình tập trung vào việc phân tích các ca bệnh lâm sàng, giải thích cơ chế sinh lý bệnh và hỗ trợ đưa ra chẩn đoán phân biệt.
+        \item \emph{Kết quả thực nghiệm trên Spanish MIR \cite{spanish_mir_2026}:}
+        \begin{itemize}
+            \item Độ chính xác tổng thể: Đạt $73.5\%$, thấp hơn mô hình nền tảng gốc Gemma-3-27B ($75.8\%$).
+            \item Hiệu chuẩn độ tự tin: Sai số ECE giảm từ $0.231$ xuống $0.211$ (mô hình bớt tự tin thái quá).
+            \item Khả năng phân biệt đúng/sai: AUROC hầu như không đổi ($0.797$ so với $0.790$).
+        \end{itemize}
+        \item \emph{Nhận xét lâm sàng:} Thử nghiệm đối đầu này chứng minh rằng việc tinh chỉnh y khoa đa nhiệm không mặc nhiên làm tăng độ chuẩn xác chẩn đoán mà chủ yếu giúp điều chỉnh mức độ tự tin hợp lý hơn.
+    \end{itemize}
+
+    \item \textbf{BioMistral-7B (Labrak et al., 2024) \cite{labrak2024biomistral}:}
+    \begin{itemize}
+        \item \emph{Kiến trúc \& Nền tảng:} Xây dựng trên nền tảng Mistral-7B-Instruct-v0.1, tận dụng cơ chế trượt cửa sổ chú ý (\emph{Sliding Window Attention}) và GQA để xử lý ngữ cảnh nhanh.
+        \item \emph{Dữ liệu \& Quy trình huấn luyện:} Tiếp tục tiền huấn luyện có chọn lọc trên tập dữ liệu PubMed Central Open Access subset (hơn 3 tỷ token y sinh chất lượng cao), sau đó tinh chỉnh chỉ thị đa nhiệm trên kho dữ liệu BioMistral-Instruction tổng hợp từ 10 bộ dữ liệu y sinh đa ngôn ngữ. Các tác giả còn tiên phong thử nghiệm kỹ thuật tối ưu hóa sở thích trực tiếp (DPO) và lượng tử hóa 4-bit/8-bit (AWQ, BitsAndBytes).
+        \item \emph{Cơ chế hoạt động:} Tối ưu hóa năng lực suy diễn y khoa đa ngôn ngữ và khả năng tóm tắt bệnh án trên phần cứng máy trạm gọn nhẹ.
+        \item \emph{Kết quả thực nghiệm:}
+        \begin{itemize}
+            \item Đạt điểm số vượt trội so với các mô hình 7B cùng thời (vượt PMC-LLaMA-7B và LLaMA-2-7B trên MedQA, PubMedQA, MedMCQA).
+            \item Sau khi lượng tử hóa 4-bit, mô hình chỉ suy giảm dưới $1\%$ độ chính xác nhưng giảm hơn $65\%$ dung lượng VRAM.
+        \end{itemize}
+        \item \emph{Hạn chế lâm sàng:} Vốn từ vựng y tế tiếng Việt chưa được đại diện đầy đủ; thiếu vắng các hiểu biết chuyên sâu về phân loại chấn thương cơ xương khớp và dấu hiệu cờ đỏ ác tính.
+    \end{itemize}
+
+    \item \textbf{HuatuoGPT-II (Chen et al., 2023) \cite{chen2023huatuogpt}:}
+    \begin{itemize}
+        \item \emph{Kiến trúc \& Nền tảng:} Xây dựng trên nền tảng Baichuan-2 (các phiên bản 7B và 13B).
+        \item \emph{Dữ liệu \& Quy trình huấn luyện:} Áp dụng cơ chế huấn luyện One-stage Training thống nhất mang tính đột phá. Thay vì tách rời giai đoạn pretrain và SFT, các tác giả trộn lẫn kho sách giáo khoa y học chính thống, tài liệu phác đồ và hàng triệu phiên hội thoại thực tế giữa bác sĩ và bệnh nhân.
+        \item \emph{Cơ chế hoạt động:} Tối ưu hóa sâu cho việc giao tiếp lâm sàng tự nhiên, vừa có khả năng phân tích triệu chứng chuyên sâu vừa có văn phong giải thích gần gũi, thấu cảm với người bệnh.
+        \item \emph{Kết quả thực nghiệm:}
+        \begin{itemize}
+            \item Đạt điểm số cao nhất trong các bài thi kiểm tra năng lực y khoa và các bài đánh giá tư vấn lâm sàng tự do bằng tiếng Trung và tiếng Anh.
+        \end{itemize}
+        \item \emph{Hạn chế lâm sàng:} Mô hình thiên về kỹ năng hỏi bệnh và tư vấn bệnh nhân ngoại trú thông thường, chưa được thiết kế để xử lý dữ liệu hồ sơ bệnh án có cấu trúc phức tạp hay các quy tắc chống chỉ định ngoại khoa cơ xương khớp.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Nhóm 3: Học tăng cường nâng cao độ tin cậy và chống ảo giác}
+
+\paragraph{Tổng quan phương pháp:}
+Hiện tượng ảo giác (\emph{hallucination}) -- mô hình tự tạo ra các phát biểu y khoa nghe có vẻ hợp lý nhưng hoàn toàn sai lệch thực tế -- là rủi ro nguy hiểm nhất trong y tế. Nhóm phương pháp này áp dụng Học tăng cường (\emph{Reinforcement Learning -- RL}) kết hợp các mô hình phần thưởng y khoa (\emph{Medical Reward Models}) để trực tiếp phạt các phát biểu sai sự thật và thưởng các lập luận bám sát bằng chứng.
+
+\paragraph{Chi tiết mô hình tiêu biểu -- Baichuan-M3-235B (Baichuan, 2026):}
+\begin{itemize}
+    \item \emph{Kiến trúc \& Nền tảng:} Mô hình Mixture of Experts (MoE) quy mô lớn với khoảng 235 tỷ tham số tổng thể ($235\text{B}$), hỗ trợ ngữ cảnh $128\text{K}$ tokens.
+    \item \emph{Cơ chế hoạt động \& Phương pháp cốt lõi:}
+    \begin{enumerate}[(i)]
+        \item \textbf{Quy trình SPAR (Segmented Pipeline Reinforcement Learning):} Phân tách toàn bộ quy trình khám chữa bệnh lâm sàng thành các giai đoạn riêng biệt (Hỏi bệnh sử $\rightarrow$ Đề xuất cận lâm sàng $\rightarrow$ Biện luận chẩn đoán $\rightarrow$ Lập kế hoạch điều trị). Mỗi giai đoạn được áp dụng một hàm thưởng chuyên biệt để tối ưu hóa cục bộ trước khi tối ưu hóa toàn chu trình.
+        \item \textbf{Cơ chế Fact-Aware RL:} Tích hợp một mạng lưới kiểm chứng sự thật đối chuẩn trực tiếp vào quá trình tối ưu hóa chính sách (Policy Optimization). Mô hình bị phạt nặng nếu đưa ra các mệnh đề chẩn đoán không được hỗ trợ bởi các phác đồ y khoa đã xác minh.
+    \end{enumerate}
+    \item \emph{Kết quả thực nghiệm:}
+    \begin{itemize}
+        \item Trên HealthBench: Giảm tỷ lệ phát biểu bị bác bỏ (Refuted) từ $4.68\%$ xuống $2.45\%$ (giảm mạnh $48\%$).
+        \item Giảm trạng thái bất định (Uncertain) từ $3.64\%$ xuống $2.07\%$ (giảm $43\%$), trong khi điểm chất lượng phản hồi chỉ mất $1.1$ điểm.
+        \item Trên ScanBench: Đạt $80.0$ điểm ở khâu chẩn đoán và $65.4$ điểm ở khâu điều trị.
+    \end{itemize}
+    \item \emph{Hạn chế lâm sàng:} Mặc dù giảm đáng kể, tỷ lệ phát biểu sai vẫn khác 0 ($2.45\%$), chứng minh rằng học tăng cường nội sinh không thể thay thế hoàn toàn cơ sở tri thức ngoài; đồng thời mô hình MoE 235B đòi hỏi cụm máy chủ đắt đỏ và chưa hỗ trợ bệnh án tiếng Việt.
+\end{itemize}
+
+\subsubsection{Nhóm 4: Mô hình suy luận chuyên biệt cho Hồ sơ Bệnh án Điện tử (EHR)}
+
+\paragraph{Tổng quan phương pháp:}
+Phần lớn các LLM hiện nay chỉ được huấn luyện trên văn bản phẳng hoặc bài thi y khoa lý thuyết. Trong khi đó, Hồ sơ Bệnh án Điện tử (EHR) mang tính chất đặc thù: dữ liệu phân mảnh dọc theo chuỗi thời gian (\emph{Longitudinal}), chứa hàng loạt từ viết tắt lâm sàng, kết quả xét nghiệm định lượng và biểu mẫu bán cấu trúc. Nhóm phương pháp này tập trung vào việc mô hình hóa chuỗi suy luận lâm sàng trên tiến trình bệnh án (\emph{EHR Reasoning}).
+
+\paragraph{Chi tiết mô hình tiêu biểu -- EHR-R1 (SJTU / Shanghai AI Lab / Ant Group, 2025):}
+\begin{itemize}
+    \item \emph{Kiến trúc \& Nền tảng:} Xây dựng trên nền tảng Qwen với 3 phiên bản quy mô: 1.7B, 8B và 72B tham số.
+    \item \emph{Dữ liệu \& Quy trình huấn luyện 3 giai đoạn:}
+    \begin{enumerate}[(i)]
+        \item \emph{Thích ứng miền (Domain Adaptation):} Huấn luyện trên kho dữ liệu EHR thô đa nguồn từ MIMIC-IV và các cơ sở y tế lớn.
+        \item \emph{Tăng cường suy luận (Reasoning Tuning):} Huấn luyện trên tập dữ liệu chỉ thị khổng lồ \textbf{EHR-Ins} bao gồm $300.000$ ca suy luận chuyên sâu và $3.5$ triệu ca đối chứng không suy luận trên 42 tác vụ lâm sàng (dự đoán tái nhập viện, phát hiện suy đa tạng, đề xuất phác đồ).
+        \item \emph{Học tăng cường căn chỉnh (RL Alignment):} Căn chỉnh chuỗi suy luận bám sát kết cục lâm sàng thực tế của bệnh nhân.
+    \end{enumerate}
+    \item \emph{Cơ chế hoạt động:} Mô hình xâu chuỗi các mốc thời gian xét nghiệm, phát hiện các chuyển biến bất thường của chỉ số sinh hóa và lập luận logic để đưa ra dự đoán rủi ro.
+    \item \emph{Kết quả thực nghiệm:}
+    \begin{itemize}
+        \item Trên benchmark EHR-Bench: Bản EHR-R1-72B đạt điểm F1 $\mathbf{0.6744}$, vượt trội hoàn toàn so với mô hình thương mại đóng hàng đầu GPT-4o ($0.3155$) hơn $35$ điểm F1.
+        \item Bản 8B đạt hiệu năng vượt trội so với các mô hình 70B đa dụng thông thường trên các tác vụ dự đoán lâm sàng dọc thời gian.
+    \end{itemize}
+    \item \emph{Hạn chế lâm sàng:} Toàn bộ dữ liệu huấn luyện và đánh giá dựa trên chuẩn MIMIC-IV tiếng Anh, chưa chứng minh khả năng tổng quát hóa trên văn bản bệnh án điện tử tiếng Việt và chưa tích hợp đồ thị tri thức cơ xương khớp.
+\end{itemize}
+
+\subsubsection{Nhóm 5: Backbone chuyên biệt cơ xương khớp và Hệ thống đa Agent}
+
+\paragraph{Tổng quan phương pháp:}
+Chuyên khoa Cơ Xương Khớp (MSK) đòi hỏi sự kết hợp chặt chẽ giữa hình thái học giải phẫu, cơ chế chấn thương động lực học, các hệ thống phân loại gãy xương hình thức (AO/OTA, Garden, Schatzker) và các quy tắc chống chỉ định ngoại khoa nghiêm ngặt. Hướng tiếp cận này phân định thành 2 tầng: tầng mô hình ngôn ngữ lõi chuyên sâu MSK và tầng kiến trúc hệ thống tác tử đa thành phần kết hợp công cụ tra cứu.
+
+\paragraph{Chi tiết mô hình lõi -- CHEESE-32B (2026) \cite{orthopilot_2026}:}
+\begin{itemize}
+    \item \emph{Kiến trúc \& Nền tảng:} Mô hình Dense 32 tỷ tham số ($32\text{B}$).
+    \item \emph{Dữ liệu \& Quy trình huấn luyện:} Được phát triển bởi Bệnh viện Ruijin và Đại học Giao thông Thượng Hải, huấn luyện trên tập dữ liệu đoàn hệ hồi cứu 21 năm gồm $183.472$ bệnh nhân cơ xương khớp, nén sâu các tri thức bệnh học và phác đồ phẫu thuật chỉnh hình.
+    \item \emph{Kết quả thực nghiệm khi hoạt động độc lập (Mô hình trần):}
+    \begin{itemize}
+        \item Trên OrthoBench (nhóm 62 bệnh): Đạt $68.9\%$ (cao hơn GPT-5.1 đạt $67.2\%$ và DeepSeek-R1 đạt $63.0\%$).
+        \item Trên 14 bệnh xương hiếm: Đạt $61.6\%$.
+        \item Ở tác vụ chẩn đoán trước mổ (câu đóng): Đạt $62.00\%$.
+        \item Ở tác vụ quản lý điều trị (câu mở): Đạt $71.00\%$.
+    \end{itemize}
+    \item \emph{Hạn chế lâm sàng:} Khi đứng một mình, mô hình vẫn tiềm ẩn nguy cơ ảo giác do tri thức tham số bị cố định, không có cơ chế đối soát tài liệu gốc và chưa hỗ trợ ngôn ngữ tiếng Việt.
+\end{itemize}
+
+\paragraph{Chi tiết hệ thống ứng dụng -- OrthoPilot (2026) \cite{orthopilot_2026}:}
+\begin{itemize}
+    \item \emph{Kiến trúc hệ thống:} Là một \textbf{hệ thống đa tác tử (Multi-Agent System)} hoàn chỉnh, xây dựng trên vòng lặp ReAct (\emph{Reasoning + Acting}). Hệ thống tích hợp mô hình lõi CHEESE-32B với một trung tâm công cụ (\emph{Tool Plaza}) bao gồm: công cụ tra cứu Đồ thị Tri thức chỉnh hình, công cụ truy xuất phác đồ điều trị lâm sàng, và công cụ trích xuất dữ liệu bệnh án nội viện.
+    \item \emph{Cơ chế hoạt động:} Khi nhận ca bệnh, hệ thống không vội vàng sinh câu trả lời mà kích hoạt chuỗi hành động: phân tích tổn thương $\rightarrow$ gọi công cụ tra cứu phân loại gãy $\rightarrow$ duyệt đồ thị tri thức để tìm kiếm biến chứng $\rightarrow$ đối chiếu chống chỉ định $\rightarrow$ tổng hợp kế hoạch quản lý điều trị dọc thời gian.
+    \item \emph{Kết quả thực nghiệm vượt bậc trên OrthoBench:}
+    \begin{itemize}
+        \item Trên nhóm 62 bệnh: Đạt $\mathbf{75.4\%}$, vượt trội CHEESE-32B đơn lẻ ($68.9\%$), GPT-5.1 ($67.2\%$), DeepSeek-R1 ($63.0\%$) và MedGemma-27B ($61.1\%$).
+        \item Trên 14 bệnh xương hiếm: Đạt $\mathbf{72.2\%}$ (vượt CHEESE-32B đơn lẻ $61.6\%$).
+        \item Ở tác vụ chẩn đoán trước mổ: Đạt $\mathbf{81.95\%}$ (vượt CHEESE-32B trần $62.00\%$).
+        \item Ở tác vụ quản lý điều trị: Đạt $\mathbf{85.13\%}$ (vượt CHEESE-32B trần $71.00\%$).
+        \item Kiểm chứng ngoài tại 60 trung tâm y tế (6.796 ca bệnh): OrthoPilot vượt DeepSeek-R1 tới $\mathbf{15.79}$ điểm ở khâu chẩn đoán và $\mathbf{12.04}$ điểm ở khâu quản lý; vượt MedGemma-27B tới $\mathbf{22.10}$ điểm chẩn đoán.
+        \item Thử nghiệm ngẫu nhiên có đối chứng (RCT) triển khai 8 tháng trên 8.240 bệnh nhân nội trú: Số ca hoàn thành điều trị trên mỗi giường bệnh tăng từ $11.90$ lên $13.06$ (+9.7\%).
+    \end{itemize}
+    \item \emph{Ý nghĩa thực tiễn sống còn:} Thí nghiệm loại bỏ thành phần (ablation study) chỉ ra rằng khi ngắt kết nối các công cụ truy xuất bằng chứng và đồ thị tri thức, năng lực suy luận của hệ thống sụt giảm nghiêm trọng về mức của mô hình trần. Điều này khẳng định chân lý khoa học: \textbf{Năng lực hỗ trợ quyết định lâm sàng cơ xương khớp không thể chỉ trông cậy vào trọng số ngầm định của LLM đơn lẻ, mà bắt buộc phải kết hợp kiến trúc RAG và Đồ thị Tri thức dẫn đường.}
+\end{itemize}
+
+\subsubsection{Bảng so sánh Med/MSK LLM và các Hệ thống Chuyên biệt}
+
+Bảng~\ref{tab:med_msk_comparison} và Bảng~\ref{tab:specialized_benchmark_numbers} tổng hợp đặc tính phương pháp và số liệu benchmark tiêu biểu của các nghiên cứu chuyên biệt:
+
+\begin{table}[H]
+\begin{singlespace}
+\centering
+\fontsize{7.5pt}{9.2pt}\selectfont
+\setlength{\tabcolsep}{2.5pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{2.7cm}|>{\centering\arraybackslash}p{1.8cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Mô hình / Hệ thống} & \textbf{Phương pháp chính} & \textbf{Đầu vào $\rightarrow$ Đầu ra} & \textbf{Benchmark} & \textbf{Hạn chế cốt lõi} \\
+\hline
+\textbf{Meditron3-8B} \cite{chen2023meditron} & Continued pretraining y sinh & Văn bản y khoa $\rightarrow$ QA & VM14K & Hiệu năng tiếng Việt sụt giảm mạnh ($23.05\%$). \\
+\hline
+\textbf{MedGemma-27B} \cite{spanish_mir_2026} & Medical fine-tuning từ Gemma 3 & Ca lâm sàng $\rightarrow$ Đáp án y khoa & Spanish MIR & Không cải thiện Accuracy so với Gemma-3 gốc. \\
+\hline
+\textbf{Baichuan-M3-235B} & SPAR + Fact-Aware RL & Hội thoại khám $\rightarrow$ Chẩn đoán & HealthBench & Quy mô MoE quá lớn, phụ thuộc nguồn kiểm chứng. \\
+\hline
+\textbf{EHR-R1} & 3 giai đoạn: Domain + Reasoning + RL & EHR $\rightarrow$ Quyết định, dự đoán & EHR-Bench & Chưa chứng minh tổng quát hóa sang EHR tiếng Việt. \\
+\hline
+\textbf{CHEESE-32B} \cite{orthopilot_2026} & Huấn luyện suy luận MSK & Bệnh án MSK $\rightarrow$ Chẩn đoán & OrthoBench & Mô hình trần, thiếu công cụ neo tri thức ngoài. \\
+\hline
+\textbf{OrthoPilot} \cite{orthopilot_2026} & Multi-Agent + ReAct + KG/RAG & Bệnh án đa nguồn $\rightarrow$ Kế hoạch & OrthoBench & Bản thảo preprint, chưa kiểm chứng trên tiếng Việt. \\
+\hline
+\end{tabularx}
+\caption{So sánh các mô hình chuyên biệt Y sinh, EHR và Cơ Xương Khớp}
+\label{tab:med_msk_comparison}
+\end{singlespace}
+\end{table}
+
+\begin{table}[H]
+\begin{singlespace}
+\centering
+\fontsize{8.0pt}{9.8pt}\selectfont
+\setlength{\tabcolsep}{3.5pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{3.4cm}|>{\centering\arraybackslash}p{2.8cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Nghiên cứu / Mô hình} & \textbf{Quy mô / Dữ liệu} & \textbf{Kết quả thực nghiệm tiêu biểu} \\
+\hline
+Meditron3-8B \cite{chen2023meditron} & 8B (Llama 3.1) & VM14K: $23.05\%$ Pass\@1 (Llama-3.1-8B gốc: $48.73\%$) \\
+\hline
+Gemma-3-27B \cite{gemma2_2024} & 27B & Spanish MIR: $75.8\%$ Accuracy, ECE $0.231$, AUROC $0.790$ \\
+\hline
+MedGemma-27B \cite{spanish_mir_2026} & 27B & Spanish MIR: $73.5\%$ Accuracy, ECE $0.211$, AUROC $0.797$ \\
+\hline
+EHR-R1-72B & 72B & EHR-Bench: F1 $0.6744$ (vượt GPT-4o hơn 35 điểm F1) \\
+\hline
+EHR-Ins Dataset & 42 tác vụ EHR & Kho dữ liệu 300K ca suy luận và 3.5M ca không suy luận \\
+\hline
+CHEESE-32B (Đơn lẻ) \cite{orthopilot_2026} & 32B & OrthoBench: $62.00\%$ chẩn đoán đóng; $71.00\%$ quản lý mở \\
+\hline
+OrthoPilot (Hệ thống) \cite{orthopilot_2026} & Hệ thống đa Agent & OrthoBench: $81.95\%$ chẩn đoán đóng; $85.13\%$ quản lý mở \\
+\hline
+\end{tabularx}
+\caption{Số liệu benchmark tiêu biểu của các nghiên cứu y tế và cơ xương khớp chuyên biệt}
+\label{tab:specialized_benchmark_numbers}
+\end{singlespace}
+\end{table}
+
+\subsubsection{Các bài học rút ra từ khảo sát Med LLM và MSK LLM}
+\begin{enumerate}[label=\textbf{Insight \arabic*:}]
+    \item \textbf{Chuyên biệt hóa y khoa không đồng nghĩa với cải thiện toàn diện:} Bằng chứng từ Meditron3 và MedGemma chứng minh mô hình chuyên ngành có thể bị suy thoái ở một số năng lực nền (đặc biệt là tiếng Việt). Do đó, bắt buộc phải đánh giá backbone trước và sau fine-tuning thay vì mặc định mô hình y khoa luôn tốt hơn.
+    \item \textbf{Suy luận trên EHR cần tổ chức thông tin theo cấu trúc và chuỗi thời gian:} Kết quả vượt trội của EHR-R1 trên EHR-Bench và OrthoPilot trên OrthoBench khẳng định: phân tích hồ sơ bệnh án đòi hỏi khả năng chọn lọc thông tin, liên kết dữ liệu đa nguồn và duy trì tính nhất quán theo thời gian.
+    \item \textbf{Độ tin cậy lâm sàng bắt buộc phải được thiết kế thành một thành phần riêng:} Baichuan-M3 cho thấy học tăng cường có thể cải thiện độ chính xác thực tế của phát biểu y khoa. Tuy nhiên, Mind the Gap và Spanish MIR khẳng định độ hiệu chuẩn (calibration) và tính đúng đắn của giải thích không tự động được đảm bảo. Do đó, hệ thống CDSS bắt buộc phải có cơ chế UQ và kiểm chứng bằng chứng độc lập với năng lực sinh câu trả lời của backbone.
+\end{enumerate}
+
+\subsection{Khảo sát Chuyên sâu về Lượng giá Độ bất định (UQ) và Giải thích Y khoa (XAI)}
+
+\subsubsection{Khung phân loại và đánh giá thực nghiệm UQ}
+Bảng~\ref{tab:uq_detailed_comparison} tổng hợp các kỹ thuật lượng giá độ bất định được đánh giá độc lập trong các nghiên cứu lâm sàng chuẩn mực (Mind the Gap \cite{mind_the_gap_2026}, Spanish MIR \cite{spanish_mir_2026}):
+
+\begin{table}[H]
+\begin{singlespace}
+\centering
+\fontsize{7.5pt}{9.2pt}\selectfont
+\setlength{\tabcolsep}{2.5pt}
+\renewcommand{\arraystretch}{1.03}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.6cm}|>{\raggedright\arraybackslash}p{2.3cm}|>{\centering\arraybackslash}p{1.4cm}|>{\centering\arraybackslash}p{1.2cm}|>{\centering\arraybackslash}p{1.2cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Mô hình đối chuẩn} & \textbf{Phương pháp UQ} & \textbf{Số lần sinh} & \textbf{AUROC} & \textbf{ECE} & \textbf{Đánh giá thực nghiệm} \\
+\hline
+DeepSeek-R1-70B (distill) & Semantic Entropy & $N=10$ & $\mathbf{0.837}$ & $\mathbf{0.051}$ & Khả năng phân biệt đúng/sai tốt nhất, chi phí tính toán cao gấp 10 lần \cite{mind_the_gap_2026}. \\
+\hline
+DeepSeek-R1-70B (distill) & G-NLL & $N=1$ & $0.686$ & $0.097$ & Đo lường sau giải mã tham lam, chi phí thấp \cite{mind_the_gap_2026}. \\
+\hline
+DeepSeek-R1-70B (distill) & Avg Token Logprob & $N=1$ & $0.661$ & $0.168$ & Ước lượng mức tự tin, dễ bị nhiễu bởi từ nối \cite{mind_the_gap_2026}. \\
+\hline
+DeepSeek-R1-70B (distill) & Behavioral Features & $N=1$ & $\mathbf{0.793}$ & $\mathbf{0.014}$ & Đặc trưng hành vi suy luận, AUROC cao, thời gian thực \cite{mind_the_gap_2026}. \\
+\hline
+DeepSeek-R1-70B (distill) & Conformal Prediction & $N=1$ & -- & -- & Đạt độ phủ $93.8\%$ (mục tiêu $90\%$), tập dự đoán TB 1.18. \\
+\hline
+Qwen3-14B & Option Probability & $N=1$ & $0.790$ & $0.221$ & Mức tự tin bị thổi phồng (.972) so với Acc (.752) \cite{spanish_mir_2026}. \\
+\hline
+Qwen3-8B & Option Probability & $N=1$ & $0.748$ & $0.297$ & Mức tự tin bị thổi phồng (.913) so với Acc (.616) \cite{spanish_mir_2026}. \\
+\hline
+Gemma-3-27B & Option Probability & $N=1$ & $0.790$ & $0.231$ & Mức tự tin .989 so với Acc .758, ECE cao \cite{spanish_mir_2026}. \\
+\hline
+MedGemma-27B & Option Probability & $N=1$ & $0.797$ & $0.211$ & Giảm tự tin thái quá (.946) nhưng Acc tụt (.735) \cite{spanish_mir_2026}. \\
+\hline
+\end{tabularx}
+\caption{Tổng hợp số liệu thực nghiệm các phương pháp Ước lượng Độ bất định (UQ) trong y tế}
+\label{tab:uq_detailed_comparison}
+\end{singlespace}
+\end{table}
+
+\subsubsection{Tính minh bạch giải thích (XAI) và Thách thức về Độ trung thực}
+\begin{itemize}
+    \item \textbf{Cơ chế vết suy luận ReAct và Neo bằng chứng (Attributed Grounding):} Thay vì để mô hình tự sinh văn bản giải thích tự do, cơ chế Agentic ReAct của OrthoPilot tạo ra các vết suy luận tương tác với công cụ tìm kiếm hồ sơ và đồ thị tri thức, cho phép bác sĩ đối chiếu trực tiếp dữ liệu gốc.
+    \item \textbf{Rủi ro từ LLM-as-a-judge và Hợp lý hóa hậu nghiệm:} Khi sử dụng mô hình ngôn ngữ lớn đóng vai trò giám khảo (LLM-judge), các đánh giá giải thích có thể bị thiên vị nếu lý do loại trừ chứa cấu trúc câu phủ định. Đặc biệt, hiện tượng từ $13\% - 38\%$ câu trả lời đúng đi kèm lập luận phi lâm sàng khẳng định: \textbf{Chuỗi suy luận nội sinh không thể coi là XAI đáng tin cậy}. Hệ thống CDSS bắt buộc phải gán trích dẫn cấp câu trực tiếp vào các phác đồ chuẩn hóa đã kiểm duyệt.
+\end{itemize}
+
+\subsection{Bảng Tổng quan Đối chuẩn Toàn diện các Mô hình Nền tảng}
+
+Bảng~\ref{tab:llm_master_survey} đối chuẩn toàn diện 14 mô hình và hệ thống tiêu biểu đại diện cho 4 nhóm trên toàn bộ các khía cạnh: Kiến trúc, Ngữ cảnh, Ngôn ngữ \& Tiếng Việt, Khả năng tự host On-premise, UQ/XAI và Rủi ro lâm sàng:
+
+\begin{table}[H]
+\begin{singlespace}
+\centering
+\fontsize{6.8pt}{8.6pt}\selectfont
+\setlength{\tabcolsep}{2.0pt}
+\renewcommand{\arraystretch}{1.03}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.1cm}|>{\centering\arraybackslash}p{1.3cm}|>{\centering\arraybackslash}p{1.3cm}|>{\centering\arraybackslash}p{1.4cm}|>{\centering\arraybackslash}p{1.3cm}|>{\centering\arraybackslash}p{1.4cm}|>{\centering\arraybackslash}p{1.4cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Mô hình / Hệ thống} & \textbf{Phân loại} & \textbf{Quy mô} & \textbf{VM14K (Pass\@1)} & \textbf{Tự Host (On-premise)} & \textbf{Lượng giá UQ} & \textbf{Cơ chế XAI} & \textbf{Rủi ro lâm sàng chính} \\
+\hline
+\textbf{GPT-4o} \cite{achiam2023gpt4} & Đóng (Đa dụng) & Độc quyền & $72.74\%$ & \ding{55} (Cloud API) & \ding{55} (Hộp đen) & CoT đen & Vi phạm bảo mật bệnh án, phí API cao. \\
+\hline
+\textbf{Gemini 2.0 Flash} \cite{gemini_2024} & Đóng (Đa dụng) & Độc quyền & $\mathbf{75.67\%}$ & \ding{55} (Cloud API) & \ding{55} (Hộp đen) & In-context & Phụ thuộc đường truyền, khó can thiệp nội tại. \\
+\hline
+\textbf{Claude 3.5 Sonnet} \cite{claude35_2024} & Đóng (Đa dụng) & Độc quyền & $71.46\%$ & \ding{55} (Cloud API) & \ding{55} (Hộp đen) & Schema tốt & Rủi ro bảo mật dữ liệu nhạy cảm. \\
+\hline
+\textbf{DeepSeek-R1} \cite{deepseek_r1_2025} & Mở (Reasoning) & MoE 671B & $\mathbf{78.17\%}$ & \ding{55} ($\sim 960\text{GB}$) & AUROC .837 (70B) & CoT mở & Bản đầy đủ quá nặng cho bệnh viện tỉnh. \\
+\hline
+\textbf{Qwen3-32B} & Mở (Đa dụng) & Dense 32B & $72.47\%$ & Khả thi (2 GPU 24GB) & AUROC .790 (14B) & Thinking & Cần máy trạm 2 GPU để vận hành tốt. \\
+\hline
+\textbf{LLaMA-3.1-8B} \cite{llama3_2024} & Mở (Đa dụng) & Dense 8B & $48.73\%$ & \textbf{\ding{51}} (\textbf{1 GPU 16GB}) & Đo được qua logit & Gán nguồn & Tri thức tiếng Việt gốc TB, cần RAG/SFT. \\
+\hline
+\textbf{Gemma-2-9B / 3-27B} \cite{gemma2_2024} & Mở (Đa dụng) & Dense 9B/27B & $63.38\%$ (27B) & \textbf{\ding{51}} (\textbf{1--2 GPU}) & ECE .231, Conf .989 & CoT mở & Tự tin thái quá, thiếu tri thức xương sâu. \\
+\hline
+\textbf{Meditron3-8B} \cite{chen2023meditron} & Y tế (Mở) & 8B & $\mathbf{23.05\%}$ & \textbf{\ding{51}} (1 GPU 16GB) & -- & Y văn Anh & Quên tiếng Việt nặng sau Continued Pretrain. \\
+\hline
+\textbf{MedGemma-27B} \cite{spanish_mir_2026} & Y tế (Mở) & Dense 27B & -- & Khả thi (2 GPU 24GB) & ECE .211, Conf .946 & Sụt giảm Acc & Fine-tuning y khoa làm giảm Accuracy. \\
+\hline
+\textbf{Baichuan-M3-235B} & Y tế (Mở) & MoE 235B & -- & \ding{55} (Cụm GPU) & Fact-Aware RL & Giảm ảo giác & Không hỗ trợ bệnh án tiếng Việt. \\
+\hline
+\textbf{EHR-R1-72B} & EHR (Mở) & 72B & -- & Cần $\ge 2$ A100 & -- & Chuỗi EHR & Chưa kiểm chứng trên tiếng Việt. \\
+\hline
+\textbf{CHEESE-32B (Model)} \cite{orthopilot_2026} & Chuyên MSK & Dense 32B & -- & Khả thi (2 GPU 24GB) & \ding{55} (Chưa có UQ) & Model trần & Mô hình trần, thiếu công cụ neo ngoài. \\
+\hline
+\textbf{OrthoPilot (System)} \cite{orthopilot_2026} & Hệ thống MSK & Agentic System & -- & Khả thi nội viện & \ding{55} (Chưa có UQ) & Vết ReAct+KG & Chỉ thử nghiệm ở Thượng Hải, chưa có TV. \\
+\hline
+\textbf{Bone-MSK (Đề xuất)} & \textbf{MSK Thích ứng} & \textbf{8B + QLoRA} & \textbf{Kế thừa + SFT} & \textbf{\ding{51}} (\textbf{1 GPU 16GB}) & \textbf{\ding{51}} ($u_{\mathrm{score}}$ \textbf{2 chiều}) & \textbf{Trích dẫn câu} & \textbf{Lấp trọn vẹn: On-premise, TV, MSK, UQ, XAI.} \\
+\hline
+\end{tabularx}
+\caption{Bảng tổng hợp đối chuẩn toàn diện các Mô hình Ngôn ngữ Nền tảng Y tế}
+\label{tab:llm_master_survey}
+\end{singlespace}
+\end{table}
+
+\subsection{Các Bài học Thực nghiệm Then chốt cho Bài toán Bệnh án Cơ Xương Khớp Tiếng Việt}
+
+Từ 12 nhận định thực nghiệm chi tiết đúc kết từ tài liệu khảo sát, khóa luận xác lập 5 nguyên tắc định hướng cho hệ thống:
+\begin{enumerate}
+    \item \textbf{Mô hình đa dụng đa ngôn ngữ cỡ vừa là điểm xuất phát tốt nhất cho tiếng Việt:} Điểm số cao của Qwen3-32B ($72.47\%$) và LLaMA-4 Maverick ($71.76\%$) tiệm cận GPT-4o trên VM14K chứng minh mô hình nền tảng đa dụng giữ được khả năng biểu diễn tiếng Việt tốt hơn nhiều so với việc sử dụng mô hình y tế tiếng Anh bị suy thoái (như Meditron3-8B chỉ đạt $23.05\%$). Tinh chỉnh bằng tập dữ liệu chỉ thị y khoa tiếng Việt đối chuẩn giúp mô hình cỡ 8B tăng vọt hiệu năng mà vẫn bảo toàn năng lực ngôn ngữ.
+    \item \textbf{Tự tin thái quá là cố hữu $\rightarrow$ Bắt buộc dùng Confidence để đặt ngưỡng từ chối (Abstention):} Mọi mô hình đều có mức độ tự tin trung bình $0.91 - 0.99$ trong khi độ chính xác chỉ $0.61 - 0.76$. Giá trị xác suất này không được dùng làm niềm tin chẩn đoán tuyệt đối mà phải làm căn cứ xếp hạng để kích hoạt cổng từ chối trả lời an toàn khi độ tin cậy thấp.
+    \item \textbf{Cơ sở tri thức và neo bằng chứng ngoài là bắt buộc, không thể chỉ dựa vào huấn luyện chống ảo giác:} Kỹ thuật Fact-Aware RL của Baichuan-M3 giúp giảm tỷ lệ phát biểu sai từ $4.68\%$ xuống $2.45\%$, nhưng tỷ lệ này vẫn khác 0. Do đó, hệ thống CDSS bắt buộc phải có cơ sở tri thức ngoài và cơ chế neo bằng chứng hai chiều để triệt tiêu hoàn toàn ảo giác.
+    \item \textbf{Phải tách biệt bài toán đọc hiểu bệnh án (EHR) và đọc ảnh chẩn đoán hình ảnh:} Việc phân tích bản tường trình X-quang/CT/MRI dưới dạng văn bản bán cấu trúc ($\mathcal{M}_{\mathrm{img}}$) và bảng số liệu xét nghiệm ($\mathcal{L}$) là bài toán \textbf{Hợp nhất dữ liệu văn bản không đồng nhất}, không phải bài toán xử lý ảnh pixel.
+    \item \textbf{Kiến trúc Agent kết hợp Đồ thị Tri thức vượt trội mô hình trần:} Minh chứng từ OrthoPilot và CHEESE-32B khẳng định: việc bổ sung vòng lặp ReAct, công cụ gọi ngoài và Đồ thị Tri thức giúp tăng từ $6.5$ đến $19.9$ điểm phần trăm so với chỉ sử dụng mô hình trần đơn lẻ.
+\end{enumerate}
+
+\subsection{Phân tích Khoảng trống Nghiên cứu (Research Gaps) ở Công đoạn 1}
+Từ toàn bộ các phân tích đối chuẩn thực nghiệm trên, bốn khoảng trống nghiên cứu cốt tử được xác định rõ:
+\begin{enumerate}
+    \item \textbf{Khoảng trống 1.1 (Nghịch lý giữa Năng lực suy luận và Bảo mật dữ liệu EHR nội viện):} Các mô hình có năng lực lý luận và hiểu tiếng Việt cao nhất (DeepSeek-R1, GPT-4o, Gemini 2.0 Flash) hoặc là mô hình đám mây đóng vi phạm bảo mật dữ liệu y tế nghiêm ngặt, hoặc đòi hỏi cụm máy chủ phần cứng khổng lồ ($\sim 960\text{GB}$ VRAM) vượt quá ngân sách bệnh viện. Ngược lại, các mô hình nhỏ gọn cục bộ nếu không được tinh chỉnh thì năng lực chuyên khoa lại không đạt yêu cầu.
+    \item \textbf{Khoảng trống 1.2 (Sự thiếu vắng tri thức tham số chuyên sâu về Bệnh lý Cơ Xương Khớp tiếng Việt):} Toàn bộ các mô hình y tế mở hiện hữu đều được xây dựng trên y văn tiếng Anh tổng quát, thiếu hụt các hiểu biết phân loại gãy xương lâm sàng sâu sắc (AO/OTA, Garden, Schatzker), thuật ngữ giải phẫu xương tiếng Việt, và đặc biệt là các dấu hiệu cảnh báo đỏ nguy hiểm (gãy xương do u xương, hoại tử vô mạch chỏm xương đùi).
+    \item \textbf{Khoảng trống 1.3 (Thiếu hụt cơ chế lượng giá độ bất định nội tại và nguy cơ ảo giác nguy hiểm):} Hầu hết các mô hình độc lập (kể cả CHEESE-32B) đều sinh từ tự do theo xác suất kế tiếp mà không có module lượng giá độ bất định (UQ) tích hợp. Hiện tượng tự tin thái quá khiến mô hình vẫn cố đưa ra kết luận chẩn đoán ngay cả khi bệnh án thiếu các kết quả xét nghiệm sống còn.
+    \item \textbf{Khoảng trống 1.4 (Sự đứt gãy giữa chuỗi suy luận nội sinh và tính minh bạch kiểm chứng):} Chuỗi suy luận tự do (CoT) thường mắc lỗi hợp lý hóa hậu nghiệm ($13\% - 38\%$ câu trả lời đúng đi kèm giải thích sai). Thiếu vắng cơ chế gán nguồn trích dẫn định vị chính xác từng câu khẳng định lâm sàng vào văn bản phác đồ gốc.
+\end{enumerate}
+
+\subsection{Giải pháp Đề xuất của Khóa luận nhằm Khắc phục Lỗ hổng}
+Để giải quyết trọn vẹn và triệt để các khoảng trống trên, khóa luận đề xuất phương pháp luận:
+\begin{itemize}
+    \item \textbf{Lựa chọn Backbone nguồn mở hiệu năng cao triển khai On-premise:} Sử dụng mô hình LLaMA-3.1-8B (hoặc Gemma-2-9B) làm "hạt nhân suy luận", triển khai hoàn toàn cục bộ trên 1 GPU máy trạm 16GB--24GB VRAM đặt tại mạng nội bộ bệnh viện, giải quyết triệt để rào cản bảo mật dữ liệu bệnh án (Lấp Khoảng trống 1.1).
+    \item \textbf{Tinh chỉnh chỉ thị chuyên khoa bằng QLoRA trên tập dữ liệu xương tiếng Việt:} Huấn luyện mô hình nắm vững thuật ngữ bệnh học cơ xương khớp, bóc tách thực thể lâm sàng và tuân thủ định dạng cấu trúc JSON đối chuẩn mà không làm suy thoái năng lực ngôn ngữ bản địa (Lấp Khoảng trống 1.2).
+    \item \textbf{Khóa chặt không gian suy luận bằng Đồ thị Tri thức 6 tầng và RAG hai chiều:} Bắt buộc mọi mệnh đề sinh ra phải được neo vào Đồ thị Tri thức chuyên sâu (Công đoạn 2) và phác đồ điều trị truy xuất được (Công đoạn 3) thay vì dựa vào trọng số ngầm định (Lấp Khoảng trống 1.2 \& 1.4).
+    \item \textbf{Tích hợp Module Lượng giá Độ bất định hai chiều ($u_{\mathrm{score}}$):} Trang bị cơ chế đo lường kết hợp độ bất định truy xuất ($u_{\mathrm{rag}}$) và entropy nội tại ($u_{\mathrm{llm}}$), liên kết trực tiếp với Cổng Quyết định lâm sàng 4 nhánh an toàn (Công đoạn 4) để chủ động yêu cầu bổ sung cận lâm sàng khi ca bệnh thiếu thông tin (Lấp Khoảng trống 1.3).
+    \item \textbf{XAI văn bản qua Gán nguồn trích dẫn cấp câu có thể kiểm chứng:} Mỗi câu khẳng định chẩn đoán hoặc điều trị bắt buộc phải gắn kèm trích dẫn đoạn tài liệu hoặc bộ ba trên đồ thị tri thức, triệt tiêu hoàn toàn lỗi hợp lý hóa hậu nghiệm (Lấp Khoảng trống 1.4).
+\end{itemize}

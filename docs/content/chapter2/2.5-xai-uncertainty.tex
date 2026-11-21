@@ -1,0 +1,69 @@
+\section{Công đoạn 4: Trí tuệ Nhân tạo Giải thích được (XAI), Lượng giá Bất định và Khắc phục Ảo giác}
+
+\subsection{Khảo sát các Kỹ thuật XAI Văn bản và Lượng giá Bất định Lâm sàng}
+Một yêu cầu mang tính sống còn khi đưa AI vào hỗ trợ bác sĩ là tính minh bạch giải thích (Explainability) và khả năng nhận biết giới hạn hiểu biết của mô hình (Uncertainty Quantification):
+\begin{enumerate}
+    \item \textbf{Giải thích văn bản bằng Quy kết nguồn dẫn chứng (Attributed Citation / Verifiable Generation):} Các nghiên cứu tổng quan mới nhất trên EMNLP (2024--2025) như VTG \cite{sun2024vtg}, A$^3$ \cite{alignment_attributed_2024} và Survey về Attributed Generation \cite{attribution_survey_2025} khẳng định: XAI trong các hệ thống văn bản lâm sàng chính là **khả năng quy kết nguồn gốc (Attribution)**. Từng câu khẳng định điều trị sinh ra phải gắn kèm trích dẫn đoạn tài liệu hướng dẫn gốc để bác sĩ kiểm chứng.
+    \item \textbf{Giải thích dựa trên cơ chế nội tại mô hình (MIRAGE, EMNLP 2024) \cite{qi2024mirage}:} Công trình chỉ ra rằng việc tự sinh trích dẫn của LLM thường không trung thực. Tác giả đề xuất khai thác gradient và ma trận chú ý nội tại (\emph{model internals}) để xác định chính xác từ ngữ lâm sàng nào thực sự chịu sự chi phối của tài liệu tham khảo.
+    \item \textbf{Thẩm định bước suy luận y khoa (Med-PRM, 2025) \cite{medprm2024}:} Thay vì coi toàn bộ quá trình lập luận là hộp đen, Med-PRM sử dụng mô hình chấm điểm tiến trình để thẩm định tính chuẩn xác của từng bước suy luận so với phác đồ điều trị chính thống.
+    \item \textbf{Lượng giá độ bất định và Từ chối trả lời an toàn (Selective Abstention):}
+    \begin{itemize}
+        \item Khái niệm **Clinical Uncertainty (Độ bất định lâm sàng)**: Phản ánh sự thiếu hụt thông tin hoặc mơ hồ nội tại của ca bệnh (ảnh X-quang chụp mờ, thiếu xét nghiệm đông máu, triệu chứng lâm sàng chồng lấn giữa viêm khớp và thoái hóa).
+        \item Khái niệm **Medical Hallucination (Ảo giác y tế)**: Hiện tượng mô hình tự bịa đặt thông tin sai lệch nhưng phân phối xác suất vẫn tự tin rất cao do thiên kiến tham số.
+        \item Các công trình tiên phong như *Knowing When to Abstain* (2026) \cite{knowing_when_abstain_2026}, *KnowGuard* (2025) \cite{knowguard2024} và *Trust-Align* (2025) \cite{filice2025generate} chứng minh: Hệ thống RAG y tế bắt buộc phải có cơ chế **định lượng độ bất định hai chiều** và cổng từ chối an toàn để bảo vệ an toàn người bệnh.
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Bảng tiêu chí so sánh các Cơ chế XAI, Uncertainty và Giảm Ảo giác}
+
+Bảng~\ref{tab:comparison_xai} đối chuẩn các giải pháp theo các tiêu chí: Cơ chế XAI văn bản, Độ đo Uncertainty sử dụng, Phân định rạch ròi giữa Uncertainty và Hallucination, và Không gian hành động quyết định lâm sàng:
+
+\begin{table}[H]
+\begin{singlespace}
+\centering
+\fontsize{7.5pt}{9.2pt}\selectfont
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}p{2.3cm}|>{\raggedright\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{1.5cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Phương pháp} & \textbf{Cơ chế XAI} & \textbf{Độ đo Uncertainty} & \textbf{Phân định Hallucination?} & \textbf{Không gian Quyết định ($\Delta$)} \\
+\hline
+\textbf{Liévin et al. (2023)} \cite{lievin2023can} & CoT suy diễn & \ding{55} (Softmax) & \ding{55} & 1 Nhánh: Trả lời ép buộc \\
+\hline
+\textbf{Med-PRM (2025)} \cite{medprm2024} & Thưởng tiến trình (PRM) & Điểm thưởng PRM & \ding{55} & Xếp hạng chuỗi suy luận \\
+\hline
+\textbf{MIRAGE / VTG (2024)} \cite{qi2024mirage, sun2024vtg} & Trích dẫn + Gradient & Độ nhạy ngữ cảnh (KL) & Gián tiếp & 2 Nhánh: Chấp thuận / Sửa \\
+\hline
+\textbf{Knowing When to Abstain (2026)} \cite{knowing_when_abstain_2026} & \ding{55} & Entropy trạng thái ẩn & \textbf{\ding{51}} & 2 Nhánh: Answer / Abstain \\
+\hline
+\textbf{KnowGuard (2025)} \cite{knowguard2024} & Thiếu đồ thị kiểm chứng & Graph Coverage & \textbf{\ding{51}} & 3 Nhánh: Answer / Ask-More / Abstain \\
+\hline
+\textbf{Trust-Align (2025)} \cite{filice2025generate} & Căn chỉnh từ chối (Refuse) & Điểm TRUST-SCORE & \textbf{\ding{51}} & 2 Nhánh: Phản hồi / Từ chối (Fallback) \\
+\hline
+\textbf{Bone-MSK QA (Đề xuất)} & \textbf{Trích dẫn câu + 6 trạng thái mệnh đề} & \textbf{$u\_score$ hai chiều ($\alpha$)} & \textbf{\ding{51}} (Rạch ròi: RAG vs $u\_score$) & \textbf{4 Nhánh hoàn chỉnh: Clean / Warning / Ask-More / Abstain} \\
+\hline
+\end{tabularx}
+\caption{Bảng so sánh đối chuẩn các Cơ chế XAI, Uncertainty và Giảm Ảo giác}
+\label{tab:comparison_xai}
+\end{singlespace}
+\end{table}
+
+\subsection{Phân tích Lỗ hổng Nghiên cứu (Research Gaps) ở Công đoạn 4}
+Từ Bảng~\ref{tab:comparison_xai}, ba lỗ hổng kỹ thuật cốt tử được phát hiện:
+\begin{enumerate}
+    \item \textbf{Lỗ hổng 4.1 (Đánh đồng giữa Ảo giác và Độ bất định lâm sàng):} Phần lớn các công trình hiện tại coi ảo giác và bất định là một. Thực chất, \emph{Medical Hallucination} là lỗi tạo sinh của mô hình khi thiếu kiểm chứng tài liệu, trong khi \emph{Clinical Uncertainty} là trạng thái khách quan của ca bệnh khi thiếu dữ liệu xét nghiệm/hình ảnh. Nếu không phân định rõ, hệ thống không thể đưa ra hành động khắc phục phù hợp.
+    \item \textbf{Lỗ hổng 4.2 (Không gian quyết định nhị phân cứng nhắc):} Các mô hình từ chối hiện nay (như \emph{Knowing When to Abstain} \cite{knowing_when_abstain_2026}) chỉ có hai lựa chọn cực đoan: hoặc trả lời hoặc "từ chối im lặng" (\texttt{Abstain}). Trong thực tế bệnh viện, khi thiếu một chỉ số xét nghiệm, bác sĩ không cần AI im lặng mà cần AI chủ động chỉ ra \emph{"Cần làm thêm xét nghiệm gì để đưa ra kết luận"} (\texttt{ASK\_MORE}).
+    \item \textbf{Lỗ hổng 4.3 (Trích dẫn hình thức, thiếu phân tách mệnh đề y khoa):} Các hệ thống trích dẫn thông thường gán nhãn nguồn một cách đại khái cho cả đoạn văn, khiến bác sĩ không thể biết chính xác vị trí nào là khẳng định chẩn đoán, vị trí nào là khuyến nghị liều lượng, và vị trí nào có nguy cơ rủi ro.
+\end{enumerate}
+
+\subsection{Giải pháp Đề xuất của Đề tài nhằm Khắc phục Lỗ hổng}
+Đề tài đề xuất kiến trúc thẩm định và kiểm soát rủi ro y tế toàn diện:
+\begin{itemize}
+    \item \textbf{Tách biệt cơ chế xử lý Hallucination và Uncertainty:} Triệt tiêu hoàn toàn \emph{Hallucination} bằng cơ chế kiểm chứng bằng chứng hai chiều và đồ thị tri thức; đồng thời định lượng \emph{Clinical Uncertainty} bằng chỉ số tổng hợp $u\_score = \alpha \cdot u_{\mathrm{rag}} + (1-\alpha) \cdot u_{\mathrm{llm}}$ kết hợp độ phủ bằng chứng và entropy nội tại (Lấp Lỗ hổng 4.1).
+    \item \textbf{Cổng quyết định an toàn 4 nhánh lâm sàng ($\Delta$):} Thay thế mô hình nhị phân bằng không gian 4 hành động chuyên khoa:
+    \begin{equation}
+        \Delta = \{\texttt{ANSWER\_CLEAN}, \texttt{ANSWER\_WITH\_}\allowbreak\texttt{WARNING}, \texttt{ASK\_MORE}, \texttt{ABSTAIN}\}
+    \end{equation}
+    Khi ca bệnh thiếu dữ liệu mấu chốt, hệ thống chuyển sang nhánh \texttt{ASK\_MORE} kèm danh mục xét nghiệm cần bổ sung (Lấp Lỗ hổng 4.2).
+    \item \textbf{XAI văn bản qua Gán nguồn trích dẫn cấp câu và Phân loại 6 trạng thái mệnh đề:} Mỗi câu sinh ra đều được gắn nhãn trích dẫn định vị chính xác và được gán một trong 6 nhãn trạng thái y khoa (\emph{Definite, Probable, Conditional, Negated, Contraindicated, Uncertain}) kèm giải thích luật suy diễn (Lấp Lỗ hổng 4.3).
+\end{itemize}
