@@ -1,55 +1,58 @@
-\section{Công đoạn 2: Biểu diễn Tri thức Bản thể học (Ontology) và Đồ thị Tri thức Lâm sàng}
+\section{Công đoạn 2: Biểu diễn tri thức bản thể học (ontology) và đồ thị tri thức lâm sàng}
 
-\subsection{Khảo sát các Hệ thống Bản thể học và Đồ thị Tri thức Y sinh}
-Để khắc phục hiện tượng mất mát ngữ cảnh giải phẫu và đứt gãy quan hệ logic khi xử lý văn bản tự do, việc cấu trúc hóa tri thức bằng Bản thể học (Ontology) và Đồ thị Tri thức (Knowledge Graph -- KG) là bắt buộc:
-\begin{enumerate}
-    \item \textbf{Các hệ thống danh mục chuẩn hóa quốc tế (UMLS, SNOMED-CT, RadLex):} Đóng vai trò là từ điển chuẩn hóa thực thể y sinh lớn nhất hiện nay. SNOMED-CT cung cấp hơn 350.000 khái niệm lâm sàng, trong khi RadLex chuyên biệt hóa cho thuật ngữ chẩn đoán hình ảnh. Tuy nhiên, các hệ thống này thuần túy mang tính chất phân cấp tĩnh (\emph{is-a hierarchy}), hoàn toàn thiếu vắng các luật suy diễn lâm sàng động gắn liền với điều kiện ràng buộc thực tế của ca bệnh (ví dụ: tuổi bệnh nhân, độ di lệch, bệnh nền).
-    \item \textbf{Biểu diễn tri thức bản thể học bệnh lý xương (Dao \& Ly, 2025) \cite{dao2025ontology}:} Công trình đặt nền móng cho việc mô hình hóa các tổn thương cơ xương khớp bằng ngôn ngữ bản thể học OWL và hệ luật Semantic Web Rule Language (SWRL). Ưu điểm vượt trội là khả năng suy luận logic vị từ tuyệt đối chính xác cho các ca bệnh cơ học. Tuy nhiên, hạn chế lớn nhất là hệ thống này hoàn toàn khép kín theo mô hình chuyên gia cổ điển, không thể giao tiếp với mô hình ngôn ngữ lớn để đọc hiểu các bệnh án lâm sàng tự do từ thực tế bệnh viện.
-    \item \textbf{Tự động xây dựng Đồ thị tri thức lâm sàng bằng Đa mô hình ngôn ngữ lớn (Das et al., 2026) \cite{das2025clinicalkg}:} Đề xuất quy trình trích xuất các bộ ba quan hệ $\langle h, r, t \rangle$ từ báo cáo lâm sàng bằng 3 LLM phối hợp thẩm định chéo. Điểm mạnh là khả năng bao quát dữ liệu nhanh, nhưng đồ thị sinh ra vẫn tiềm ẩn các cạnh nhiễu và không có khung bản thể học định chuẩn ràng buộc các quy tắc an toàn phẫu thuật.
-    \item \textbf{Học đa nguồn tăng cường tri thức bệnh án (KnowGen, 2024) \cite{knowgen2024}:} Nghiên cứu trên tạp chí \emph{Information Fusion} chứng minh rằng việc kết hợp đồ thị tri thức y khoa vào quá trình mã hóa hồ sơ bệnh án điện tử (EHR) giúp tăng độ nhạy chẩn đoán vượt bậc so với chỉ xử lý chuỗi văn bản đơn thuần.
-\end{enumerate}
+\subsection{Khảo sát các hệ thống bản thể học và đồ thị tri thức y sinh}
+Khi xử lý văn bản tự do, hệ thống dễ đánh mất ngữ cảnh giải phẫu và làm đứt gãy quan hệ logic giữa các thực thể. Để khắc phục điều này, tri thức cần được cấu trúc hóa bằng bản thể học (ontology) và đồ thị tri thức (Knowledge Graph -- KG). Mục này khảo sát các hệ thống danh mục chuẩn hóa quốc tế và ba công trình tiêu biểu.
 
-\subsection{Bảng tiêu chí so sánh các Phương pháp Biểu diễn Tri thức \& Đồ thị Lâm sàng}
+\paragraph{Các hệ thống danh mục chuẩn hóa quốc tế (UMLS, SNOMED-CT, RadLex).}
+Đây là các từ điển chuẩn hóa thực thể y sinh lớn nhất hiện nay. SNOMED-CT cung cấp hơn 350.000 khái niệm lâm sàng, trong khi RadLex chuyên biệt cho thuật ngữ chẩn đoán hình ảnh. Tuy nhiên, các hệ thống này chỉ mang tính phân cấp tĩnh (\emph{is-a hierarchy}) và thiếu các luật suy diễn lâm sàng gắn với điều kiện ràng buộc thực tế của ca bệnh, chẳng hạn tuổi bệnh nhân, độ di lệch hay bệnh nền.
 
-Bảng~\ref{tab:comparison_ontology} đối chuẩn các công trình biểu diễn tri thức theo các trục tiêu chí: Mức độ bao phủ bệnh lý xương, Cơ chế chuẩn hóa thực thể, Khả năng suy luận luật hình thức, và Khả năng tích hợp với LLM:
+\paragraph{Biểu diễn tri thức bản thể học bệnh lý xương (Dao \& Ly, 2025) \cite{dao2025ontology}.}
+Công trình đặt nền móng cho việc mô hình hóa các tổn thương cơ xương khớp bằng ngôn ngữ bản thể học OWL và hệ luật Semantic Web Rule Language (SWRL). Ưu điểm chính là khả năng suy luận logic vị từ chính xác cho các ca bệnh cơ học. Hạn chế lớn nhất là hệ thống khép kín theo mô hình hệ chuyên gia cổ điển, không giao tiếp được với mô hình ngôn ngữ lớn để đọc hiểu các bệnh án lâm sàng tự do từ thực tế bệnh viện.
+
+\paragraph{Tự động xây dựng đồ thị tri thức lâm sàng bằng nhiều mô hình ngôn ngữ lớn (Das và cộng sự, 2026) \cite{das2025clinicalkg}.}
+Công trình đề xuất quy trình trích xuất các bộ ba quan hệ $\langle h, r, t \rangle$ từ báo cáo lâm sàng bằng 3 LLM phối hợp thẩm định chéo. Điểm mạnh của cách làm này là bao quát dữ liệu nhanh, nhưng đồ thị sinh ra vẫn có thể chứa các cạnh nhiễu và không có khung bản thể học chuẩn để ràng buộc các quy tắc an toàn phẫu thuật.
+
+\paragraph{Học đa nguồn tăng cường tri thức bệnh án (KnowGen, 2024) \cite{knowgen2024}.}
+Nghiên cứu công bố trên tạp chí \emph{Information Fusion} cho thấy việc kết hợp đồ thị tri thức y khoa vào quá trình mã hóa hồ sơ bệnh án điện tử (EHR) giúp tăng rõ rệt độ nhạy chẩn đoán so với chỉ xử lý chuỗi văn bản.
+
+\subsection{Bảng tiêu chí so sánh các phương pháp biểu diễn tri thức và đồ thị lâm sàng}
+
+Bảng~\ref{tab:comparison_ontology} đối chuẩn các công trình biểu diễn tri thức theo bốn tiêu chí: mức độ bao phủ bệnh lý xương, cơ chế chuẩn hóa thực thể, khả năng suy luận bằng luật hình thức và khả năng tích hợp với LLM.
 
 \begin{table}[H]
 \begin{singlespace}
 \centering
 \fontsize{7.5pt}{9.2pt}\selectfont
-\setlength{\tabcolsep}{2.5pt}
-\renewcommand{\arraystretch}{1.02}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{2.2cm}|>{\raggedright\arraybackslash}p{2.1cm}|>{\centering\arraybackslash}p{1.4cm}|>{\raggedright\arraybackslash}p{2.2cm}|>{\centering\arraybackslash}p{1.6cm}|>{\raggedright\arraybackslash}X|}
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{|l|l|c|l|l|l|}
 \hline
-\textbf{Phương pháp / Công trình} & \textbf{Nguồn tri thức} & \textbf{Bệnh Xương?} & \textbf{Chuẩn hóa Thực thể} & \textbf{Hệ luật (Rules)?} & \textbf{Khả năng tích hợp với LLM} \\
+\textbf{Công trình} & \textbf{Nguồn tri thức} & \textbf{Bệnh xương} & \textbf{Chuẩn hóa thực thể} & \textbf{Hệ luật} & \textbf{Tích hợp với LLM} \\
 \hline
-\textbf{UMLS / SNOMED-CT} & Danh mục quốc tế & \ding{55} (Đa khoa) & Mã Concept CUI / SCTID & \ding{55} (Phân cấp tĩnh) & \ding{55} (Từ điển tra cứu rời rạc) \\
+UMLS / SNOMED-CT & Danh mục quốc tế & \ding{55} & Mã CUI / SCTID & \ding{55} Phân cấp tĩnh & \ding{55} Tra cứu rời rạc \\
 \hline
-\textbf{Dao \& Ly (2025)} \cite{dao2025ontology} & Bệnh học Xương & \textbf{\ding{51}} ($100\%$ Xương) & OWL Ontology, Logic mô tả & \textbf{\ding{51}} (Luật hình thức SWRL) & \ding{55} (Hệ chuyên gia cổ điển đóng) \\
+Dao \& Ly (2025) \cite{dao2025ontology} & Bệnh học xương & \ding{51} & OWL, logic mô tả & \ding{51} Luật SWRL & \ding{55} Hệ chuyên gia đóng \\
 \hline
-\textbf{Das et al. (2026)} \cite{das2025clinicalkg} & Báo cáo lâm sàng, EHR & \ding{55} (Đa khoa) & Multi-LLM trích xuất chéo & \ding{55} (Đồ thị thực thể phẳng) & \textbf{\ding{51}} (Multi-LLMs tự sinh đồ thị) \\
+Das et al. (2026) \cite{das2025clinicalkg} & Báo cáo lâm sàng, EHR & \ding{55} & LLM kiểm tra chéo & \ding{55} Đồ thị phẳng & \ding{51} LLM tự sinh đồ thị \\
 \hline
-\textbf{KnowGen (2024)} \cite{knowgen2024} & EHR + Medical KG & \ding{55} (Chẩn đoán) & Ghép nối vector đặc trưng & \ding{55} & \textbf{\ding{51}} (Hợp nhất thông tin trên EHR) \\
+KnowGen (2024) \cite{knowgen2024} & EHR, đồ thị y khoa & \ding{55} & Ghép vector đặc trưng & \ding{55} & \ding{51} Hợp nhất trên EHR \\
 \hline
-\textbf{Đồ thị 6 tầng (Đề xuất)} & \textbf{Phác đồ AAOS/WHO + RadLex} & \textbf{\ding{51}} (\textbf{$100\%$ Xương}) & \textbf{Chuẩn hóa 6 tầng ngữ nghĩa} & \textbf{\ding{51}} (\textbf{Chống chỉ định \& Cờ đỏ u xương}) & \textbf{\ding{51}} (\textbf{Dẫn đường trực tiếp cho RAG}) \\
+\textbf{Đề xuất (6 tầng)} & Phác đồ AAOS/WHO & \ding{51} & Chuẩn hóa 6 tầng & \ding{51} Chống chỉ định, cờ đỏ & \ding{51} Dẫn đường cho RAG \\
 \hline
-\end{tabularx}
-\caption{Bảng so sánh đối chuẩn các Phương pháp Biểu diễn Tri thức và Đồ thị Lâm sàng}
+\end{tabular}
+\caption{So sánh các phương pháp biểu diễn tri thức và đồ thị lâm sàng}
 \label{tab:comparison_ontology}
 \end{singlespace}
 \end{table}
 
-\subsection{Phân tích Lỗ hổng Nghiên cứu (Research Gaps) ở Công đoạn 2}
-Từ Bảng~\ref{tab:comparison_ontology}, các hạn chế cốt tử được xác định rõ:
-\begin{enumerate}
-    \item \textbf{Lỗ hổng 2.1 (Sự đứt gãy giữa Bản thể học hình thức và Ngôn ngữ tự nhiên):} Công trình tiên phong của Dao \& Ly (2025) \cite{dao2025ontology} đã xây dựng được hệ luật bản thể học xương rất mẫu mực nhưng lại là một "ốc đảo đóng kín", hoàn toàn không thể xử lý văn bản bệnh án tự do hoặc trả lời câu hỏi tự nhiên của bác sĩ.
-    \item \textbf{Lỗ hổng 2.2 (Thiếu ràng buộc quy tắc an toàn trong Đồ thị tri thức tự động):} Các phương pháp sinh đồ thị tự động bằng LLM như Das et al. (2026) \cite{das2025clinicalkg} tạo ra các đồ thị phẳng thiếu chiều sâu ngữ nghĩa, không có các nút phân tầng (Tầng bệnh học, Tầng phẫu thuật, Tầng chống chỉ định) và không có cơ chế ngăn chặn cạnh quan hệ giả tạo.
-    \item \textbf{Lỗ hổng 2.3 (Bỏ sót các cờ đỏ bệnh lý ác tính trong chấn thương):} Các đồ thị lâm sàng hiện nay chỉ biểu diễn các chấn thương cơ học đơn thuần, bỏ qua mối liên hệ sinh bệnh học giữa gãy xương bệnh lý (\emph{Pathological Fracture}) và u xương ác tính.
-\end{enumerate}
+\subsection{Phân tích khoảng trống nghiên cứu (research gaps) ở Công đoạn 2}
+Từ Bảng~\ref{tab:comparison_ontology}, có thể xác định ba hạn chế chính.
 
-\subsection{Giải pháp Đề xuất của Đề tài nhằm Khắc phục Lỗ hổng}
-Đề tài khắc phục các khoảng trống trên bằng cách:
-\begin{itemize}
-    \item \textbf{Xây dựng Kiến trúc Đồ thị Tri thức 6 tầng chuyên sâu (Bone-MSK 6-tier KG):} Kế thừa và mở rộng công trình \cite{dao2025ontology}, cấu trúc lại thành 6 tầng ngữ nghĩa chặt chẽ: (1) Giải phẫu xương $\rightarrow$ (2) Loại tổn thương/Phân loại gãy $\rightarrow$ (3) Triệu chứng lâm sàng \& Cận lâm sàng $\rightarrow$ (4) Phương pháp điều trị $\rightarrow$ (5) Điều kiện chống chỉ định $\rightarrow$ (6) Dấu hiệu cờ đỏ u xương (Lấp Lỗ hổng 2.2 \& 2.3).
-    \item \textbf{Cơ chế ánh xạ thực thể tự động từ văn bản vào Bản thể học:} Sử dụng LLM Backbone đã tinh chỉnh để bóc tách thực thể từ hồ sơ bệnh nhân không đồng nhất ($\mathcal{P}, \mathcal{M}_{\mathrm{clin}}, \mathcal{M}_{\mathrm{img}}, \mathcal{L}$), sau đó chuẩn hóa và liên kết chính xác vào các nút đồ thị đã định danh, tạo cầu nối hoàn hảo giữa văn bản tự do và logic hình thức (Lấp Lỗ hổng 2.1).
-\end{itemize}
+\paragraph{Khoảng trống 2.1 -- Đứt gãy giữa bản thể học hình thức và ngôn ngữ tự nhiên.}
+Công trình tiên phong của Dao \& Ly (2025) \cite{dao2025ontology} đã xây dựng được hệ luật bản thể học xương chặt chẽ, nhưng đây là một hệ thống đóng: nó không xử lý được văn bản bệnh án tự do và không trả lời được câu hỏi bằng ngôn ngữ tự nhiên của bác sĩ.
+
+\paragraph{Khoảng trống 2.2 -- Thiếu ràng buộc quy tắc an toàn trong đồ thị tri thức tự động.}
+Các phương pháp sinh đồ thị tự động bằng LLM như Das và cộng sự (2026) \cite{das2025clinicalkg} tạo ra các đồ thị phẳng, thiếu chiều sâu ngữ nghĩa. Các đồ thị này không có các nút phân tầng (tầng bệnh học, tầng phẫu thuật, tầng chống chỉ định) và không có cơ chế ngăn chặn các cạnh quan hệ giả tạo.
+
+\paragraph{Khoảng trống 2.3 -- Bỏ sót các cờ đỏ bệnh lý ác tính trong chấn thương.}
+Các đồ thị lâm sàng hiện nay chỉ biểu diễn chấn thương cơ học, bỏ qua mối liên hệ sinh bệnh học giữa gãy xương bệnh lý (\emph{Pathological Fracture}) và u xương ác tính.

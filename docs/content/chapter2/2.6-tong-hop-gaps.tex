@@ -1,7 +1,8 @@
-\section{Bảng tổng hợp đối sánh toàn diện và Bản đồ Khoảng trống Nghiên cứu}
+\section{Tổng hợp và giải pháp đề xuất}
+\label{sec:chap2_solution}
 
 \subsection{Bảng tổng hợp đối sánh toàn diện các công trình}
-Bảng~\ref{tab:master_comparison} tổng hợp sự đối đầu trực diện giữa các hướng tiếp cận tiêu biểu nhất đại diện cho 4 công đoạn kỹ thuật đã phân tích:
+Bảng~\ref{tab:master_comparison} đối sánh các hướng tiếp cận tiêu biểu cho 4 công đoạn kỹ thuật đã phân tích.
 
 \begin{table}[H]
 \begin{singlespace}
@@ -30,7 +31,7 @@ Bảng~\ref{tab:master_comparison} tổng hợp sự đối đầu trực diện
 \hline
 \textbf{Med-PRM \cite{medprm2024}} & LLaMA-3 + PRM & Chuỗi suy luận logic & \textbf{\ding{51}} (Cấp bước) & \ding{55} & Chưa kết hợp truy xuất lai đa nguồn. \\
 \hline
-\textbf{Bone-MSK QA (Đề xuất)} & \textbf{LLaMA-3.1-8B + QLoRA (On-premise)} & \textbf{Lai Đồ thị 6 tầng + Phác đồ AAOS} & \textbf{\ding{51}} (Attributed) & \textbf{\ding{51}} ($u\_score$) & \textbf{Khắc phục trọn vẹn: Sàng lọc cảnh báo đỏ u xương, thẩm định bằng chứng hai chiều ($p_{\mathrm{rel}} \times s_{\mathrm{appl}}$), Cổng quyết định 4 nhánh an toàn.} \\
+\textbf{Bone-MSK QA (Đề xuất)} & \textbf{LLaMA-3.1-8B + QLoRA (On-premise)} & \textbf{Lai Đồ thị 6 tầng + Phác đồ AAOS} & \textbf{\ding{51}} (Attributed) & \textbf{\ding{51}} ($u\_score$) & \textbf{Khắc phục: Sàng lọc cảnh báo đỏ u xương, thẩm định bằng chứng hai chiều ($p_{\mathrm{rel}} \times s_{\mathrm{appl}}$), Cổng quyết định 4 nhánh an toàn.} \\
 \hline
 \end{tabularx}
 \caption{Bảng tổng hợp đối chuẩn toàn diện các giải pháp hỏi--đáp y khoa hiện đại}
@@ -38,16 +39,36 @@ Bảng~\ref{tab:master_comparison} tổng hợp sự đối đầu trực diện
 \end{singlespace}
 \end{table}
 
-\subsection{Bản đồ quan hệ từ Lỗ hổng Nghiên cứu đến Thiết kế Kiến trúc ở Chương 3}
+\subsection{Giải pháp đề xuất của khóa luận}
 
-Dựa trên quá trình phân tích đối chuẩn tại từng công đoạn, mối quan hệ hữu cơ giữa \textbf{Lỗ hổng nghiên cứu được phát hiện} và \textbf{Module giải pháp đề xuất} được tổng kết một cách nhất quán:
+Từ các khoảng trống đã xác định ở bốn công đoạn, khóa luận đề xuất một hệ thống hỏi--đáp bệnh lý cơ xương khớp gồm bốn khối giải pháp tương ứng. Các khối này nối tiếp nhau thành một quy trình: mô hình nền chạy tại chỗ, đồ thị tri thức chuyên khoa, truy xuất và thẩm định bằng chứng, và cuối cùng là cổng quyết định có đo độ bất định. Sơ đồ kiến trúc tổng thể được trình bày tại Chương~3, Hình~\ref{fig:system_architecture}.
 
-\begin{enumerate}
-    \item \textbf{Lỗ hổng 1 (Tri thức xương thiếu hụt \& Nguy cơ bảo mật):} Được lấp bằng việc chọn mô hình nền tảng nguồn mở LLaMA-3.1-8B triển khai On-premise, kết hợp tinh chỉnh tham số hiệu quả QLoRA trên tập dữ liệu chỉ dẫn lâm sàng đối chuẩn.
-    \item \textbf{Lỗ hổng 2 (Đứt gãy giữa bản thể học hình thức và bệnh án tự do):} Được lấp bằng Kiến trúc Đồ thị Tri thức 6 tầng chuyên sâu (Bone-MSK KG) kết hợp cơ chế tự động bóc tách thực thể và ánh xạ vào bản thể học qua JSON schema.
-    \item \textbf{Lỗ hổng 3 (Truy vấn phẳng gây nhiễu \& Bỏ quên tính áp dụng điều trị):} Được lấp bằng cơ chế phân rã câu hỏi thành 5 khía cạnh ngữ nghĩa ($Q_c$), Hợp nhất văn bản không đồng nhất (Context Fusion), và Bộ thẩm định bằng chứng hai chiều (Liên quan $p_{\mathrm{rel}}$ và Tính áp dụng $s_{\mathrm{appl}}$).
-    \item \textbf{Lỗ hổng 4 (Đánh đồng ảo giác với bất định \& Quyết định nhị phân cứng nhắc):} Được lấp bằng công thức định lượng độ bất định hai chiều $u\_score$, Cổng an toàn 4 nhánh lâm sàng ($\Delta$), và Cơ chế XAI văn bản gán nguồn trích dẫn cấp câu phân loại 6 trạng thái mệnh đề.
-\end{enumerate}
+\paragraph{Công đoạn 1 -- Mô hình nền triển khai tại chỗ.}
+Khóa luận chọn LLaMA-3.1-8B làm mô hình nền, chạy trên một GPU 16--24GB trong mạng nội bộ bệnh viện để dữ liệu bệnh nhân không phải gửi ra ngoài (khoảng trống 1.1). Mô hình được tinh chỉnh bằng QLoRA trên dữ liệu cơ xương khớp tiếng Việt để bổ sung thuật ngữ, trích xuất thực thể và định dạng đầu ra JSON mà không làm suy giảm năng lực tiếng Việt (khoảng trống 1.2). Mô hình không trả lời chỉ dựa vào tri thức trong tham số: mỗi khẳng định phải được neo vào đồ thị tri thức hoặc phác đồ truy xuất được, như mô tả ở các khối tiếp theo.
 
-\vspace{1em}
-\noindent Toàn bộ các nguyên lý và module kiến trúc được thiết kế nhằm lấp đầy các khoảng trống khoa học này sẽ được trình bày chi tiết và mô hình hóa toán học chặt chẽ trong \textbf{Chương 3: Phương pháp đề xuất}.
+\paragraph{Công đoạn 2 -- Đồ thị tri thức cơ xương khớp 6 tầng.}
+Kế thừa và mở rộng ontology bệnh xương của Dao và Ly \cite{dao2025ontology}, khóa luận tổ chức tri thức thành 6 tầng: (1) giải phẫu xương, (2) loại tổn thương và phân loại gãy, (3) triệu chứng lâm sàng và cận lâm sàng, (4) phương pháp điều trị, (5) điều kiện chống chỉ định, và (6) dấu hiệu cờ đỏ u xương. Hai tầng chống chỉ định và cờ đỏ trực tiếp lấp khoảng trống 2.2 và 2.3. Để nối văn bản tự do với đồ thị (khoảng trống 2.1), mô hình nền đã tinh chỉnh trích xuất thực thể từ hồ sơ bệnh nhân ($\mathcal{P}, \mathcal{M}_{\mathrm{clin}}, \mathcal{M}_{\mathrm{img}}, \mathcal{L}$), sau đó chuẩn hóa và liên kết chúng vào các nút đồ thị đã định danh.
+
+\paragraph{Công đoạn 3 -- Truy xuất và thẩm định bằng chứng hai chiều.}
+Trước khi truy xuất, câu hỏi lâm sàng $u$ được tách thành 5 khía cạnh độc lập
+\begin{equation}
+    Q_c = \{\text{Disease}, \text{Anatomy}, \text{PatientFactor}, \text{ClinicalState}, \text{Intent}\},
+\end{equation}
+mỗi khía cạnh có không gian tìm kiếm riêng, nhờ đó giảm hiện tượng pha loãng biểu diễn của truy vấn phẳng (khoảng trống 3.1). Chỉ số xét nghiệm $\mathcal{L}$ được chuyển thành các cờ bất thường và đưa vào $Q_c$ (hợp nhất sớm), sau đó hệ thống truy xuất lai từ ba nguồn: BM25, vector ngữ nghĩa và duyệt đồ thị tri thức 6 tầng, để liên kết đúng vị trí giải phẫu với phác đồ điều trị (khoảng trống 3.3). Mỗi đoạn bằng chứng được chấm theo cả độ liên quan và tính áp dụng cho bệnh nhân cụ thể:
+\begin{equation}
+    S_{\mathrm{evidence}} = p_{\mathrm{rel}} \times s_{\mathrm{appl}},
+\end{equation}
+trong đó $p_{\mathrm{rel}}$ đo độ liên quan từ vựng và ngữ nghĩa, còn $s_{\mathrm{appl}}$ đo mức tương thích với điều kiện lâm sàng của bệnh nhân. Bằng chứng vi phạm tiền sử dị ứng, bệnh nền hoặc chống chỉ định phẫu thuật nhận $s_{\mathrm{appl}} \to 0$ và bị loại khỏi ngữ cảnh (khoảng trống 3.2).
+
+\paragraph{Công đoạn 4 -- Đo độ bất định, cổng quyết định và trích dẫn cấp câu.}
+Khóa luận tách riêng hai vấn đề. Ảo giác được hạn chế bằng thẩm định bằng chứng hai chiều và đồ thị tri thức ở các khối trước; còn độ bất định lâm sàng được định lượng bằng
+\begin{equation}
+    u_{\mathrm{score}} = \alpha \cdot u_{\mathrm{rag}} + (1-\alpha) \cdot u_{\mathrm{llm}},
+\end{equation}
+kết hợp độ phủ bằng chứng $u_{\mathrm{rag}}$ và entropy của mô hình $u_{\mathrm{llm}}$ (khoảng trống 1.3 và 4.1). Dựa trên $u_{\mathrm{score}}$, chất lượng bằng chứng và mức rủi ro của ca bệnh, một cổng quyết định chọn một trong bốn hành động thay cho lựa chọn nhị phân trả lời/từ chối:
+\begin{equation}
+    \Delta = \{\texttt{ANSWER\_CLEAN}, \texttt{ANSWER\_WITH\_}\allowbreak\texttt{WARNING}, \texttt{ASK\_MORE}, \texttt{ABSTAIN}\}.
+\end{equation}
+Khi ca bệnh thiếu dữ liệu quan trọng, hệ thống chọn \texttt{ASK\_MORE} kèm danh mục xét nghiệm cần bổ sung (khoảng trống 4.2). Cuối cùng, mỗi câu trong câu trả lời được gắn trích dẫn tới đoạn tài liệu hoặc bộ ba trong đồ thị, và được gán một trong 6 trạng thái mệnh đề (\emph{Definite, Probable, Conditional, Negated, Contraindicated, Uncertain}), giúp bác sĩ kiểm chứng từng khẳng định thay vì dựa vào chuỗi suy luận tự do (khoảng trống 1.4 và 4.3).
+
+Các mô-đun trên được trình bày chi tiết, kèm mô hình hóa toán học, trong \textbf{Chương 3: Phương pháp đề xuất}.
